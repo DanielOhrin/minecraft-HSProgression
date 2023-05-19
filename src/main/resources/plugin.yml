@@ -1,0 +1,4 @@
+name: HSProgression
+version: '${project.version}'
+main: net.highskiesmc.hsprogression.Main
+api-version: 1.19
