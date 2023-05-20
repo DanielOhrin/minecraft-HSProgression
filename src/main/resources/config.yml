@@ -4,8 +4,10 @@
 # Do not change the amount of items in the lists or attempt to change what is tracked for each item in the lists
 # Ex: Each material can be changed, but it will not change what is actually being tracked
 all:
+  filler:
+    material: BLACK_STAINED_GLASS_PANE
   locked:
-    material: BLACK_STAINED_GLASS_PANE # Item that will show in place of locked items
+    material: ORANGE_STAINED_GLASS_PANE # Item that will show in place of locked items
 mining:
   '1':
     material: COBBLESTONE # Item that will show in /is mining
@@ -95,22 +97,107 @@ mining:
         - "&7{amount} Ancient Debris Nodes Mined"
 slayer:
   '1':
+    material: COBBLESTONE # Item that will show in /is mining
+    display-name: "&7Cobblestone Nodes"
+    lore:
+      unlocked:
+        - "&7{amount} Cobblestone Nodes Mined"
   '2':
+    material: COBBLESTONE # Item that will show in /is mining
+    display-name: "&7Cobblestone Nodes"
+    lore:
+      unlocked:
+        - "&7{amount} Cobblestone Nodes Mined"
   '3':
+    material: COBBLESTONE # Item that will show in /is mining
+    display-name: "&7Cobblestone Nodes"
+    lore:
+      unlocked:
+        - "&7{amount} Cobblestone Nodes Mined"
   '4':
+    material: COBBLESTONE # Item that will show in /is mining
+    display-name: "&7Cobblestone Nodes"
+    lore:
+      unlocked:
+        - "&7{amount} Cobblestone Nodes Mined"
   '5':
+    material: COBBLESTONE # Item that will show in /is mining
+    display-name: "&7Cobblestone Nodes"
+    lore:
+      unlocked:
+        - "&7{amount} Cobblestone Nodes Mined"
   '6':
+    material: COBBLESTONE # Item that will show in /is mining
+    display-name: "&7Cobblestone Nodes"
+    lore:
+      unlocked:
+        - "&7{amount} Cobblestone Nodes Mined"
   '7':
+    material: COBBLESTONE # Item that will show in /is mining
+    display-name: "&7Cobblestone Nodes"
+    lore:
+      unlocked:
+        - "&7{amount} Cobblestone Nodes Mined"
   '8':
+    material: COBBLESTONE # Item that will show in /is mining
+    display-name: "&7Cobblestone Nodes"
+    lore:
+      unlocked:
+        - "&7{amount} Cobblestone Nodes Mined"
   '9':
+    material: COBBLESTONE # Item that will show in /is mining
+    display-name: "&7Cobblestone Nodes"
+    lore:
+      unlocked:
+        - "&7{amount} Cobblestone Nodes Mined"
   '10':
+    material: COBBLESTONE # Item that will show in /is mining
+    display-name: "&7Cobblestone Nodes"
+    lore:
+      unlocked:
+        - "&7{amount} Cobblestone Nodes Mined"
   '11':
+    material: COBBLESTONE # Item that will show in /is mining
+    display-name: "&7Cobblestone Nodes"
+    lore:
+      unlocked:
+        - "&7{amount} Cobblestone Nodes Mined"
   '12':
+    material: COBBLESTONE # Item that will show in /is mining
+    display-name: "&7Cobblestone Nodes"
+    lore:
+      unlocked:
+        - "&7{amount} Cobblestone Nodes Mined"
   '13':
+    material: COBBLESTONE # Item that will show in /is mining
+    display-name: "&7Cobblestone Nodes"
+    lore:
+      unlocked:
+        - "&7{amount} Cobblestone Nodes Mined"
   '14':
+    material: COBBLESTONE # Item that will show in /is mining
+    display-name: "&7Cobblestone Nodes"
+    lore:
+      unlocked:
+        - "&7{amount} Cobblestone Nodes Mined"
   '15':
+    material: COBBLESTONE # Item that will show in /is mining
+    display-name: "&7Cobblestone Nodes"
+    lore:
+      unlocked:
+        - "&7{amount} Cobblestone Nodes Mined"
   '16':
+    material: COBBLESTONE # Item that will show in /is mining
+    display-name: "&7Cobblestone Nodes"
+    lore:
+      unlocked:
+        - "&7{amount} Cobblestone Nodes Mined"
   '17':
+    material: COBBLESTONE # Item that will show in /is mining
+    display-name: "&7Cobblestone Nodes"
+    lore:
+      unlocked:
+        - "&7{amount} Cobblestone Nodes Mined"
 farming:
   '1':
   '2':
