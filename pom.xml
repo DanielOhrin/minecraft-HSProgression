@@ -80,5 +80,11 @@
             <version>2023.1</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>net.highskiesmc</groupId>
+            <artifactId>HSNodes</artifactId>
+            <version>1.1.4</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 </project>

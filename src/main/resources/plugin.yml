@@ -1,6 +1,6 @@
 name: HSProgression
 version: '${project.version}'
-main: net.highskiesmc.hsprogression.HSProgression
+main: net.highskiesmc.progression.HSProgression
 api-version: 1.19
 depend:
   - HSNodes

@@ -1,6 +1,6 @@
-package net.highskiesmc.hsprogression;
+package net.highskiesmc.progression;
 
-import net.highskiesmc.hsprogression.events.handlers.PlayerFishHandler;
+import net.highskiesmc.progression.events.handlers.PlayerFishHandler;
 import net.highskiesmc.nodes.HSNodes;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;

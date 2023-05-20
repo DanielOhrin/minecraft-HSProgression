@@ -1,9 +1,9 @@
-package net.highskiesmc.hsprogression.events.handlers;
+package net.highskiesmc.progression.events.handlers;
 
 import com.bgsoftware.superiorskyblock.api.SuperiorSkyblockAPI;
 import com.bgsoftware.superiorskyblock.api.island.Island;
 import com.bgsoftware.superiorskyblock.api.island.IslandPrivilege;
-import net.highskiesmc.hsprogression.events.events.IslandFishCaughtEvent;
+import net.highskiesmc.progression.events.events.IslandFishCaughtEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;

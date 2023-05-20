@@ -1,4 +1,4 @@
-package net.highskiesmc.hsprogression.events.events;
+package net.highskiesmc.progression.events.events;
 
 import com.bgsoftware.superiorskyblock.api.island.Island;
 import org.bukkit.entity.FishHook;
