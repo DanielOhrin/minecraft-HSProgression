@@ -1,0 +1,129 @@
+# {amount} = However many of the current thing their island has tracked so far
+# {progress} = However many of the requirement their island has tracked so far
+# Ex: Lore: {progress}/150,000 Zombies slain or {progress}/200 Coal nodes mined
+# Do not change the amount of items in the lists or attempt to change what is tracked for each item in the lists
+# Ex: Each material can be changed, but it will not change what is actually being tracked
+all:
+  locked:
+    material: BLACK_STAINED_GLASS_PANE # Item that will show in place of locked items
+mining:
+  '1':
+    material: COBBLESTONE # Item that will show in /is mining
+    display-name: "&7Cobblestone Nodes"
+    lore:
+      unlocked:
+        - "&7{amount} Cobblestone Nodes Mined"
+  '2':
+    material: COAL_ORE
+    display-name: "&7Coal Nodes"
+    lore:
+      locked:
+        - "&c{progress}/50 Cobblestone Nodes mined"
+      unlocked:
+        - "&7{amount} Coal Nodes Mined"
+  '3':
+    material: COPPER_ORE
+    display-name: "&7Copper Nodes"
+    lore:
+      locked:
+        - "&c{progress}/50 Coal Nodes mined"
+      unlocked:
+        - "&7{amount} Copper Nodes Mined"
+  '4':
+    material: NETHER_GOLD_ORE
+    display-name: "&7Nether Gold Nodes"
+    lore:
+      locked:
+        - "&c{progress}/50 Copper Nodes mined"
+      unlocked:
+        - "&7{amount} Nether Gold Nodes Mined"
+  '5':
+    material: NETHER_QUARTZ_ORE
+    display-name: "&7Nether Quartz Nodes"
+    lore:
+      locked:
+        - "&c{progress}/50 Nether Gold Nodes mined"
+      unlocked:
+        - "&7{amount} Nether Quartz Nodes Mined"
+  '6':
+    material: IRON_ORE
+    display-name: "&7Iron Nodes"
+    lore:
+      locked:
+        - "&c{progress}/50 Nether Quartz Nodes mined"
+      unlocked:
+        - "&7{amount} Iron Nodes Mined"
+  '7':
+    material: REDSTONE_ORE
+    display-name: "&7Ruby Nodes"
+    lore:
+      locked:
+        - "&c{progress}/50 Iron Nodes mined"
+      unlocked:
+        - "&7{amount} Ruby Nodes Mined"
+  '8':
+    material: LAPIS_ORE
+    display-name: "&7Lapis Nodes"
+    lore:
+      locked:
+        - "&c{progress}/50 Ruby Nodes mined"
+      unlocked:
+        - "&7{amount} Lapis Nodes Mined"
+  '9':
+    material: DIAMOND_ORE
+    display-name: "&7Diamond Nodes"
+    lore:
+      locked:
+        - "&c{progress}/50 Lapis Nodes mined"
+      unlocked:
+        - "&7{amount} Diamond Nodes Mined"
+  '10':
+    material: EMERALD_ORE
+    display-name: "&7Emerald Nodes"
+    lore:
+      locked:
+        - "&c{progress}/50 Diamond Nodes mined"
+      unlocked:
+        - "&7{amount} Emerald Nodes Mined"
+  '11':
+    material: ANCIENT_DEBRIS
+    display-name: "&7Ancient Debris Nodes"
+    lore:
+      locked:
+        - "&c{progress}/50 Emerald Nodes mined"
+      unlocked:
+        - "&7{amount} Ancient Debris Nodes Mined"
+slayer:
+  '1':
+  '2':
+  '3':
+  '4':
+  '5':
+  '6':
+  '7':
+  '8':
+  '9':
+  '10':
+  '11':
+  '12':
+  '13':
+  '14':
+  '15':
+  '16':
+  '17':
+farming:
+  '1':
+  '2':
+  '3':
+  '4':
+  '5':
+  '6':
+  '7':
+  '8':
+  '9':
+  '10':
+  '11':
+  '12':
+  '13':
+  '14':
+fishing:

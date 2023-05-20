@@ -4,3 +4,5 @@ main: net.highskiesmc.progression.HSProgression
 api-version: 1.19
 depend:
   - HSNodes
+commands:
+  mining:
