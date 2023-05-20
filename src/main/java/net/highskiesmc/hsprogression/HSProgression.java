@@ -1,6 +1,8 @@
 package net.highskiesmc.hsprogression;
 
+import net.highskiesmc.hsprogression.events.handlers.PlayerFishHandler;
 import net.highskiesmc.nodes.HSNodes;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class HSProgression extends JavaPlugin {
@@ -8,7 +10,7 @@ public final class HSProgression extends JavaPlugin {
 
     @Override
     public void onEnable() {
-
+        Bukkit.getPluginManager().registerEvents(new PlayerFishHandler(), this);
     }
 
     @Override
