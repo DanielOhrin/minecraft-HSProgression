@@ -1,12 +1,18 @@
 package net.highskiesmc.progression;
 
+import com.bgsoftware.superiorskyblock.api.SuperiorSkyblockAPI;
 import com.bgsoftware.superiorskyblock.api.island.Island;
 import net.highskiesmc.progression.enums.IslandDataType;
 import net.highskiesmc.progression.enums.TrackedCrop;
 import net.highskiesmc.progression.enums.TrackedEntity;
 import net.highskiesmc.progression.enums.TrackedNode;
+import net.highskiesmc.progression.events.events.IslandProgressedEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 public class HSProgressionAPI {
@@ -16,50 +22,104 @@ public class HSProgressionAPI {
         this.MAIN = main;
     }
 
-    public void createIslandData(Island island) {
+    /**
+     * @param island Island to create data for
+     * @return ConfigurationSection that was just created for the island
+     */
+    public ConfigurationSection createIslandData(Island island) {
         final ConfigurationSection ISLANDS = this.MAIN.getIslands();
 
         final String ISLAND_ID = island.getUniqueId().toString();
 
         // SLAYER
-        for (TrackedEntity entity : TrackedEntity.values()) {
-            ISLANDS.set(ISLAND_ID + '.' + IslandDataType.SLAYER.getValue() + '.' + entity.getValue() + '.' + "amount",
+        TrackedEntity[] trackedEntities = TrackedEntity.values();
+        for (int i = 0; i < trackedEntities.length; i++) {
+            ISLANDS.set(ISLAND_ID + '.' + IslandDataType.SLAYER.getValue() + '.' + trackedEntities[i].getValue() + '.' + "amount",
                     0);
-            ISLANDS.set(ISLAND_ID + '.' + IslandDataType.SLAYER.getValue() + '.' + entity.getValue() + '.' + "unlocked",
-                    false);
+            if (i != 0) {
+                ISLANDS.set(ISLAND_ID + '.' + IslandDataType.SLAYER.getValue() + '.' + trackedEntities[i].getValue() + '.' +
+                        "conditions-met", false);
+                ISLANDS.set(ISLAND_ID + '.' + IslandDataType.SLAYER.getValue() + '.' + trackedEntities[i].getValue() + '.' +
+                        "unlocked", false);
+            }
         }
 
         // MINING
-        for (TrackedNode node : TrackedNode.values()) {
-            ISLANDS.set(ISLAND_ID + '.' + IslandDataType.MINING.getValue() + '.' + node.getValue() + '.' + "amount", 0);
-            ISLANDS.set(ISLAND_ID + '.' + IslandDataType.MINING.getValue() + '.' + node.getValue() + '.' + "unlocked",
-                    0);
+        TrackedNode[] trackedNodes = TrackedNode.values();
+        for (int i = 0; i < trackedNodes.length; i++) {
+            ISLANDS.set(ISLAND_ID + '.' + IslandDataType.MINING.getValue() + '.' + trackedNodes[i].getValue() + '.' +
+                    "amount", 0);
+            if (i != 0) {
+                ISLANDS.set(ISLAND_ID + '.' + IslandDataType.MINING.getValue() + '.' + trackedNodes[i].getValue() + '.' +
+                        "conditions-met", false);
+                ISLANDS.set(ISLAND_ID + '.' + IslandDataType.MINING.getValue() + '.' + trackedNodes[i].getValue() + '.' +
+                        "unlocked", false);
+            }
         }
 
         // FARMING
-        for (TrackedCrop crop : TrackedCrop.values()) {
-            ISLANDS.set(ISLAND_ID + '.' + IslandDataType.FARMING.getValue() + '.' + crop.getValue() + '.' + "amount",
-                    0);
-            ISLANDS.set(ISLAND_ID + '.' + IslandDataType.FARMING.getValue() + '.' + crop.getValue() + '.' + "unlocked",
-                    0);
+        TrackedCrop[] trackedCrops = TrackedCrop.values();
+        for (int i = 0; i < trackedCrops.length; i++) {
+            ISLANDS.set(ISLAND_ID + '.' + IslandDataType.FARMING.getValue() + '.' + trackedCrops[i].getValue() + '.' +
+                    "amount", 0);
+            if (i != 0) {
+                ISLANDS.set(ISLAND_ID + '.' + IslandDataType.FARMING.getValue() + '.' + trackedCrops[i].getValue() + '.' +
+                        "conditions-met", false);
+                ISLANDS.set(ISLAND_ID + '.' + IslandDataType.FARMING.getValue() + '.' + trackedCrops[i].getValue() + '.' +
+                        "unlocked", false);
+            }
         }
 
         this.MAIN.saveIslands();
+        return ISLANDS.getConfigurationSection(island.getUniqueId().toString());
     }
 
-    public void increaseIslandData(UUID islandUUID, IslandDataType dataType, String key) {
-        final ConfigurationSection ISLAND = this.MAIN.getIslands().getConfigurationSection(islandUUID.toString());
-
+    /**
+     * Increments the provided island's data value by 1. Calls IslandProgressionEvent when condition for next unlock
+     * is met
+     *
+     * @param islandUUID Island's UUID
+     * @param dataType   IslandDataType (Slayer, mining, etc.)
+     * @param key        Name of whatever you want to increment. Ex: zombie, coal, magma-cube
+     */
+    public void incrementIslandData(UUID islandUUID, IslandDataType dataType, String key) {
+        ConfigurationSection ISLAND_DATA =
+                this.MAIN.getIslands().getConfigurationSection(islandUUID.toString() + '.' + dataType.getValue());
         long currentValue = 0;
-        try {
-            currentValue = ISLAND.getLong(dataType.getValue() + '.' + key);
-        } catch (NullPointerException ignored) {
 
+        if (ISLAND_DATA == null) {
+            ISLAND_DATA =
+                    createIslandData(SuperiorSkyblockAPI.getIslandByUUID(islandUUID)).getConfigurationSection(dataType.getValue());
+        } else {
+            currentValue = ISLAND_DATA.getLong(key + ".amount");
         }
 
-        ISLAND.set(dataType.getValue() + '.' + key, currentValue + 1);
+        // Check if this increment unlocked the next upgrade
+        List<String> trackedItems = new ArrayList<>(ISLAND_DATA.getKeys(false));
+        int indexOfCurrent = trackedItems.indexOf(key);
+
+        if (indexOfCurrent != trackedItems.size() - 1) {
+            String nextItemKey = trackedItems.get(indexOfCurrent + 1);
+            if (!ISLAND_DATA.getBoolean(nextItemKey + '.' + "conditions-met")) {
+                if (currentValue + 1 >= this.MAIN.getConfig().getLong(dataType.getValue() + '.' + nextItemKey + '.' +
+                        "amount")) {
+                    ISLAND_DATA.set(nextItemKey + '.' + "conditions-met", true);
+                    Bukkit.getPluginManager().callEvent(new IslandProgressedEvent(SuperiorSkyblockAPI.getIslandByUUID(islandUUID), dataType));
+                }
+            }
+        }
+
+        // Increment the value
+        ISLAND_DATA.set(key + ".amount", currentValue + 1);
+        this.MAIN.saveIslands();
     }
 
+    /**
+     * @param islandUUID UUID of island
+     * @param dataType   IslandDataType (mining/slayer/etc.)
+     * @param key        Name of tracked item. zombie, coal, etc.
+     * @return ConfigurationSection for that tracked item
+     */
     public ConfigurationSection getIslandData(UUID islandUUID, IslandDataType dataType, String key) throws NullPointerException {
         final ConfigurationSection ISLAND_DATA =
                 this.MAIN.getIslands().getConfigurationSection(islandUUID.toString() + '.' + dataType + '.' + key);

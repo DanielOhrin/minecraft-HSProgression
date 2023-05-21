@@ -25,11 +25,15 @@ public class HSProgressionCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        if (args.length < 2) {
+        if (args.length == 1) {
             if (args[0].equalsIgnoreCase("reload")) {
                 return this.reload(sender);
-            } else if (sender instanceof ConsoleCommandSender && args[0].equalsIgnoreCase("fixislands")) {
-                return this.fixIslands();
+            } else if (args[0].equalsIgnoreCase("fixislands")) {
+                if (sender instanceof ConsoleCommandSender) {
+                    return this.fixIslands();
+                } else if (sender instanceof Player) {
+                    sender.sendMessage(ChatColor.RED + "This can only be used from console!");
+                }
             }
         } else {
             if (sender instanceof Player) {

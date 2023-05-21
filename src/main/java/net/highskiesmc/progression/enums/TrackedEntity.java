@@ -32,4 +32,8 @@ public enum TrackedEntity {
     public String getValue() {
         return this.ENTITY_TYPE.name().replace('_', '-').toLowerCase();
     }
+
+    public EntityType getEntityType() {
+        return this.ENTITY_TYPE;
+    }
 }

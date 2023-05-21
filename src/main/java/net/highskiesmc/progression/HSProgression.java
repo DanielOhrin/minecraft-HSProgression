@@ -6,8 +6,7 @@ import net.highskiesmc.progression.commands.IsFarmingCommand;
 import net.highskiesmc.progression.commands.IsMiningCommand;
 import net.highskiesmc.progression.commands.IsSlayerCommand;
 import net.highskiesmc.progression.commands.tabcompleters.HSProgressionTabComplete;
-import net.highskiesmc.progression.events.handlers.InventoryClickHandler;
-import net.highskiesmc.progression.events.handlers.PlayerFishHandler;
+import net.highskiesmc.progression.events.handlers.*;
 import net.highskiesmc.nodes.HSNodes;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -38,6 +37,9 @@ public final class HSProgression extends JavaPlugin {
 
         Bukkit.getPluginManager().registerEvents(new PlayerFishHandler(), this);
         Bukkit.getPluginManager().registerEvents(new InventoryClickHandler(), this);
+        Bukkit.getPluginManager().registerEvents(new IslandCreateHandler(this.API), this);
+        Bukkit.getPluginManager().registerEvents(new EntityDeathHandler(this.API), this);
+        Bukkit.getPluginManager().registerEvents(new IslandProgressedHandler(), this);
     }
 
     @Override
