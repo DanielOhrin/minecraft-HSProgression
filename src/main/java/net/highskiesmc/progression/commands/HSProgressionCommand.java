@@ -49,6 +49,7 @@ public class HSProgressionCommand implements CommandExecutor {
     private boolean reload(CommandSender sender) {
         if (sender.hasPermission("hsprogression.reload")) {
             this.MAIN.reloadConfig();
+            this.MAIN.reloadIslands();
             if (sender instanceof Player) {
                 sender.sendMessage(ChatColor.GREEN + "Successfully reloaded hsprogression!");
             } else if (sender instanceof ConsoleCommandSender) {
