@@ -200,17 +200,139 @@ slayer:
         - "&7{amount} Iron Golems slain"
 farming:
   '1':
+    material: WHEAT
+    display-name: "&7Wheat"
+    lore:
+      unlocked:
+        - "&7{amount} Wheat harvested"
   '2':
+    material: BEETROOT
+    display-name: "&7Beetroot"
+    lore:
+      unlocked:
+        - "&7{amount} Beetroot harvested"
+      locked:
+        - "&7{progress}/1000 Wheat harvested"
+        - "&7&lOR"
+        - "&7[x] Beetroot Recipe Used"
   '3':
+    material: CARROT
+    display-name: "&7Carrots"
+    lore:
+      unlocked:
+        - "&7{amount} Carrots harvested"
+      locked:
+        - "&7{progress}/1000 Beetroot harvested"
+        - "&7&lOR"
+        - "&7[x] Carrot Recipe Used"
   '4':
+    material: POTATO
+    display-name: "&7Potatoes"
+    lore:
+      unlocked:
+        - "&7{amount} Potatoes harvested"
+      locked:
+        - "&7{progress}/1000 Carrots harvested"
+        - "&7&lOR"
+        - "&7[x] Potato Recipe Used"
   '5':
+    material: SUGAR_CANE
+    display-name: "&7Sugar Cane"
+    lore:
+      unlocked:
+        - "&7{amount} Sugar Cane harvested"
+      locked:
+        - "&7{progress}/1000 Potatoes harvested"
+        - "&7&lOR"
+        - "&7[x] Sugar Cane Recipe Used"
   '6':
+    material: KELP
+    display-name: "&7Kelp"
+    lore:
+      unlocked:
+        - "&7{amount} Kelp harvested"
+      locked:
+        - "&7{progress}/1000 Sugar Cane harvested"
+        - "&7&lOR"
+        - "&7[x] Kelp Recipe Used"
   '7':
+    material: NETHER_WART
+    display-name: "&7Nether Warts"
+    lore:
+      unlocked:
+        - "&7{amount} Nether Warts harvested"
+      locked:
+        - "&7{progress}/1000 Kelp harvested"
+        - "&7&lOR"
+        - "&7[x] Nether Wart Recipe Used"
   '8':
+    material: SWEET_BERRIES
+    display-name: "&7Sweet Berries"
+    lore:
+      unlocked:
+        - "&7{amount} Sweet Berries harvested"
+      locked:
+        - "&7{progress}/1000 Nether Warts harvested"
+        - "&7&lOR"
+        - "&7[x] Sweet Berry Recipe Used"
   '9':
+    material: BAMBOO
+    display-name: "&7Bamboo"
+    lore:
+      unlocked:
+        - "&7{amount} Bamboo harvested"
+      locked:
+        - "&7{progress}/1000 Sweet Berries harvested"
+        - "&7&lOR"
+        - "&7[x] Bamboo Recipe Used"
   '10':
+    material: CHORUS_FLOWER
+    display-name: "&7Chorus Flower"
+    lore:
+      unlocked:
+        - "&7{amount} Chorus Flower harvested"
+      locked:
+        - "&7{progress}/1000 Bamboo harvested"
+        - "&7&lOR"
+        - "&7[x] Chorus Flower Recipe Used"
   '11':
+    material: CACTUS
+    display-name: "&7Cactus"
+    lore:
+      unlocked:
+        - "&7{amount} Cactus harvested"
+      locked:
+        - "&7{progress}/1000 Chorus Flower harvested"
+        - "&7&lOR"
+        - "&7[x] Cactus Recipe Used"
   '12':
+    material: MELON
+    display-name: "&7Melon"
+    lore:
+      unlocked:
+        - "&7{amount} Melons harvested"
+      locked:
+        - "&7{progress}/1000 Cactus harvested"
+        - "&7&lOR"
+        - "&7[x] Melon Recipe Used"
   '13':
+    material: PUMPKIN
+    display-name: "&7Pumpkin"
+    lore:
+      unlocked:
+        - "&7{amount} Pumpkins harvested"
+      locked:
+        - "&7{progress}/1000 Melons harvested"
+        - "&7&lOR"
+        - "&7[x] Pumpkin Recipe Used"
   '14':
+    material: COCOA_BEANS
+    display-name: "&7Cocoa Beans"
+    lore:
+      unlocked:
+        - "&7{amount} Cocoa Beans harvested"
+      locked:
+        - "&7{progress}/1000 Pumpkins harvested"
+        - "&7&lOR"
+        - "&7[x] Cocoa Beans Recipe Used"
 fishing:
