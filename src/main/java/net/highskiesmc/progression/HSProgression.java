@@ -2,6 +2,7 @@ package net.highskiesmc.progression;
 
 import com.bgsoftware.superiorskyblock.api.SuperiorSkyblockAPI;
 import net.highskiesmc.progression.commands.IsMiningCommand;
+import net.highskiesmc.progression.commands.IsSlayerCommand;
 import net.highskiesmc.progression.events.handlers.InventoryClickHandler;
 import net.highskiesmc.progression.events.handlers.PlayerFishHandler;
 import net.highskiesmc.nodes.HSNodes;
@@ -17,6 +18,7 @@ public final class HSProgression extends JavaPlugin {
         saveDefaultConfig();
 
         SuperiorSkyblockAPI.registerCommand(new IsMiningCommand(this));
+        SuperiorSkyblockAPI.registerCommand(new IsSlayerCommand(this));
         Bukkit.getPluginManager().registerEvents(new PlayerFishHandler(), this);
         Bukkit.getPluginManager().registerEvents(new InventoryClickHandler(), this);
     }

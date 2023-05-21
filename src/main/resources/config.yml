@@ -97,107 +97,107 @@ mining:
         - "&7{amount} Ancient Debris Nodes Mined"
 slayer:
   '1':
-    material: COBBLESTONE # Item that will show in /is mining
-    display-name: "&7Cobblestone Nodes"
+    head-id: 57519 # ID of the head that will show in /is slayer
+    display-name: "&7Rabbit"
     lore:
       unlocked:
-        - "&7{amount} Cobblestone Nodes Mined"
+        - "&7{amount} Rabbit slain"
   '2':
-    material: COBBLESTONE # Item that will show in /is mining
-    display-name: "&7Cobblestone Nodes"
+    head-id: 53916
+    display-name: "&7Chicken"
     lore:
       unlocked:
-        - "&7{amount} Cobblestone Nodes Mined"
+        - "&7{amount} Chicken slain"
   '3':
-    material: COBBLESTONE # Item that will show in /is mining
-    display-name: "&7Cobblestone Nodes"
+    head-id: 57345
+    display-name: "&7Sheep"
     lore:
       unlocked:
-        - "&7{amount} Cobblestone Nodes Mined"
+        - "&7{amount} Sheep slain"
   '4':
-    material: COBBLESTONE # Item that will show in /is mining
-    display-name: "&7Cobblestone Nodes"
+    head-id: 55184
+    display-name: "&7Pigs"
     lore:
       unlocked:
-        - "&7{amount} Cobblestone Nodes Mined"
+        - "&7{amount} Pigs slain"
   '5':
-    material: COBBLESTONE # Item that will show in /is mining
-    display-name: "&7Cobblestone Nodes"
+    head-id: 49706
+    display-name: "&7Cows"
     lore:
       unlocked:
-        - "&7{amount} Cobblestone Nodes Mined"
+        - "&7{amount} Cows slain"
   '6':
-    material: COBBLESTONE # Item that will show in /is mining
-    display-name: "&7Cobblestone Nodes"
+    head-id: 4187
+    display-name: "&7Zombies"
     lore:
       unlocked:
-        - "&7{amount} Cobblestone Nodes Mined"
+        - "&7{amount} Zombies slain"
   '7':
-    material: COBBLESTONE # Item that will show in /is mining
-    display-name: "&7Cobblestone Nodes"
+    head-id: 26010
+    display-name: "&7Spiders"
     lore:
       unlocked:
-        - "&7{amount} Cobblestone Nodes Mined"
+        - "&7{amount} Spiders slain"
   '8':
-    material: COBBLESTONE # Item that will show in /is mining
-    display-name: "&7Cobblestone Nodes"
+    head-id: 4169
+    display-name: "&7Creepers"
     lore:
       unlocked:
-        - "&7{amount} Cobblestone Nodes Mined"
+        - "&7{amount} Creepers slain"
   '9':
-    material: COBBLESTONE # Item that will show in /is mining
-    display-name: "&7Cobblestone Nodes"
+    head-id: 4005
+    display-name: "&7Skeletons"
     lore:
       unlocked:
-        - "&7{amount} Cobblestone Nodes Mined"
+        - "&7{amount} Skeletons slain"
   '10':
-    material: COBBLESTONE # Item that will show in /is mining
-    display-name: "&7Cobblestone Nodes"
+    head-id: 22210
+    display-name: "&7Slimes"
     lore:
       unlocked:
-        - "&7{amount} Cobblestone Nodes Mined"
+        - "&7{amount} Slimes slain"
   '11':
-    material: COBBLESTONE # Item that will show in /is mining
-    display-name: "&7Cobblestone Nodes"
+    head-id: 25292
+    display-name: "&7Guardians"
     lore:
       unlocked:
-        - "&7{amount} Cobblestone Nodes Mined"
+        - "&7{amount} Guardians slain"
   '12':
-    material: COBBLESTONE # Item that will show in /is mining
-    display-name: "&7Cobblestone Nodes"
+    head-id: 38106
+    display-name: "&7Endermen"
     lore:
       unlocked:
-        - "&7{amount} Cobblestone Nodes Mined"
+        - "&7{amount} Endermen slain"
   '13':
-    material: COBBLESTONE # Item that will show in /is mining
-    display-name: "&7Cobblestone Nodes"
+    head-id: 323
+    display-name: "&7Magma Cubes"
     lore:
       unlocked:
-        - "&7{amount} Cobblestone Nodes Mined"
+        - "&7{amount} Magma Cubes slain"
   '14':
-    material: COBBLESTONE # Item that will show in /is mining
-    display-name: "&7Cobblestone Nodes"
+    head-id: 47778
+    display-name: "&7Blazes"
     lore:
       unlocked:
-        - "&7{amount} Cobblestone Nodes Mined"
+        - "&7{amount} Blazes slain"
   '15':
-    material: COBBLESTONE # Item that will show in /is mining
-    display-name: "&7Cobblestone Nodes"
+    head-id: 40638
+    display-name: "&7Ghasts"
     lore:
       unlocked:
-        - "&7{amount} Cobblestone Nodes Mined"
+        - "&7{amount} Ghasts slain"
   '16':
-    material: COBBLESTONE # Item that will show in /is mining
-    display-name: "&7Cobblestone Nodes"
+    head-id: 22400
+    display-name: "&7Wither Skeletons"
     lore:
       unlocked:
-        - "&7{amount} Cobblestone Nodes Mined"
+        - "&7{amount} Wither Skeletons slain"
   '17':
-    material: COBBLESTONE # Item that will show in /is mining
-    display-name: "&7Cobblestone Nodes"
+    head-id: 341
+    display-name: "&7Iron Golems"
     lore:
       unlocked:
-        - "&7{amount} Cobblestone Nodes Mined"
+        - "&7{amount} Iron Golems slain"
 farming:
   '1':
   '2':
