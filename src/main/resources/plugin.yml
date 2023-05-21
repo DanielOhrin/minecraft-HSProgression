@@ -2,6 +2,8 @@ name: HSProgression
 version: '${project.version}'
 main: net.highskiesmc.progression.HSProgression
 api-version: 1.19
+softdepend:
+  - WildStacker
 depend:
   - HSNodes
 commands:
