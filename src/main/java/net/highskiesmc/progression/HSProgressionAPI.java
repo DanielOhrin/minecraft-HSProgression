@@ -122,10 +122,10 @@ public class HSProgressionAPI {
      */
     public ConfigurationSection getIslandData(UUID islandUUID, IslandDataType dataType, String key) throws NullPointerException {
         final ConfigurationSection ISLAND_DATA =
-                this.MAIN.getIslands().getConfigurationSection(islandUUID.toString() + '.' + dataType + '.' + key);
+                this.MAIN.getIslands().getConfigurationSection(islandUUID.toString() + '.' + dataType.getValue() + '.' + key);
 
         if (ISLAND_DATA == null) {
-            throw new NullPointerException("Configuration section not found: " + islandUUID + '.' + dataType + '.' + key);
+            throw new NullPointerException("Configuration section not found: " + islandUUID + '.' + dataType.getValue() + '.' + key);
         }
 
         return ISLAND_DATA;
