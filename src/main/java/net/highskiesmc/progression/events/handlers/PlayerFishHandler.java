@@ -5,6 +5,7 @@ import com.bgsoftware.superiorskyblock.api.island.Island;
 import com.bgsoftware.superiorskyblock.api.island.IslandPrivilege;
 import net.highskiesmc.progression.events.events.IslandFishCaughtEvent;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Item;
@@ -25,7 +26,8 @@ public class PlayerFishHandler implements Listener {
                     || !island.hasPermission(SuperiorSkyblockAPI.getPlayer(player.getUniqueId()),
                     IslandPrivilege.getByName("FISH"))) {
                 e.setCancelled(true);
-                player.sendMessage("You can only catch fish on an island you have permission to!");
+                player.sendMessage(ChatColor.DARK_RED.toString() + ChatColor.BOLD + "[!] " +
+                        ChatColor.RED + "You can only catch fish on an island where you have permission to!");
                 e.getPlayer().playSound(player.getLocation(), Sound.BLOCK_ANVIL_PLACE, 1, 1);
                 return;
             }

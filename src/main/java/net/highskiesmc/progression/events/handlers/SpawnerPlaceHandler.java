@@ -2,21 +2,16 @@ package net.highskiesmc.progression.events.handlers;
 
 import com.bgsoftware.superiorskyblock.api.SuperiorSkyblockAPI;
 import com.bgsoftware.superiorskyblock.api.island.Island;
-import com.bgsoftware.wildstacker.api.events.PlaceEvent;
 import com.bgsoftware.wildstacker.api.events.SpawnerPlaceEvent;
 import net.highskiesmc.progression.HSProgressionAPI;
 import net.highskiesmc.progression.enums.IslandDataType;
 import net.highskiesmc.progression.enums.TrackedEntity;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockPlaceEvent;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -51,9 +46,7 @@ public class SpawnerPlaceHandler implements Listener {
                         if (!ISLAND_DATA.getBoolean("unlocked")) {
                             e.setCancelled(true);
                             Player player = e.getPlayer();
-                            player.sendMessage(ChatColor.DARK_RED.toString() + ChatColor.BOLD + "[!] " +
-                                    ChatColor.RED + "Island has not unlocked that yet!");
-                            player.playSound(player.getLocation(), Sound.BLOCK_ANVIL_PLACE, 1, 1);
+                            this.API.sendNotUnlocked(player);
                         }
                     }
                 } else {

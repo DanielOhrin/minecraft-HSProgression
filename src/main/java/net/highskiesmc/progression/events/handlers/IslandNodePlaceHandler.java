@@ -6,8 +6,6 @@ import net.highskiesmc.nodes.events.events.IslandNodePlaceEvent;
 import net.highskiesmc.progression.HSProgressionAPI;
 import net.highskiesmc.progression.enums.IslandDataType;
 import net.highskiesmc.progression.enums.TrackedNode;
-import org.bukkit.ChatColor;
-import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -42,9 +40,7 @@ public class IslandNodePlaceHandler implements Listener {
                                 if (!ISLAND_DATA.getBoolean("unlocked")) {
                                     e.setCancelled(true);
                                     Player player = e.getPlayer();
-                                    player.sendMessage(ChatColor.DARK_RED.toString() + ChatColor.BOLD + "[!] " +
-                                            ChatColor.RED + "Island has not unlocked that yet!");
-                                    player.playSound(player.getLocation(), Sound.BLOCK_ANVIL_PLACE, 1, 1);
+                                    this.API.sendNotUnlocked(player);
                                 }
                             }
                         });

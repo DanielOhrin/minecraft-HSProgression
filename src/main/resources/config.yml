@@ -8,6 +8,8 @@ all:
     material: BLACK_STAINED_GLASS_PANE
   locked:
     material: ORANGE_STAINED_GLASS_PANE # Item that will show in place of locked items
+    message: "&1&l[!]&c Island has not unlocked that!" # Message the player receives when placing locked item
+    sound: BLOCK_ANVIL_PLACE # Sound that will play when trying to place locked item
 mining:
   cobblestone:
     material: COBBLESTONE # Item that will show in /is mining
