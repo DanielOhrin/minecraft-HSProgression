@@ -40,6 +40,8 @@ public final class HSProgression extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new IslandCreateHandler(this.API), this);
         Bukkit.getPluginManager().registerEvents(new EntityDeathHandler(this.API), this);
         Bukkit.getPluginManager().registerEvents(new SpawnerPlaceHandler(this.API), this);
+        Bukkit.getPluginManager().registerEvents(new IslandNodePlaceHandler(this.API), this);
+        Bukkit.getPluginManager().registerEvents(new IslandNodeMineHandler(this.API), this);
         Bukkit.getPluginManager().registerEvents(new IslandProgressedHandler(), this);
     }
 
