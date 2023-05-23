@@ -163,7 +163,7 @@ public class GUIEventHandlers implements Listener {
                                                 upgradeGUI.getDataKey()
                                         );
                                         Bukkit.getPluginManager().callEvent(new IslandUpgradedEvent(island,
-                                                upgradeGUI.getDataType()));
+                                                upgradeGUI.getDataType(), upgradeGUI.getDataKey()));
                                     } else {
                                         // They do not have the money
                                         e.setCancelled(true);

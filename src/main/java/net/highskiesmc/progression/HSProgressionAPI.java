@@ -14,6 +14,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -106,7 +107,9 @@ public class HSProgressionAPI {
                 if (currentValue + 1 >= this.MAIN.getConfig().getLong(dataType.getValue() + '.' + nextItemKey + '.' +
                         "amount")) {
                     ISLAND_DATA.set(nextItemKey + '.' + "conditions-met", true);
-                    Bukkit.getPluginManager().callEvent(new IslandProgressedEvent(SuperiorSkyblockAPI.getIslandByUUID(islandUUID), dataType));
+
+                    // Call IslandProgressedEvent
+                    Bukkit.getPluginManager().callEvent(new IslandProgressedEvent(SuperiorSkyblockAPI.getIslandByUUID(islandUUID), dataType, key));
                 }
             }
         }
@@ -135,6 +138,7 @@ public class HSProgressionAPI {
 
     /**
      * Unlocks the provided section for the provided island
+     *
      * @param islandUUID UUID of island
      * @param dataType   IslandDataType (mining/slayer/etc.)
      * @param key        Name of tracked item. zombie, coal, etc.
