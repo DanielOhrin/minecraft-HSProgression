@@ -8,7 +8,10 @@ import net.highskiesmc.progression.enums.TrackedEntity;
 import net.highskiesmc.progression.enums.TrackedNode;
 import net.highskiesmc.progression.events.events.IslandProgressedEvent;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -129,5 +132,12 @@ public class HSProgressionAPI {
         }
 
         return ISLAND_DATA;
+    }
+
+    public void sendNotUnlocked(Player player) {
+        final ConfigurationSection CONFIG = this.MAIN.getConfig().getConfigurationSection("all.locked");
+
+        player.sendMessage(ChatColor.translateAlternateColorCodes('&', CONFIG.getString("message")));
+        player.playSound(player.getLocation(), Sound.valueOf(CONFIG.getString("sound")), 1, 1);
     }
 }

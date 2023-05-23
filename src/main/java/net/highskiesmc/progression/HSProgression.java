@@ -15,6 +15,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 
 public final class HSProgression extends JavaPlugin {
     private final HSNodes hsNodes = HSNodes.getInstance();
@@ -40,6 +41,11 @@ public final class HSProgression extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new IslandCreateHandler(this.API), this);
         Bukkit.getPluginManager().registerEvents(new EntityDeathHandler(this.API), this);
         Bukkit.getPluginManager().registerEvents(new SpawnerPlaceHandler(this.API), this);
+        Bukkit.getPluginManager().registerEvents(new IslandNodePlaceHandler(this.API), this);
+        Bukkit.getPluginManager().registerEvents(new IslandNodeMineHandler(this.API), this);
+        Bukkit.getPluginManager().registerEvents(new BlockPlaceHandler(this.API), this);
+        Bukkit.getPluginManager().registerEvents(new BlockGrowHandler(this.API), this);
+        Bukkit.getPluginManager().registerEvents(new BlockSpreadHandler(this.API), this);
         Bukkit.getPluginManager().registerEvents(new IslandProgressedHandler(), this);
     }
 
@@ -56,7 +62,7 @@ public final class HSProgression extends JavaPlugin {
         try {
             this.ISLANDS.save(this.ISLANDS_FILE);
         } catch (IOException ex) {
-            ex.printStackTrace();
+            this.getLogger().severe(Arrays.toString(ex.getStackTrace()));
         }
     }
 
@@ -69,7 +75,7 @@ public final class HSProgression extends JavaPlugin {
         try {
             if (!file.exists()) file.createNewFile();
         } catch (IOException ex) {
-            ex.printStackTrace();
+            this.getLogger().severe(Arrays.toString(ex.getStackTrace()));
         }
 
         this.ISLANDS_FILE = file;
