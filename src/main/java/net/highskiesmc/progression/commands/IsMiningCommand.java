@@ -5,8 +5,8 @@ import com.bgsoftware.superiorskyblock.api.SuperiorSkyblockAPI;
 import com.bgsoftware.superiorskyblock.api.commands.SuperiorCommand;
 import com.bgsoftware.superiorskyblock.api.island.Island;
 import com.bgsoftware.superiorskyblock.api.wrappers.SuperiorPlayer;
-import net.highskiesmc.progression.HSProgression;
 import net.highskiesmc.progression.HSProgressionAPI;
+import net.highskiesmc.progression.enums.IslandDataType;
 import net.highskiesmc.progression.enums.TrackedNode;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -82,9 +82,10 @@ public class IsMiningCommand implements SuperiorCommand {
                 "&x&3&2&d&a&e&4&lM&x&3&9&e&1&e&9&li&x&4&1&e&8&e&e&ln&x&4&8&e&f&f&3&li&x&5&0&f&6&f&8&ln&x&5&7&f&d&f&d" +
                 "&lg"));
 
-        final ConfigurationSection MINING_CONFIG = this.API.getConfig().getConfigurationSection("mining");
+        final ConfigurationSection MINING_CONFIG =
+                this.API.getConfig().getConfigurationSection(IslandDataType.MINING.getValue());
         final ConfigurationSection MINING_DATA =
-                this.API.getIslands().getConfigurationSection(island.getUniqueId().toString() + ".mining");
+                this.API.getIslands().getConfigurationSection(island.getUniqueId().toString() + '.' + IslandDataType.MINING.getValue());
 
         List<ItemStack> trackedItems = new ArrayList<>();
         String previousKey = null;
@@ -143,6 +144,7 @@ public class IsMiningCommand implements SuperiorCommand {
                 List<String> lore = null;
 
                 if (previousIsUnlocked) {
+                    item.setType(Material.valueOf(this.API.getConfig().getString("all.locked.material-unlockable")));
                     meta.setDisplayName(ChatColor.translateAlternateColorCodes('&',
                             this.API.getConfig().getString("all.locked.display-name")));
                     lore = MINING_CONFIG.getStringList("lore.locked");

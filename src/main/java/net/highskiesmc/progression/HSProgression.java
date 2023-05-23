@@ -1,14 +1,13 @@
 package net.highskiesmc.progression;
 
 import com.bgsoftware.superiorskyblock.api.SuperiorSkyblockAPI;
+import net.highskiesmc.nodes.HSNodes;
 import net.highskiesmc.progression.commands.HSProgressionCommand;
 import net.highskiesmc.progression.commands.IsFarmingCommand;
 import net.highskiesmc.progression.commands.IsMiningCommand;
 import net.highskiesmc.progression.commands.IsSlayerCommand;
 import net.highskiesmc.progression.commands.tabcompleters.HSProgressionTabComplete;
 import net.highskiesmc.progression.events.handlers.*;
-import net.highskiesmc.nodes.HSNodes;
-import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -44,8 +43,8 @@ public final class HSProgression extends JavaPlugin {
         getCommand("hsprogression").setTabCompleter(new HSProgressionTabComplete());
 
         SuperiorSkyblockAPI.registerCommand(new IsMiningCommand(this.API));
-        SuperiorSkyblockAPI.registerCommand(new IsSlayerCommand(this));
-        SuperiorSkyblockAPI.registerCommand(new IsFarmingCommand(this));
+        SuperiorSkyblockAPI.registerCommand(new IsSlayerCommand(this.API));
+        SuperiorSkyblockAPI.registerCommand(new IsFarmingCommand(this.API));
 
         Bukkit.getPluginManager().registerEvents(new PlayerFishHandler(), this);
         Bukkit.getPluginManager().registerEvents(new GUIEventHandlers(this.API), this);

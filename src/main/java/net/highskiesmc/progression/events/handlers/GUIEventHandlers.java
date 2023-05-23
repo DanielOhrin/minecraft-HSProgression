@@ -25,7 +25,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 
 public class GUIEventHandlers implements Listener {
@@ -153,21 +152,27 @@ public class GUIEventHandlers implements Listener {
                                     this.OPEN_CONFIRMATION_INVENTORIES.remove(entry.getKey());
                                     break;
                                 case 14: // Confirm
-                                    if (HSProgression.getEconomy().has((Player) e.getWhoClicked(),
-                                            upgradeGUI.getAmount())) {
-                                        // They have the money
-                                        HSProgression.getEconomy().withdrawPlayer(Bukkit.getOfflinePlayer(e.getWhoClicked().getUniqueId()), upgradeGUI.getAmount());
-                                        this.API.unlockIslandData(
-                                                island.getUniqueId(),
-                                                upgradeGUI.getDataType(),
-                                                upgradeGUI.getDataKey()
-                                        );
-                                        Bukkit.getPluginManager().callEvent(new IslandUpgradedEvent(island,
-                                                upgradeGUI.getDataType(), upgradeGUI.getDataKey()));
+                                    if (!this.API.getIslandData(island.getUniqueId(), upgradeGUI.getDataType(),
+                                            upgradeGUI.getDataKey()).getBoolean("unlocked")) {
+                                        if (HSProgression.getEconomy().has((Player) e.getWhoClicked(),
+                                                upgradeGUI.getAmount())) {
+                                            // They have the money
+                                            HSProgression.getEconomy().withdrawPlayer(Bukkit.getOfflinePlayer(e.getWhoClicked().getUniqueId()), upgradeGUI.getAmount());
+                                            this.API.unlockIslandData(
+                                                    island.getUniqueId(),
+                                                    upgradeGUI.getDataType(),
+                                                    upgradeGUI.getDataKey()
+                                            );
+                                            Bukkit.getPluginManager().callEvent(new IslandUpgradedEvent(island,
+                                                    upgradeGUI.getDataType(), upgradeGUI.getDataKey()));
+                                        } else {
+                                            // They do not have the money
+                                            e.setCancelled(true);
+                                            e.getWhoClicked().sendMessage(ChatColor.RED + "Insufficient funds.");
+                                        }
                                     } else {
-                                        // They do not have the money
-                                        e.setCancelled(true);
-                                        e.getWhoClicked().sendMessage(ChatColor.RED + "Insufficient funds.");
+                                        e.getWhoClicked().sendMessage(ChatColor.RED + "This upgrade has already been " +
+                                                "purchased.");
                                     }
                                     e.getView().close();
                                     this.OPEN_CONFIRMATION_INVENTORIES.remove(entry.getKey());
@@ -178,6 +183,7 @@ public class GUIEventHandlers implements Listener {
                         });
             }
         }
+
     }
 
     @EventHandler

@@ -1,13 +1,11 @@
-# {amount} = However many of the current thing their island has tracked so far
-# {progress} = However many of the requirement their island has tracked so far
-# Ex: Lore: {progress}/150,000 Zombies slain or {progress}/200 Coal nodes mined
 # Do not change the amount of items in the lists or attempt to change what is tracked for each item in the lists
 # Ex: Each material can be changed, but it will not change what is actually being tracked
+
 all:
   filler:
     material: BLACK_STAINED_GLASS_PANE
   conditions-met:
-    material: ORANGE_STAINED_GLASS_PANE # Item that will show when an upgrade is ready to be purchased
+    material: LIME_STAINED_GLASS_PANE # Item that will show when an upgrade is ready to be purchased
     display-name: "&7&l???"
     lore:
       - "&a&lSpend {price} to purchase upgrade!" # {price} will translate to the price of the upgrade
@@ -17,6 +15,7 @@ all:
     lore: # Displays when previous is not unlocked
       - "&7&l???"
     material: RED_STAINED_GLASS_PANE # Item that will show in place of locked items
+    material-unlockable: ORANGE_STAINED_GLASS_PANE # Item that will show on locked items that are able to have their unlock earned
     message: "&4&l[!]&c Island has not unlocked that!" # Message the player receives when placing a locked item
     sound: BLOCK_ANVIL_PLACE # Sound that will play when trying to place a locked item
 mining:
@@ -27,58 +26,63 @@ mining:
       - "&7{amount}/{required} {previous} mined" # {required} replaced with required amount to unlock. {previous} replaced with previous upgrade's display-name
   cobblestone:
     material: COBBLESTONE # Item that will show in /is mining
-    display-name: "&7Cobblestone Nodes"
+    display-name: "&7Cobblestone"
   coal:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade once amount is met
     material: COAL_ORE
-    display-name: "&7Coal Nodes"
+    display-name: "&7Coal"
   copper:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade once amount is met
     material: COPPER_ORE
-    display-name: "&7Copper Nodes"
-  nethergold:
+    display-name: "&7Copper"
+  nether-gold:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade once amount is met
     material: NETHER_GOLD_ORE
-    display-name: "&7Nether Gold Nodes"
-  netherquartz:
+    display-name: "&7Nether Gold"
+  nether-quartz:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade once amount is met
     material: NETHER_QUARTZ_ORE
-    display-name: "&7Nether Quartz Nodes"
+    display-name: "&7Nether Quartz"
   iron:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade once amount is met
     material: IRON_ORE
-    display-name: "&7Iron Nodes"
+    display-name: "&7Iron"
   ruby:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade once amount is met
     material: REDSTONE_ORE
-    display-name: "&7Ruby Nodes"
+    display-name: "&7Ruby"
   lapis:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade once amount is met
     material: LAPIS_ORE
-    display-name: "&7Lapis Nodes"
+    display-name: "&7Lapis"
   diamond:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade once amount is met
     material: DIAMOND_ORE
-    display-name: "&7Diamond Nodes"
+    display-name: "&7Diamond"
   emerald:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade once amount is met
     material: EMERALD_ORE
-    display-name: "&7Emerald Nodes"
-  ancientdebris:
+    display-name: "&7Emerald"
+  ancient-debris:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade once amount is met
     material: ANCIENT_DEBRIS
-    display-name: "&7Ancient Debris Nodes"
+    display-name: "&7Ancient Debris"
 slayer:
+  lore:
+    unlocked:
+      - "&7{amount} {current} slain"  # {amount} replaced with current tracked amount. {current} replaced with display-name.
+    locked:
+      - "&7{amount}/{required} {previous} slain" # {required} replaced with required amount to unlock. {previous} replaced with previous upgrade's display-name
   rabbit:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade once amount is met
@@ -98,67 +102,67 @@ slayer:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade once amount is met
     head-id: 55184
-    display-name: "&7Pigs"
+    display-name: "&7Pig"
   cow:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade once amount is met
     head-id: 49706
-    display-name: "&7Cows"
+    display-name: "&7Cow"
   zombie:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade once amount is met
     head-id: 4187
-    display-name: "&7Zombies"
+    display-name: "&7Zombie"
   spider:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade once amount is met
     head-id: 26010
-    display-name: "&7Spiders"
+    display-name: "&7Spider"
   creeper:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade once amount is met
     head-id: 4169
-    display-name: "&7Creepers"
+    display-name: "&7Creeper"
   skeleton:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade once amount is met
     head-id: 4005
-    display-name: "&7Skeletons"
+    display-name: "&7Skeleton"
   slime:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade once amount is met
     head-id: 22210
-    display-name: "&7Slimes"
+    display-name: "&7Slime"
   guardian:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade once amount is met
     head-id: 25292
-    display-name: "&7Guardians"
+    display-name: "&7Guardian"
   enderman:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade once amount is met
     head-id: 38106
-    display-name: "&7Endermen"
+    display-name: "&7Enderman"
   magma-cube:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade once amount is met
     head-id: 323
-    display-name: "&7Magma Cubes"
+    display-name: "&7Magma Cube"
   blaze:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade once amount is met
     head-id: 47778
-    display-name: "&7Blazes"
+    display-name: "&7Blaze"
   ghast:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade once amount is met
     head-id: 40638
-    display-name: "&7Ghasts"
+    display-name: "&7Ghast"
   wither-skeleton:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade once amount is met
     head-id: 22400
-    display-name: "&7Wither Skeletons"
+    display-name: "&7Wither Skeleton"
   iron-golem:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade once amount is met
@@ -167,11 +171,11 @@ slayer:
 farming:
   lore:
     unlocked:
-      - "&7{amount} Beetroot harvested"
+      - "&7{amount} {current} grown" # {amount} replaced with current tracked amount. {current} replaced with display-name.
     locked:
-      - "&7{progress}/1000 Wheat harvested"
+      - "&7{amount}/{required} {previous} grown"
       - "&7&lOR"
-      - "&7[x] Beetroot Recipe Used"
+      - "&70/1 {recipe} used" # {recipe} will be replaced with the same display-name of the item's recipe item
   wheat:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade once amount is met
@@ -186,12 +190,12 @@ farming:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade once amount is met
     material: CARROT
-    display-name: "&7Carrots"
+    display-name: "&7Carrot"
   potato:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade once amount is met
     material: POTATO
-    display-name: "&7Potatoes"
+    display-name: "&7Potato"
   sugar-cane:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade once amount is met
@@ -206,7 +210,7 @@ farming:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade once amount is met
     material: NETHER_WART
-    display-name: "&7Nether Warts"
+    display-name: "&7Nether Wart"
   sweet-berries:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade once amount is met
@@ -237,7 +241,7 @@ farming:
     price: 1000 # Price of upgrade once amount is met
     material: PUMPKIN
     display-name: "&7Pumpkin"
-  cocoa:
+  cocoa-beans:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade once amount is met
     material: COCOA_BEANS

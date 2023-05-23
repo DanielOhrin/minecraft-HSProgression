@@ -1,9 +1,7 @@
 package net.highskiesmc.progression.events.handlers;
 
 import com.bgsoftware.superiorskyblock.api.events.IslandCreateEvent;
-import net.highskiesmc.progression.HSProgression;
 import net.highskiesmc.progression.HSProgressionAPI;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
