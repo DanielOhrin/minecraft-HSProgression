@@ -6,6 +6,7 @@ public enum TrackedNode {
     COPPER("copper"),
     NETHER_GOLD("nethergold"),
     NETHER_QUARTZ("netherquartz"),
+    IRON("iron"),
     RUBY("ruby"),
     LAPIS("lapis"),
     DIAMOND("diamond"),

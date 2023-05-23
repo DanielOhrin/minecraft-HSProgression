@@ -8,9 +8,12 @@ import net.highskiesmc.progression.commands.IsSlayerCommand;
 import net.highskiesmc.progression.commands.tabcompleters.HSProgressionTabComplete;
 import net.highskiesmc.progression.events.handlers.*;
 import net.highskiesmc.nodes.HSNodes;
+import net.milkbowl.vault.chat.Chat;
+import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -22,9 +25,17 @@ public final class HSProgression extends JavaPlugin {
     private File ISLANDS_FILE;
     private FileConfiguration ISLANDS;
     private final HSProgressionAPI API = new HSProgressionAPI(this);
+    private static Economy econ = null;
 
     @Override
     public void onEnable() {
+        if (!setupEconomy()) {
+            getLogger().severe(String.format("[%s] - Disabled due to no Vault dependency found!",
+                    getDescription().getName()));
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
+
         getConfig().options().copyDefaults();
         saveDefaultConfig();
         reloadIslands();
@@ -37,7 +48,7 @@ public final class HSProgression extends JavaPlugin {
         SuperiorSkyblockAPI.registerCommand(new IsFarmingCommand(this));
 
         Bukkit.getPluginManager().registerEvents(new PlayerFishHandler(), this);
-        Bukkit.getPluginManager().registerEvents(new InventoryClickHandler(this.API), this);
+        Bukkit.getPluginManager().registerEvents(new GUIEventHandlers(this.API), this);
         Bukkit.getPluginManager().registerEvents(new IslandCreateHandler(this.API), this);
         Bukkit.getPluginManager().registerEvents(new EntityDeathHandler(this.API), this);
         Bukkit.getPluginManager().registerEvents(new SpawnerPlaceHandler(this.API), this);
@@ -80,5 +91,21 @@ public final class HSProgression extends JavaPlugin {
 
         this.ISLANDS_FILE = file;
         this.ISLANDS = YamlConfiguration.loadConfiguration(file);
+    }
+
+    public static Economy getEconomy() {
+        return econ;
+    }
+
+    private boolean setupEconomy() {
+        if (getServer().getPluginManager().getPlugin("Vault") == null) {
+            return false;
+        }
+        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+        if (rsp == null) {
+            return false;
+        }
+        econ = rsp.getProvider();
+        return econ != null;
     }
 }
