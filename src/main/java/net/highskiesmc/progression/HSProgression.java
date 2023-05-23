@@ -43,7 +43,7 @@ public final class HSProgression extends JavaPlugin {
         getCommand("hsprogression").setExecutor(new HSProgressionCommand(this, this.API));
         getCommand("hsprogression").setTabCompleter(new HSProgressionTabComplete());
 
-        SuperiorSkyblockAPI.registerCommand(new IsMiningCommand(this));
+        SuperiorSkyblockAPI.registerCommand(new IsMiningCommand(this.API));
         SuperiorSkyblockAPI.registerCommand(new IsSlayerCommand(this));
         SuperiorSkyblockAPI.registerCommand(new IsFarmingCommand(this));
 

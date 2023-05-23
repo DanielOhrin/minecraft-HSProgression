@@ -6,417 +6,240 @@
 all:
   filler:
     material: BLACK_STAINED_GLASS_PANE
+  conditions-met:
+    material: ORANGE_STAINED_GLASS_PANE # Item that will show when an upgrade is ready to be purchased
+    display-name: "&7&l???"
+    lore:
+      - "&a&lSpend {price} to purchase upgrade!" # {price} will translate to the price of the upgrade
   locked:
-    material: ORANGE_STAINED_GLASS_PANE # Item that will show in place of locked items
-    message: "&4&l[!]&c Island has not unlocked that!" # Message the player receives when placing locked item
-    sound: BLOCK_ANVIL_PLACE # Sound that will play when trying to place locked item
+    display-name: "&7&l???" # Displays when it is locked and the previous is not unlocked
+    display-name-unlockable: "{current}" # Displays when it is locked and the previous IS unlocked. {current} will be replaced with its display name
+    lore: # Displays when previous is not unlocked
+      - "&7&l???"
+    material: RED_STAINED_GLASS_PANE # Item that will show in place of locked items
+    message: "&4&l[!]&c Island has not unlocked that!" # Message the player receives when placing a locked item
+    sound: BLOCK_ANVIL_PLACE # Sound that will play when trying to place a locked item
 mining:
+  lore:
+    unlocked:
+      - "&7{amount} {current} mined"  # {amount} replaced with current tracked amount. {current} replaced with display-name.
+    locked:
+      - "&7{amount}/{required} {previous} mined" # {required} replaced with required amount to unlock. {previous} replaced with previous upgrade's display-name
   cobblestone:
     material: COBBLESTONE # Item that will show in /is mining
     display-name: "&7Cobblestone Nodes"
-    lore:
-      unlocked:
-        - "&7{amount} Cobblestone Nodes Mined"
   coal:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade once amount is met
     material: COAL_ORE
     display-name: "&7Coal Nodes"
-    lore:
-      locked:
-        - "&c{progress}/50 Cobblestone Nodes mined"
-      unlocked:
-        - "&7{amount} Coal Nodes Mined"
   copper:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade once amount is met
     material: COPPER_ORE
     display-name: "&7Copper Nodes"
-    lore:
-      locked:
-        - "&c{progress}/50 Coal Nodes mined"
-      unlocked:
-        - "&7{amount} Copper Nodes Mined"
   nethergold:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade once amount is met
     material: NETHER_GOLD_ORE
     display-name: "&7Nether Gold Nodes"
-    lore:
-      locked:
-        - "&c{progress}/50 Copper Nodes mined"
-      unlocked:
-        - "&7{amount} Nether Gold Nodes Mined"
   netherquartz:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade once amount is met
     material: NETHER_QUARTZ_ORE
     display-name: "&7Nether Quartz Nodes"
-    lore:
-      locked:
-        - "&c{progress}/50 Nether Gold Nodes mined"
-      unlocked:
-        - "&7{amount} Nether Quartz Nodes Mined"
   iron:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade once amount is met
     material: IRON_ORE
     display-name: "&7Iron Nodes"
-    lore:
-      locked:
-        - "&c{progress}/50 Nether Quartz Nodes mined"
-      unlocked:
-        - "&7{amount} Iron Nodes Mined"
   ruby:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade once amount is met
     material: REDSTONE_ORE
     display-name: "&7Ruby Nodes"
-    lore:
-      locked:
-        - "&c{progress}/50 Iron Nodes mined"
-      unlocked:
-        - "&7{amount} Ruby Nodes Mined"
   lapis:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade once amount is met
     material: LAPIS_ORE
     display-name: "&7Lapis Nodes"
-    lore:
-      locked:
-        - "&c{progress}/50 Ruby Nodes mined"
-      unlocked:
-        - "&7{amount} Lapis Nodes Mined"
   diamond:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade once amount is met
     material: DIAMOND_ORE
     display-name: "&7Diamond Nodes"
-    lore:
-      locked:
-        - "&c{progress}/50 Lapis Nodes mined"
-      unlocked:
-        - "&7{amount} Diamond Nodes Mined"
   emerald:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade once amount is met
     material: EMERALD_ORE
     display-name: "&7Emerald Nodes"
-    lore:
-      locked:
-        - "&c{progress}/50 Diamond Nodes mined"
-      unlocked:
-        - "&7{amount} Emerald Nodes Mined"
   ancientdebris:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade once amount is met
     material: ANCIENT_DEBRIS
     display-name: "&7Ancient Debris Nodes"
-    lore:
-      locked:
-        - "&c{progress}/50 Emerald Nodes mined"
-      unlocked:
-        - "&7{amount} Ancient Debris Nodes Mined"
 slayer:
   rabbit:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade once amount is met
     head-id: 57519 # ID of the head that will show in /is slayer
     display-name: "&7Rabbit"
-    lore:
-      unlocked:
-        - "&7{amount} Rabbit slain"
   chicken:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade once amount is met
     head-id: 53916
     display-name: "&7Chicken"
-    lore:
-      unlocked:
-        - "&7{amount} Chicken slain"
   sheep:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade once amount is met
     head-id: 57345
     display-name: "&7Sheep"
-    lore:
-      unlocked:
-        - "&7{amount} Sheep slain"
   pig:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade once amount is met
     head-id: 55184
     display-name: "&7Pigs"
-    lore:
-      unlocked:
-        - "&7{amount} Pigs slain"
   cow:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade once amount is met
     head-id: 49706
     display-name: "&7Cows"
-    lore:
-      unlocked:
-        - "&7{amount} Cows slain"
   zombie:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade once amount is met
     head-id: 4187
     display-name: "&7Zombies"
-    lore:
-      unlocked:
-        - "&7{amount} Zombies slain"
   spider:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade once amount is met
     head-id: 26010
     display-name: "&7Spiders"
-    lore:
-      unlocked:
-        - "&7{amount} Spiders slain"
   creeper:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade once amount is met
     head-id: 4169
     display-name: "&7Creepers"
-    lore:
-      unlocked:
-        - "&7{amount} Creepers slain"
   skeleton:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade once amount is met
     head-id: 4005
     display-name: "&7Skeletons"
-    lore:
-      unlocked:
-        - "&7{amount} Skeletons slain"
   slime:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade once amount is met
     head-id: 22210
     display-name: "&7Slimes"
-    lore:
-      unlocked:
-        - "&7{amount} Slimes slain"
   guardian:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade once amount is met
     head-id: 25292
     display-name: "&7Guardians"
-    lore:
-      unlocked:
-        - "&7{amount} Guardians slain"
   enderman:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade once amount is met
     head-id: 38106
     display-name: "&7Endermen"
-    lore:
-      unlocked:
-        - "&7{amount} Endermen slain"
   magma-cube:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade once amount is met
     head-id: 323
     display-name: "&7Magma Cubes"
-    lore:
-      unlocked:
-        - "&7{amount} Magma Cubes slain"
   blaze:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade once amount is met
     head-id: 47778
     display-name: "&7Blazes"
-    lore:
-      unlocked:
-        - "&7{amount} Blazes slain"
   ghast:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade once amount is met
     head-id: 40638
     display-name: "&7Ghasts"
-    lore:
-      unlocked:
-        - "&7{amount} Ghasts slain"
   wither-skeleton:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade once amount is met
     head-id: 22400
     display-name: "&7Wither Skeletons"
-    lore:
-      unlocked:
-        - "&7{amount} Wither Skeletons slain"
   iron-golem:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade once amount is met
     head-id: 341
-    display-name: "&7Iron Golems"
-    lore:
-      unlocked:
-        - "&7{amount} Iron Golems slain"
+    display-name: "&7Iron Golem"
 farming:
+  lore:
+    unlocked:
+      - "&7{amount} Beetroot harvested"
+    locked:
+      - "&7{progress}/1000 Wheat harvested"
+      - "&7&lOR"
+      - "&7[x] Beetroot Recipe Used"
   wheat:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade once amount is met
     material: WHEAT
     display-name: "&7Wheat"
-    lore:
-      unlocked:
-        - "&7{amount} Wheat harvested"
   beetroot:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade once amount is met
     material: BEETROOT
     display-name: "&7Beetroot"
-    lore:
-      unlocked:
-        - "&7{amount} Beetroot harvested"
-      locked:
-        - "&7{progress}/1000 Wheat harvested"
-        - "&7&lOR"
-        - "&7[x] Beetroot Recipe Used"
   carrot:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade once amount is met
     material: CARROT
     display-name: "&7Carrots"
-    lore:
-      unlocked:
-        - "&7{amount} Carrots harvested"
-      locked:
-        - "&7{progress}/1000 Beetroot harvested"
-        - "&7&lOR"
-        - "&7[x] Carrot Recipe Used"
   potato:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade once amount is met
     material: POTATO
     display-name: "&7Potatoes"
-    lore:
-      unlocked:
-        - "&7{amount} Potatoes harvested"
-      locked:
-        - "&7{progress}/1000 Carrots harvested"
-        - "&7&lOR"
-        - "&7[x] Potato Recipe Used"
   sugar-cane:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade once amount is met
     material: SUGAR_CANE
     display-name: "&7Sugar Cane"
-    lore:
-      unlocked:
-        - "&7{amount} Sugar Cane harvested"
-      locked:
-        - "&7{progress}/1000 Potatoes harvested"
-        - "&7&lOR"
-        - "&7[x] Sugar Cane Recipe Used"
   kelp:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade once amount is met
     material: KELP
     display-name: "&7Kelp"
-    lore:
-      unlocked:
-        - "&7{amount} Kelp harvested"
-      locked:
-        - "&7{progress}/1000 Sugar Cane harvested"
-        - "&7&lOR"
-        - "&7[x] Kelp Recipe Used"
   nether-wart:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade once amount is met
     material: NETHER_WART
     display-name: "&7Nether Warts"
-    lore:
-      unlocked:
-        - "&7{amount} Nether Warts harvested"
-      locked:
-        - "&7{progress}/1000 Kelp harvested"
-        - "&7&lOR"
-        - "&7[x] Nether Wart Recipe Used"
   sweet-berries:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade once amount is met
     material: SWEET_BERRIES
     display-name: "&7Sweet Berries"
-    lore:
-      unlocked:
-        - "&7{amount} Sweet Berries harvested"
-      locked:
-        - "&7{progress}/1000 Nether Warts harvested"
-        - "&7&lOR"
-        - "&7[x] Sweet Berry Recipe Used"
   bamboo:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade once amount is met
     material: BAMBOO
     display-name: "&7Bamboo"
-    lore:
-      unlocked:
-        - "&7{amount} Bamboo harvested"
-      locked:
-        - "&7{progress}/1000 Sweet Berries harvested"
-        - "&7&lOR"
-        - "&7[x] Bamboo Recipe Used"
   chorus-flower:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade once amount is met
     material: CHORUS_FLOWER
     display-name: "&7Chorus Flower"
-    lore:
-      unlocked:
-        - "&7{amount} Chorus Flower harvested"
-      locked:
-        - "&7{progress}/1000 Bamboo harvested"
-        - "&7&lOR"
-        - "&7[x] Chorus Flower Recipe Used"
   cactus:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade once amount is met
     material: CACTUS
     display-name: "&7Cactus"
-    lore:
-      unlocked:
-        - "&7{amount} Cactus harvested"
-      locked:
-        - "&7{progress}/1000 Chorus Flower harvested"
-        - "&7&lOR"
-        - "&7[x] Cactus Recipe Used"
   melon:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade once amount is met
     material: MELON
     display-name: "&7Melon"
-    lore:
-      unlocked:
-        - "&7{amount} Melons harvested"
-      locked:
-        - "&7{progress}/1000 Cactus harvested"
-        - "&7&lOR"
-        - "&7[x] Melon Recipe Used"
   pumpkin:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade once amount is met
     material: PUMPKIN
     display-name: "&7Pumpkin"
-    lore:
-      unlocked:
-        - "&7{amount} Pumpkins harvested"
-      locked:
-        - "&7{progress}/1000 Melons harvested"
-        - "&7&lOR"
-        - "&7[x] Pumpkin Recipe Used"
   cocoa:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade once amount is met
     material: COCOA_BEANS
     display-name: "&7Cocoa Beans"
-    lore:
-      unlocked:
-        - "&7{amount} Cocoa Beans harvested"
-      locked:
-        - "&7{progress}/1000 Pumpkins harvested"
-        - "&7&lOR"
-        - "&7[x] Cocoa Beans Recipe Used"
 fishing:

@@ -170,4 +170,14 @@ public class HSProgressionAPI {
         this.MAIN.saveConfig();
     }
 
+    public void saveIslands() {
+        this.MAIN.saveIslands();
+    }
+
+    /**
+     * @return ConfigurationSection responsible for islands
+     */
+    public ConfigurationSection getIslands() {
+        return this.MAIN.getIslands();
+    }
 }
