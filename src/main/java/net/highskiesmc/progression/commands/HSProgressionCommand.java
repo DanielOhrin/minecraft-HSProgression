@@ -1,6 +1,5 @@
 package net.highskiesmc.progression.commands;
 
-import com.bgsoftware.superiorskyblock.api.SuperiorSkyblock;
 import com.bgsoftware.superiorskyblock.api.SuperiorSkyblockAPI;
 import com.bgsoftware.superiorskyblock.api.island.Island;
 import net.highskiesmc.progression.HSProgression;

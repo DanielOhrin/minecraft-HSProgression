@@ -3,10 +3,12 @@ package net.highskiesmc.progression.commands;
 import com.bgsoftware.superiorskyblock.api.SuperiorSkyblock;
 import com.bgsoftware.superiorskyblock.api.SuperiorSkyblockAPI;
 import com.bgsoftware.superiorskyblock.api.commands.SuperiorCommand;
+import com.bgsoftware.superiorskyblock.api.island.Island;
 import com.bgsoftware.superiorskyblock.api.wrappers.SuperiorPlayer;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
-import me.arcaniax.hdb.enums.CategoryEnum;
-import net.highskiesmc.progression.HSProgression;
+import net.highskiesmc.progression.HSProgressionAPI;
+import net.highskiesmc.progression.enums.IslandDataType;
+import net.highskiesmc.progression.enums.TrackedEntity;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -20,10 +22,10 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.*;
 
 public class IsSlayerCommand implements SuperiorCommand {
-    private final HSProgression MAIN;
+    private final HSProgressionAPI API;
 
-    public IsSlayerCommand(HSProgression main) {
-        this.MAIN = main;
+    public IsSlayerCommand(HSProgressionAPI api) {
+        this.API = api;
     }
 
     @Override
@@ -70,7 +72,8 @@ public class IsSlayerCommand implements SuperiorCommand {
     public void execute(SuperiorSkyblock superiorSkyblock, CommandSender sender, String[] args) {
         Player player = (Player) sender;
         SuperiorPlayer superiorPlayer = SuperiorSkyblockAPI.getPlayer(player.getUniqueId());
-        if (!superiorPlayer.hasIsland()) {
+        Island island = superiorPlayer.getIsland();
+        if (island == null) {
             player.sendMessage(ChatColor.RED + "You need an island to run this command!");
             return;
         }
@@ -80,26 +83,94 @@ public class IsSlayerCommand implements SuperiorCommand {
                 "&x&3&2&d&a&e&4&lS&x&3&9&e&1&e&9&ll&x&4&1&e&8&e&e&la&x&4&8&e&f&f&3&ly&x&5&0&f&6&f&8&le&x&5&7&f&d&f&d" +
                 "&lr"));
 
-        final ConfigurationSection SLAYER_CONFIG = this.MAIN.getConfig().getConfigurationSection("slayer");
+        final ConfigurationSection SLAYER_CONFIG =
+                this.API.getConfig().getConfigurationSection(IslandDataType.SLAYER.getValue());
+        final ConfigurationSection SLAYER_DATA =
+                this.API.getIslands().getConfigurationSection(island.getUniqueId().toString() + '.' + IslandDataType.SLAYER.getValue());
 
         List<ItemStack> trackedItems = new ArrayList<>();
+        String previousKey = null;
+        boolean previousIsUnlocked = false;
         for (String key : SLAYER_CONFIG.getKeys(false)) {
-            final ConfigurationSection ITEM_CONFIG = SLAYER_CONFIG.getConfigurationSection(key);
-            //TODO
-            // Grab different items based on what the island has unlocked so far
-            // Set the last unlocked item to be enchanted in the GUI, or all unlocked ones
-            ItemStack item = new HeadDatabaseAPI().getItemHead(ITEM_CONFIG.getString("head-id"));
-            ItemMeta meta = item.getItemMeta();
-            meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', ITEM_CONFIG.getString("display-name")));
-
-            List<String> lore = ITEM_CONFIG.getStringList("lore.unlocked");
-            for (int i = 0; i < lore.size(); i++) {
-                lore.set(i, ChatColor.translateAlternateColorCodes('&', lore.get(i)));
+            if (key.equalsIgnoreCase("lore")) {
+                continue;
             }
-            meta.setLore(lore);
-            item.setItemMeta(meta);
+
+            final ConfigurationSection ITEM_CONFIG = SLAYER_CONFIG.getConfigurationSection(key);
+            final ConfigurationSection ITEM_DATA = SLAYER_DATA.getConfigurationSection(key);
+
+            ItemStack item;
+            if (key.equals(TrackedEntity.values()[0].getValue()) || ITEM_DATA.getBoolean("unlocked")) {
+                // UNLOCKED ITEM
+                item = new HeadDatabaseAPI().getItemHead(ITEM_CONFIG.getString("head-id"));
+
+                ItemMeta meta = item.getItemMeta();
+                meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', ITEM_CONFIG.getString("display-name")));
+
+                List<String> lore = SLAYER_CONFIG.getStringList("lore.unlocked");
+                for (int i = 0; i < lore.size(); i++) {
+                    String line = lore.get(i)
+                            .replace("{amount}", "" + ITEM_DATA.getLong("amount"))
+                            .replace("{current}", ITEM_CONFIG.getString("display-name"));
+                    lore.set(i, ChatColor.translateAlternateColorCodes('&', line));
+                }
+                meta.setLore(lore);
+                item.setItemMeta(meta);
+
+                previousIsUnlocked = true;
+            } else if (ITEM_DATA.getBoolean("conditions-met")) {
+                // CONDITIONS-MET ITEM
+                item = new ItemStack(Material.valueOf(this.API.getConfig().getString("all.conditions-met.material")));
+
+                ItemMeta meta = item.getItemMeta();
+                meta.setDisplayName(ChatColor.translateAlternateColorCodes('&',
+                        this.API.getConfig().getString("all.conditions-met.display-name")));
+
+                List<String> lore = this.API.getConfig().getStringList("all.conditions-met.lore");
+                for (int i = 0; i < lore.size(); i++) {
+                    String line = lore.get(i)
+                            .replace("{price}", "" + ITEM_CONFIG.getDouble("price"));
+
+                    lore.set(i, ChatColor.translateAlternateColorCodes('&', line));
+                }
+                meta.setLore(lore);
+                item.setItemMeta(meta);
+
+                previousIsUnlocked = false;
+            } else {
+                // LOCKED item
+                item = new ItemStack(Material.valueOf(this.API.getConfig().getString("all.locked.material")));
+
+                ItemMeta meta = item.getItemMeta();
+                List<String> lore = null;
+
+                if (previousIsUnlocked) {
+                    item.setType(Material.valueOf(this.API.getConfig().getString("all.locked.material-unlockable")));
+                    meta.setDisplayName(ChatColor.translateAlternateColorCodes('&',
+                            this.API.getConfig().getString("all.locked.display-name")));
+                    lore = SLAYER_CONFIG.getStringList("lore.locked");
+                } else {
+                    meta.setDisplayName(ChatColor.translateAlternateColorCodes('&',
+                            this.API.getConfig().getString("all.locked.display-name")));
+                    lore = this.API.getConfig().getStringList("all.locked.lore");
+                }
+                for (int i = 0; i < lore.size(); i++) {
+                    String line = lore.get(i)
+                            .replace("{amount}", "" + SLAYER_DATA.getLong(previousKey + ".amount"))
+                            .replace("{required}", "" + ITEM_CONFIG.getLong("amount"))
+                            .replace("{previous}", SLAYER_CONFIG.getString(previousKey + ".display-name"));
+
+                    lore.set(i, ChatColor.translateAlternateColorCodes('&', line));
+                }
+                meta.setLore(lore);
+                item.setItemMeta(meta);
+
+                previousIsUnlocked = false;
+            }
+
 
             trackedItems.add(item);
+            previousKey = key;
         }
 
         // Add the tracked items
@@ -111,7 +182,7 @@ public class IsSlayerCommand implements SuperiorCommand {
 
         // Fill in the rest of the GUI
         ItemStack placeholder =
-                new ItemStack(Material.valueOf(this.MAIN.getConfig().getString("all.filler.material")));
+                new ItemStack(Material.valueOf(this.API.getConfig().getString("all.filler.material")));
         ItemMeta meta = placeholder.getItemMeta();
         meta.setDisplayName(" ");
         placeholder.setItemMeta(meta);
@@ -123,10 +194,6 @@ public class IsSlayerCommand implements SuperiorCommand {
         }
 
         player.openInventory(inv);
-        //TODO
-        // Check if player is apart of an island -- DONE
-        // Only run the command if they are -- DONE
-        // Grab their island and query the data.
     }
 
     @Override

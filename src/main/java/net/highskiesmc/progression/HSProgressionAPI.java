@@ -15,7 +15,6 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 public class HSProgressionAPI {
@@ -107,7 +106,9 @@ public class HSProgressionAPI {
                 if (currentValue + 1 >= this.MAIN.getConfig().getLong(dataType.getValue() + '.' + nextItemKey + '.' +
                         "amount")) {
                     ISLAND_DATA.set(nextItemKey + '.' + "conditions-met", true);
-                    Bukkit.getPluginManager().callEvent(new IslandProgressedEvent(SuperiorSkyblockAPI.getIslandByUUID(islandUUID), dataType));
+
+                    // Call IslandProgressedEvent
+                    Bukkit.getPluginManager().callEvent(new IslandProgressedEvent(SuperiorSkyblockAPI.getIslandByUUID(islandUUID), dataType, key));
                 }
             }
         }
@@ -134,10 +135,48 @@ public class HSProgressionAPI {
         return ISLAND_DATA;
     }
 
+    /**
+     * Unlocks the provided section for the provided island
+     *
+     * @param islandUUID UUID of island
+     * @param dataType   IslandDataType (mining/slayer/etc.)
+     * @param key        Name of tracked item. zombie, coal, etc.
+     */
+    public void unlockIslandData(UUID islandUUID, IslandDataType dataType, String key) throws NullPointerException {
+        final ConfigurationSection ISLAND_DATA =
+                this.MAIN.getIslands().getConfigurationSection(islandUUID.toString() + '.' + dataType.getValue() + '.' + key);
+
+        if (ISLAND_DATA == null) {
+            throw new NullPointerException("Configuration section not found: " + islandUUID + '.' + dataType.getValue() + '.' + key);
+        }
+
+        ISLAND_DATA.set("unlocked", true);
+        this.MAIN.saveIslands();
+    }
+
     public void sendNotUnlocked(Player player) {
         final ConfigurationSection CONFIG = this.MAIN.getConfig().getConfigurationSection("all.locked");
 
         player.sendMessage(ChatColor.translateAlternateColorCodes('&', CONFIG.getString("message")));
         player.playSound(player.getLocation(), Sound.valueOf(CONFIG.getString("sound")), 1, 1);
+    }
+
+    public ConfigurationSection getConfig() {
+        return this.MAIN.getConfig();
+    }
+
+    public void saveConfig() {
+        this.MAIN.saveConfig();
+    }
+
+    public void saveIslands() {
+        this.MAIN.saveIslands();
+    }
+
+    /**
+     * @return ConfigurationSection responsible for islands
+     */
+    public ConfigurationSection getIslands() {
+        return this.MAIN.getIslands();
     }
 }

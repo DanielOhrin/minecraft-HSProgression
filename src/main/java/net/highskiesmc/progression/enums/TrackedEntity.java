@@ -2,9 +2,6 @@ package net.highskiesmc.progression.enums;
 
 import org.bukkit.entity.EntityType;
 
-import java.util.Arrays;
-import java.util.List;
-
 public enum TrackedEntity {
     RABBIT(EntityType.RABBIT),
     CHICKEN(EntityType.CHICKEN),
