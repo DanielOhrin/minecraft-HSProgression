@@ -1,20 +1,106 @@
 package net.highskiesmc.progression.events.handlers;
 
-import org.bukkit.ChatColor;
+import com.bgsoftware.superiorskyblock.api.SuperiorSkyblockAPI;
+import com.bgsoftware.superiorskyblock.api.island.Island;
+import net.highskiesmc.progression.HSProgressionAPI;
+import net.highskiesmc.progression.enums.IslandDataType;
+import net.highskiesmc.progression.enums.TrackedCrop;
+import net.highskiesmc.progression.enums.TrackedEntity;
+import net.highskiesmc.progression.enums.TrackedNode;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
 public class InventoryClickHandler implements Listener {
+    private final HSProgressionAPI API;
+
+    public InventoryClickHandler(HSProgressionAPI api) {
+        this.API = api;
+    }
+
     @EventHandler
     public void onInventoryClick(InventoryClickEvent e) {
-        if (ChatColor.translateAlternateColorCodes('&', e.getView().getTitle()).equals(ChatColor.translateAlternateColorCodes('&', "&x&0&5&a&f&c&6&lI&x&0&c&b&6&c&b&ls&x&1&4&b&d&d&0&ll&x&1&b&c&4&d&5&la&x&2&3&c&b&d&a&ln&x&2&a&d&2&d&f&ld &x&3&2&d&a&e&4&lM&x&3&9&e&1&e&9&li&x&4&1&e&8&e&e&ln&x&4&8&e&f&f&3&li&x&5&0&f&6&f&8&ln&x&5&7&f&d&f&d&lg"))
-                || ChatColor.translateAlternateColorCodes('&', e.getView().getTitle()).equals(ChatColor.translateAlternateColorCodes('&', "&x&0&5&a&f&c" +
-                "&6&lI&x&0&c&b&6&c&b&ls&x&1&4&b&d&d&0&ll&x&1&b&c&4&d&5&la&x&2&3&c&b&d&a&ln&x&2&a&d&2&d&f&ld " +
-                "&x&3&2&d&a&e&4&lS&x&3&9&e&1&e&9&ll&x&4&1&e&8&e&e&la&x&4&8&e&f&f&3&ly&x&5&0&f&6&f&8&le&x&5&7&f&d&f&d" +
-                "&lr"))
-                || ChatColor.translateAlternateColorCodes('&', e.getView().getTitle()).equals(ChatColor.translateAlternateColorCodes('&', "&x&0&5&a&f&c&6&lI&x&0&c&b&6&c&b&ls&x&1&3&b&c&c&f&ll&x&1&a&c&3&d&4&la&x&2&0&c&9&d&8&ln&x&2&7&d&0&d&d&ld &x&2&e&d&6&e&2&lF&x&3&5&d&d&e&6&la&x&3&c&e&3&e&b&lr&x&4&3&e&a&e&f&lm&x&4&9&f&0&f&4&li&x&5&0&f&7&f&8&ln&x&5&7&f&d&f&d&lg"))) {
-            e.setCancelled(true);
+        String title = e.getView().getTitle();
+        Island island = SuperiorSkyblockAPI.getPlayer(e.getWhoClicked().getUniqueId()).getIsland();
+
+        if (island != null) {
+            if (title.equals(IslandDataType.SLAYER.getGUITitle())) {
+                e.setCancelled(true);
+                int[] slots = new int[]{9, 18, 27, 28, 29, 20, 11, 12, 13, 22, 31, 32, 33, 24, 15, 16, 17};
+                Map<Integer, TrackedEntity> trackedSlotMap = new HashMap<>();
+                TrackedEntity[] trackedEntities = TrackedEntity.values();
+
+                // i = 1 to skip the one that is unlocked by default.
+                for (int i = 1; i < slots.length; i++) {
+                    trackedSlotMap.put(slots[i], trackedEntities[i]);
+                }
+
+                TrackedEntity entityType = trackedSlotMap.getOrDefault(e.getRawSlot(), null);
+                if (entityType != null) {
+                    final ConfigurationSection ISLAND_DATA = this.API.getIslandData(island.getUniqueId(),
+                            IslandDataType.SLAYER, entityType.getValue());
+
+                    // If it is NOT unlocked, AND the conditions are met for an upgrade
+                    if (!ISLAND_DATA.getBoolean("unlocked") && ISLAND_DATA.getBoolean("conditions-met")) {
+                        //TODO: Create new GUI to confirm purchase
+                        System.out.println("Yup this works");
+                    }
+                }
+            } else if (title.equals(IslandDataType.MINING.getGUITitle())) {
+                e.setCancelled(true);
+
+                int[] slots = new int[]{10, 19, 20, 21, 12, 13, 14, 23, 24, 25, 16};
+                Map<Integer, TrackedNode> trackedSlotMap = new HashMap<>();
+                TrackedNode[] trackedNodes = TrackedNode.values();
+
+                // i = 1 to skip the one that is unlocked by default.
+                for (int i = 1; i < slots.length; i++) {
+                    trackedSlotMap.put(slots[i], trackedNodes[i]);
+                }
+
+                TrackedNode nodeType = trackedSlotMap.getOrDefault(e.getRawSlot(), null);
+                if (nodeType != null) {
+                    final ConfigurationSection ISLAND_DATA = this.API.getIslandData(island.getUniqueId(),
+                            IslandDataType.MINING, nodeType.getValue());
+
+                    // If it is NOT unlocked, AND the conditions are met for an upgrade
+                    if (!ISLAND_DATA.getBoolean("unlocked") && ISLAND_DATA.getBoolean("conditions-met")) {
+                        //TODO: Create new GUI to confirm purchase
+                        System.out.println("Yup this works");
+                    }
+                }
+            } else if (title.equals(IslandDataType.FARMING.getGUITitle())) {
+                e.setCancelled(true);
+
+                int[] slots = new int[]{10, 19, 28, 29, 30, 21, 12, 13, 14, 23, 32, 33, 34, 25};
+                Map<Integer, TrackedCrop> trackedSlotMap = new HashMap<>();
+                TrackedCrop[] trackedCrops = TrackedCrop.values();
+
+                // i = 1 to skip the one that is unlocked by default.
+                for (int i = 1; i < slots.length; i++) {
+                    trackedSlotMap.put(slots[i], trackedCrops[i]);
+                }
+
+                TrackedCrop cropType = trackedSlotMap.getOrDefault(e.getRawSlot(), null);
+                if (cropType != null) {
+                    final ConfigurationSection ISLAND_DATA = this.API.getIslandData(island.getUniqueId(),
+                            IslandDataType.FARMING, cropType.getValue());
+
+                    // If it is NOT unlocked, AND the conditions are met for an upgrade
+                    if (!ISLAND_DATA.getBoolean("unlocked") && ISLAND_DATA.getBoolean("conditions-met")) {
+                        //TODO: Create new GUI to confirm purchase
+                        System.out.println("Yup this works");
+                    }
+                }
+                } else if (title.equals(IslandDataType.FISHING.getGUITitle())) {
+                    e.setCancelled(true);
+
+                }
+            }
         }
     }
-}

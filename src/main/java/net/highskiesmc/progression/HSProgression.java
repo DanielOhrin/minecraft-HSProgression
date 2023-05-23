@@ -37,7 +37,7 @@ public final class HSProgression extends JavaPlugin {
         SuperiorSkyblockAPI.registerCommand(new IsFarmingCommand(this));
 
         Bukkit.getPluginManager().registerEvents(new PlayerFishHandler(), this);
-        Bukkit.getPluginManager().registerEvents(new InventoryClickHandler(), this);
+        Bukkit.getPluginManager().registerEvents(new InventoryClickHandler(this.API), this);
         Bukkit.getPluginManager().registerEvents(new IslandCreateHandler(this.API), this);
         Bukkit.getPluginManager().registerEvents(new EntityDeathHandler(this.API), this);
         Bukkit.getPluginManager().registerEvents(new SpawnerPlaceHandler(this.API), this);
