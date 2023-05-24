@@ -166,10 +166,18 @@ public class IsFarmingCommand implements SuperiorCommand {
                 for (int i = 0; i < lore.size(); i++) {
                     String line = lore.get(i)
                             .replace("{amount}", "" + FARMING_DATA.getLong(previousKey + ".amount"))
+                            .replace("{amount-to-half}", "" + Math.min(FARMING_DATA.getLong(previousKey + ".amount"),
+                                    ITEM_CONFIG.getLong("amount") / 2))
                             .replace("{required}", "" + ITEM_CONFIG.getLong("amount"))
+                            .replace("{required-half}", "" + ITEM_CONFIG.getLong("amount") / 2)
                             .replace("{previous}", FARMING_CONFIG.getString(previousKey + ".display-name"))
                             .replace("{previous-no-color}", ChatColorRemover.removeChatColors(FARMING_CONFIG.getString(
                                     previousKey + ".display-name")))
+                            .replace("{price}", "" + ITEM_CONFIG.getDouble("price"))
+                            .replace("{progress-indicator}",
+                                    (ITEM_CONFIG.getLong("amount") / 2 <= FARMING_DATA.getLong(previousKey +
+                                            ".amount") ? ChatColor.translateAlternateColorCodes('&', "&f[&a✓&f]") :
+                                            ChatColor.translateAlternateColorCodes('&', "&f[&cx&f]")))
                             .replace("{recipe}",
                                     this.API.getFullRecipe(Arrays.stream(TrackedCrop.values()).filter(c -> c.getValue().equals(key)).findFirst().get()).getItemMeta().getDisplayName());
 

@@ -11,6 +11,8 @@
 # {required} - Required amount of items to unlock the upgrade purchase
 # {recipe} - Colorized farming recipe display name
 # {data-type} - farming/slayer/mining/fishing
+# {required-half} - Specific to farming, it is half the amount required for the upgrade
+# {progress-indicator} - &f[&cx&f] or &f[&a✓& (If amount > required)
 
 # Important: Placeholders cannot be used everywhere. In-line comments will show where placeholders are available
 
@@ -43,7 +45,7 @@ all:
     material: LIME_STAINED_GLASS_PANE # Item that will show when an upgrade is ready to be purchased
     display-name: "&7{current-no-color}" # {current} {current-no-color}
     lore:
-      - "&a&lSpend {price} to purchase upgrade!" # {price}
+      - "&a&lSpend ${price} to purchase upgrade" # {price}
   locked:
     display-name: "&7&l???" # Displays when it is locked and the previous is not unlocked
     display-name-unlockable: "&c&k{current-no-color}" # {current} {current-no-color} - Displays when it is locked and the previous IS unlocked.
@@ -59,8 +61,10 @@ mining:
   lore:
     unlocked: # {amount} {current} {current-no-color}
       - "&7{amount} {current-no-color} Nodes Mined"
-    locked: # {amount} {required} {previous} {previous-no-color}
+    locked: # {amount} {required} {previous} {previous-no-color} {price}
       - "&7{amount}/{required} {previous-no-color} Nodes Mined"
+      - ""
+      - "&7Cost: &a${price}"
   cobblestone:
     material: COBBLESTONE # Item that will show when unlocked
     display-name: "&6&lCobblestone"
@@ -118,7 +122,9 @@ slayer:
   lore:
     unlocked: # {amount} {current} {current-no-color}
       - "&7{amount} {current-no-color} slain"
-    locked: # {amount} {required} {previous} {previous-no-color}
+      - ""
+      - "&7Cost: &a${price}"
+    locked: # {amount} {required} {previous} {previous-no-color} {price}
       - "&7{amount}/{required} {previous} &7slain"
   rabbit:
     amount: 10 # Amount of previous required to unlock
@@ -214,10 +220,12 @@ farming:
   lore:
     unlocked:
       - "&7{amount} {current-no-color} Grown" # {amount} {current} {current-no-color}
-    locked: # {amount} {required} {previous} {previous-no-color} {recipe}
-      - "&7{amount}/{required} {previous} &7Grown"
+    locked: # {amount} {required} {previous} {previous-no-color} {recipe} {price} {progress-indicator}
+      - "{progress-indicator} &7{amount}/{required} {previous} &7Grown"
       - "&7&lOR"
       - "&f[&cx&f] {recipe}"
+      - ""
+      - "&7Cost: &a${price}"
   wheat:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade

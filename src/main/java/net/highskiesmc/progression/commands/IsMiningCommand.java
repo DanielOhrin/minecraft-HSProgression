@@ -167,6 +167,7 @@ public class IsMiningCommand implements SuperiorCommand {
                     String line = lore.get(i)
                             .replace("{amount}", "" + MINING_DATA.getLong(previousKey + ".amount"))
                             .replace("{required}", "" + ITEM_CONFIG.getLong("amount"))
+                            .replace("{price}", "" + ITEM_CONFIG.getDouble("price"))
                             .replace("{previous}", MINING_CONFIG.getString(previousKey + ".display-name"))
                             .replace("{previous-no-color}", ChatColorRemover.removeChatColors(MINING_CONFIG.getString(
                                     previousKey + ".display-name")));

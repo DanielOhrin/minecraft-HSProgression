@@ -169,6 +169,7 @@ public class IsSlayerCommand implements SuperiorCommand {
                     String line = lore.get(i)
                             .replace("{amount}", "" + SLAYER_DATA.getLong(previousKey + ".amount"))
                             .replace("{required}", "" + ITEM_CONFIG.getLong("amount"))
+                            .replace("{price}", "" + ITEM_CONFIG.getDouble("price"))
                             .replace("{previous}", SLAYER_CONFIG.getString(previousKey + ".display-name"))
                             .replace("{previous-no-color}", ChatColorRemover.removeChatColors(SLAYER_CONFIG.getString(
                                     previousKey + ".display-name")));
