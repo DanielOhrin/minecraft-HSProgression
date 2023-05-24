@@ -1,0 +1,92 @@
+# Do not change the amount of items in the lists or attempt to change what is tracked for each item in the lists
+# Ex: Each material can be changed, but it will not change what is actually being tracked
+
+# Placeholders:
+# {current} - The current item's display name with its color codes
+# {current-no-color} - The current item's display name as plaintext (no color codes)
+# {previous} - The previous item's display name with its color codes
+# {previous-no-color} - the previous item's display name as plaintext (no color codes)
+# {price} - Price to unlock the current upgrade
+# {amount} - Amount of current item the island has tracked
+# {required} - Required amount of items to unlock the upgrade purchase
+# {recipe} - Colorized farming recipe display name
+# {data-type} - farming/slayer/mining/fishing
+# {required-half} - Specific to farming, it is half the amount required for the upgrade
+# {amount-or-half-required} - Specific to farming, it is Math.min(amount, required-half)
+# {progress-indicator} - &f[&cx&f] or &f[&a✓& (If amount > required)
+
+# Important: Placeholders cannot be used everywhere. In-line comments will show where placeholders are available
+
+
+recipe: # Config values for farming recipes
+  display-name: "&eFarming Recipe &a(&e{current}&a)" # {current} is replaced with the non-colored name of the crop in title case (Beetroot, Sweet Berries, Cocoa Beans, etc.)
+  lore: # {current} Same functionality as above
+    - "&fBypasses the conditions for an island's"
+    - "&e&l{current}&f upgrade"
+lore:
+  unlocked:
+    - "&7{amount} {current-no-color} Grown" # {amount} {current} {current-no-color}
+  locked: # {amount} {required} {previous} {previous-no-color} {recipe} {progress-indicator} {required-half} {amount-or-half-required} (Min(amount, required))
+    - "&7{amount}/{required} {previous} &7Grown"
+    - ""
+    - "&7&lOR"
+    - ""
+    - "{progress-indicator} &7{amount-or-half-required}/{required-half} {previous} &7Grown"
+    - "&7&lTHEN"
+    - "&f[&cx&f] {recipe}"
+wheat:
+  amount: 10 # Amount of previous required to unlock
+  material: WHEAT # Item that will show when unlocked
+  display-name: "&e&lWheat"
+beetroot:
+  amount: 10 # Amount of previous required to unlock
+  material: BEETROOT # Item that will show when unlocked
+  display-name: "&e&lBeetroot"
+carrot:
+  amount: 10 # Amount of previous required to unlock
+  material: CARROT # Item that will show when unlocked
+  display-name: "&e&lCarrot"
+potato:
+  amount: 10 # Amount of previous required to unlock
+  material: POTATO # Item that will show when unlocked
+  display-name: "&e&lPotato"
+sugar-cane:
+  amount: 10 # Amount of previous required to unlock
+  material: SUGAR_CANE # Item that will show when unlocked
+  display-name: "&e&lSugar Cane"
+kelp:
+  amount: 10 # Amount of previous required to unlock
+  material: KELP # Item that will show when unlocked
+  display-name: "&e&lKelp"
+nether-wart:
+  amount: 10 # Amount of previous required to unlock
+  material: NETHER_WART # Item that will show when unlocked
+  display-name: "&e&lNether Wart"
+sweet-berries:
+  amount: 10 # Amount of previous required to unlock
+  material: SWEET_BERRIES # Item that will show when unlocked
+  display-name: "&e&lSweet Berries"
+bamboo:
+  amount: 10 # Amount of previous required to unlock
+  material: BAMBOO # Item that will show when unlocked
+  display-name: "&e&lBamboo"
+chorus-flower:
+  amount: 10 # Amount of previous required to unlock
+  material: CHORUS_FLOWER # Item that will show when unlocked
+  display-name: "&e&lChorus Flower"
+cactus:
+  amount: 10 # Amount of previous required to unlock
+  material: CACTUS # Item that will show when unlocked
+  display-name: "&e&lCactus"
+melon:
+  amount: 10 # Amount of previous required to unlock
+  material: MELON # Item that will show when unlocked
+  display-name: "&e&lMelon"
+pumpkin:
+  amount: 10 # Amount of previous required to unlock
+  material: PUMPKIN # Item that will show when unlocked
+  display-name: "&e&lPumpkin"
+cocoa-beans:
+  amount: 10 # Amount of previous required to unlock
+  material: COCOA_BEANS # Item that will show when unlocked
+  display-name: "&e&lCocoa Beans"

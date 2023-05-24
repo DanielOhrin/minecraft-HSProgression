@@ -84,8 +84,7 @@ public class IsSlayerCommand implements SuperiorCommand {
                 "&x&3&2&d&a&e&4&lS&x&3&9&e&1&e&9&ll&x&4&1&e&8&e&e&la&x&4&8&e&f&f&3&ly&x&5&0&f&6&f&8&le&x&5&7&f&d&f&d" +
                 "&lr"));
 
-        final ConfigurationSection SLAYER_CONFIG =
-                this.API.getConfig().getConfigurationSection(IslandDataType.SLAYER.getValue());
+        final ConfigurationSection SLAYER_CONFIG = this.API.getConfig(IslandDataType.SLAYER);
         final ConfigurationSection SLAYER_DATA =
                 this.API.getIslands().getConfigurationSection(island.getUniqueId().toString() + '.' + IslandDataType.SLAYER.getValue());
 
@@ -109,12 +108,14 @@ public class IsSlayerCommand implements SuperiorCommand {
                 meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', ITEM_CONFIG.getString("display-name")));
 
                 List<String> lore = SLAYER_CONFIG.getStringList("lore.unlocked");
+                long amount = ITEM_DATA.getLong("amount");
+                final String CURRENT = ITEM_CONFIG.getString("display-name");
+                final String CURRENT_NO_COLOR = ChatColorRemover.removeChatColors(CURRENT);
                 for (int i = 0; i < lore.size(); i++) {
                     String line = lore.get(i)
-                            .replace("{amount}", "" + ITEM_DATA.getLong("amount"))
-                            .replace("{current}", ITEM_CONFIG.getString("display-name"))
-                            .replace("{current-no-color}", ChatColorRemover.removeChatColors(ITEM_CONFIG.getString(
-                                    "display-name")));
+                            .replace("{amount}", "" + amount)
+                            .replace("{current}", CURRENT)
+                            .replace("{current-no-color}", CURRENT_NO_COLOR);
                     lore.set(i, ChatColor.translateAlternateColorCodes('&', line));
                 }
                 meta.setLore(lore);
@@ -123,19 +124,22 @@ public class IsSlayerCommand implements SuperiorCommand {
                 previousIsUnlocked = true;
             } else if (ITEM_DATA.getBoolean("conditions-met")) {
                 // CONDITIONS-MET ITEM
-                item = new ItemStack(Material.valueOf(this.API.getConfig().getString("all.conditions-met.material")));
+                item =
+                        new ItemStack(Material.valueOf(this.API.getConfig(null).getString("all.conditions-met" +
+                                ".material")));
 
                 ItemMeta meta = item.getItemMeta();
                 meta.setDisplayName(ChatColor.translateAlternateColorCodes('&',
-                        this.API.getConfig().getString("all.conditions-met.display-name")
+                        this.API.getConfig(null).getString("all.conditions-met.display-name")
                                 .replace("{current}", ITEM_CONFIG.getString("display-name"))
                                 .replace("{current-no-color}",
                                         ChatColorRemover.removeChatColors(ITEM_CONFIG.getString("display-name")))));
 
-                List<String> lore = this.API.getConfig().getStringList("all.conditions-met.lore");
+                List<String> lore = this.API.getConfig(null).getStringList("all.conditions-met.lore");
+                double price = ITEM_CONFIG.getDouble("price");
                 for (int i = 0; i < lore.size(); i++) {
                     String line = lore.get(i)
-                            .replace("{price}", "" + ITEM_CONFIG.getDouble("price"));
+                            .replace("{price}", "" + price);
 
                     lore.set(i, ChatColor.translateAlternateColorCodes('&', line));
                 }
@@ -145,15 +149,17 @@ public class IsSlayerCommand implements SuperiorCommand {
                 previousIsUnlocked = false;
             } else {
                 // LOCKED item
-                item = new ItemStack(Material.valueOf(this.API.getConfig().getString("all.locked.material")));
+                final ConfigurationSection ALL_LOCKED_CONFIG = this.API.getConfig(null).getConfigurationSection("all" +
+                        ".locked");
+                item = new ItemStack(Material.valueOf(ALL_LOCKED_CONFIG.getString("material")));
 
                 ItemMeta meta = item.getItemMeta();
                 List<String> lore = null;
 
                 if (previousIsUnlocked) {
-                    item.setType(Material.valueOf(this.API.getConfig().getString("all.locked.material-unlockable")));
+                    item.setType(Material.valueOf(ALL_LOCKED_CONFIG.getString("material-unlockable")));
                     meta.setDisplayName(ChatColor.translateAlternateColorCodes('&',
-                            this.API.getConfig().getString("all.locked.display-name-unlockable")
+                            ALL_LOCKED_CONFIG.getString("display-name-unlockable")
                                     .replace("{current}",
                                             ChatColor.translateAlternateColorCodes('&', ITEM_CONFIG.getString(
                                                     "display-name")))
@@ -162,17 +168,21 @@ public class IsSlayerCommand implements SuperiorCommand {
                     lore = SLAYER_CONFIG.getStringList("lore.locked");
                 } else {
                     meta.setDisplayName(ChatColor.translateAlternateColorCodes('&',
-                            this.API.getConfig().getString("all.locked.display-name")));
-                    lore = this.API.getConfig().getStringList("all.locked.lore");
+                            ALL_LOCKED_CONFIG.getString("display-name")));
+                    lore = ALL_LOCKED_CONFIG.getStringList("lore");
                 }
+                long amount = SLAYER_DATA.getLong(previousKey + ".amount");
+                long required = ITEM_CONFIG.getLong("amount");
+                double price = ITEM_CONFIG.getDouble("price");
+                final String PREVIOUS = SLAYER_CONFIG.getString(previousKey + ".display-name");
+                final String PREVIOUS_NO_COLOR = ChatColorRemover.removeChatColors(PREVIOUS);
                 for (int i = 0; i < lore.size(); i++) {
                     String line = lore.get(i)
-                            .replace("{amount}", "" + SLAYER_DATA.getLong(previousKey + ".amount"))
-                            .replace("{required}", "" + ITEM_CONFIG.getLong("amount"))
-                            .replace("{price}", "" + ITEM_CONFIG.getDouble("price"))
-                            .replace("{previous}", SLAYER_CONFIG.getString(previousKey + ".display-name"))
-                            .replace("{previous-no-color}", ChatColorRemover.removeChatColors(SLAYER_CONFIG.getString(
-                                    previousKey + ".display-name")));
+                            .replace("{amount}", "" + amount)
+                            .replace("{required}", "" + required)
+                            .replace("{price}", "" + price)
+                            .replace("{previous}", PREVIOUS)
+                            .replace("{previous-no-color}", PREVIOUS_NO_COLOR);
 
                     lore.set(i, ChatColor.translateAlternateColorCodes('&', line));
                 }
@@ -196,7 +206,7 @@ public class IsSlayerCommand implements SuperiorCommand {
 
         // Fill in the rest of the GUI
         ItemStack placeholder =
-                new ItemStack(Material.valueOf(this.API.getConfig().getString("all.filler.material")));
+                new ItemStack(Material.valueOf(this.API.getConfig(null).getString("all.filler.material")));
         ItemMeta meta = placeholder.getItemMeta();
         meta.setDisplayName(" ");
         placeholder.setItemMeta(meta);

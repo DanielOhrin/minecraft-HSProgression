@@ -7,6 +7,7 @@ import net.highskiesmc.progression.HSProgressionAPI;
 import net.highskiesmc.progression.enums.IslandDataType;
 import net.highskiesmc.progression.enums.TrackedCrop;
 import net.highskiesmc.progression.events.events.IslandProgressedEvent;
+import net.highskiesmc.progression.events.events.IslandUpgradedEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -57,8 +58,7 @@ public class PlayerInteractHandler implements Listener {
                                         IslandDataType.FARMING,
                                         cropTypes.get(currentIndex - 1)).getBoolean("unlocked")) {
                                     if (this.API.getIslandData(island.getUniqueId(), IslandDataType.FARMING,
-                                            cropType).getLong("amount") >= this.API.getConfig().getLong(IslandDataType.FARMING.getValue() + '.' + cropType +
-                                            ".amount")) {
+                                            cropType).getLong("amount") >= this.API.getConfig(IslandDataType.FARMING).getLong(cropType + ".amount")) {
                                         if (itemStackAmount > 1) {
                                             itemStack.setAmount(itemStackAmount - 1);
                                         } else {
@@ -66,8 +66,11 @@ public class PlayerInteractHandler implements Listener {
                                             this.API.meetIslandDataConditions(island.getUniqueId(),
                                                     IslandDataType.FARMING,
                                                     cropType);
+                                            this.API.unlockIslandData(island.getUniqueId(),
+                                                    IslandDataType.FARMING,
+                                                    cropType);
                                             // Call island progressed event
-                                            IslandProgressedEvent event = new IslandProgressedEvent(island,
+                                            IslandUpgradedEvent event = new IslandUpgradedEvent(island,
                                                     IslandDataType.FARMING, cropType);
                                             Bukkit.getPluginManager().callEvent(event);
                                         }

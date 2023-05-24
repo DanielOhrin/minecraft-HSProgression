@@ -109,8 +109,7 @@ public class HSProgressionAPI {
         if (indexOfCurrent != trackedItems.size() - 1) {
             String nextItemKey = trackedItems.get(indexOfCurrent + 1);
             if (!ISLAND_DATA.getBoolean(nextItemKey + '.' + "conditions-met")) {
-                if (currentValue + 1 >= this.MAIN.getConfig().getLong(dataType.getValue() + '.' + nextItemKey + '.' +
-                        "amount")) {
+                if (currentValue + 1 >= this.getConfig(dataType).getLong(nextItemKey + '.' + "amount")) {
                     ISLAND_DATA.set(nextItemKey + '.' + "conditions-met", true);
 
                     // Call IslandProgressedEvent
@@ -180,18 +179,44 @@ public class HSProgressionAPI {
     }
 
     public void sendNotUnlocked(Player player) {
-        final ConfigurationSection CONFIG = this.MAIN.getConfig().getConfigurationSection("all.locked");
+        final ConfigurationSection CONFIG = this.getConfig(null).getConfigurationSection("all.locked");
 
         player.sendMessage(ChatColor.translateAlternateColorCodes('&', CONFIG.getString("message")));
         player.playSound(player.getLocation(), Sound.valueOf(CONFIG.getString("sound")), 1, 1);
     }
 
-    public ConfigurationSection getConfig() {
-        return this.MAIN.getConfig();
+    public ConfigurationSection getConfig(IslandDataType dataType) {
+        if (dataType == null) {
+            return this.MAIN.getConfig();
+        }
+
+        switch (dataType) {
+            case FARMING:
+                return this.MAIN.getFarmingConfig();
+            case SLAYER:
+                return this.MAIN.getSlayerConfig();
+            case MINING:
+                return this.MAIN.getMiningConfig();
+            default:
+                return null;
+        }
     }
 
-    public void saveConfig() {
-        this.MAIN.saveConfig();
+    public void saveConfig(IslandDataType dataType) {
+        if (dataType == null) {
+            this.MAIN.saveConfig();
+        }
+
+        switch (dataType) {
+            case FARMING:
+                this.MAIN.saveFarmingConfig();
+            case SLAYER:
+                this.MAIN.saveSlayerConfig();
+            case MINING:
+                this.MAIN.saveMiningConfig();
+            default:
+                break;
+        }
     }
 
     public void saveIslands() {
@@ -206,12 +231,11 @@ public class HSProgressionAPI {
     }
 
     /**
-     *
      * @return Full recipe for specified TrackedCrop
      */
     public ItemStack getFullRecipe(TrackedCrop crop) {
         final ConfigurationSection RECIPE_CONFIG =
-                this.getConfig().getConfigurationSection(IslandDataType.FARMING.getValue() + ".recipe");
+                this.getConfig(IslandDataType.FARMING).getConfigurationSection("recipe");
 
         // Convert the name to "title case"
         String current =
