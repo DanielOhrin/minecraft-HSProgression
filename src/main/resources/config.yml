@@ -10,8 +10,32 @@
 # {amount} - Amount of current item the island has tracked
 # {required} - Required amount of items to unlock the upgrade purchase
 # {recipe} - Colorized farming recipe display name
+# {data-type} - farming/slayer/mining/fishing
 
 # Important: Placeholders cannot be used everywhere. In-line comments will show where placeholders are available
+
+# If a field says Nullable and you don't want to include it, just delete the value (not the key)
+events: # Dispatches sound + message + title to all members of the island
+  island-progressed: # A new upgrade becomes purchasable
+    sound: ENTITY_PLAYER_LEVELUP
+    message: "&e&l[&6&l!&e&l] &7&lIsland can now buy {current} &7&lupgrade!" # {data-type} {current} {current-no-color}
+    title:
+      title: "&6&l/is {data-type} &7&lProgressed!" # Nullable {data-type} {current} {current-no-color}
+      subtitle: "{current} &7&lupgrade is now purchasable!" # Nullable {data-type} {current} {current-no-color}
+      fade-in: 20 # Whole number of ticks
+      persist: 60 # Whole number of ticks
+      fade-out: 20 # Whole number of ticks
+  island-upgraded: # An upgrade was purchased
+    sound: ENTITY_FIREWORK_ROCKET_LAUNCH
+    message: "&e&l[&6&l!&e&l] &7&lIsland bought {current} &7&lupgrade!" # {data-type} {current} {current-no-color}
+    title:
+      title: "&6&l/is {data-type} &7&lProgressed!" # Nullable {data-type} {current} {current-no-color}
+      subtitle: "{current} &7&lupgrade has been bought!" # Nullable {data-type} {current} {current-no-color}
+      fade-in: 20 # Whole number of ticks
+      persist: 60 # Whole number of ticks
+      fade-out: 20 # Whole number of ticks
+
+# Everything below is GUI-related
 all:
   filler:
     material: BLACK_STAINED_GLASS_PANE
