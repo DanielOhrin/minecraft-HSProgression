@@ -153,9 +153,10 @@ public class IsMiningCommand implements SuperiorCommand {
                     item.setType(Material.valueOf(this.API.getConfig().getString("all.locked.material-unlockable")));
                     meta.setDisplayName(ChatColor.translateAlternateColorCodes('&',
                                     this.API.getConfig().getString("all.locked.display-name-unlockable"))
-                            .replace("{current}", ITEM_CONFIG.getString("display-name"))
+                            .replace("{current}", ChatColor.translateAlternateColorCodes('&', ITEM_CONFIG.getString(
+                                    "display-name")))
                             .replace("{current-no-color}",
-                                    ChatColorRemover.removeChatColors(ITEM_CONFIG.getString("display-name-unlockable"))));
+                                    ChatColorRemover.removeChatColors(ITEM_CONFIG.getString("display-name"))));
                     lore = MINING_CONFIG.getStringList("lore.locked");
                 } else {
                     meta.setDisplayName(ChatColor.translateAlternateColorCodes('&',
@@ -168,7 +169,8 @@ public class IsMiningCommand implements SuperiorCommand {
                             .replace("{required}", "" + ITEM_CONFIG.getLong("amount"))
                             .replace("{previous}", MINING_CONFIG.getString(previousKey + ".display-name"))
                             .replace("{previous-no-color}", ChatColorRemover.removeChatColors(MINING_CONFIG.getString(
-                                    previousKey + ".display-name")));;
+                                    previousKey + ".display-name")));
+                    ;
 
                     lore.set(i, ChatColor.translateAlternateColorCodes('&', line));
                 }

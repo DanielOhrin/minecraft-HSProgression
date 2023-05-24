@@ -22,7 +22,7 @@ all:
       - "&a&lSpend {price} to purchase upgrade!" # {price}
   locked:
     display-name: "&7&l???" # Displays when it is locked and the previous is not unlocked
-    display-name-unlockable: "&7{current}" # {current} {current-no-color} - Displays when it is locked and the previous IS unlocked.
+    display-name-unlockable: "&c&k{current-no-color}" # {current} {current-no-color} - Displays when it is locked and the previous IS unlocked.
     lore: # Displays when previous is not unlocked
       - "&7&l???"
       - ""
@@ -34,9 +34,9 @@ all:
 mining:
   lore:
     unlocked: # {amount} {current} {current-no-color}
-      - "&7{amount} {current} Node&7 mined"
+      - "&7{amount} {current-no-color} Nodes Mined"
     locked: # {amount} {required} {previous} {previous-no-color}
-      - "&7{amount}/{required} {previous} Node &7mined"
+      - "&7{amount}/{required} {previous-no-color} Nodes Mined"
   cobblestone:
     material: COBBLESTONE # Item that will show when unlocked
     display-name: "&6&lCobblestone"
@@ -93,9 +93,9 @@ mining:
 slayer:
   lore:
     unlocked: # {amount} {current} {current-no-color}
-      - "&7{amount} &e&l{current} &7slain"
+      - "&7{amount} {current-no-color} slain"
     locked: # {amount} {required} {previous} {previous-no-color}
-      - "&7{amount}/{required} &e&l{previous} &7slain"
+      - "&7{amount}/{required} {previous} &7slain"
   rabbit:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade
@@ -189,13 +189,11 @@ farming:
       - "&e&l{current}&f upgrade"
   lore:
     unlocked:
-      - "&7{amount} {current}&7 Grown" # {amount} {current} {current-no-color}
+      - "&7{amount} {current-no-color} Grown" # {amount} {current} {current-no-color}
     locked: # {amount} {required} {previous} {previous-no-color} {recipe}
       - "&7{amount}/{required} {previous} &7Grown"
-      - ""
       - "&7&lOR"
-      - ""
-      - "&f[&cx&f] {recipe}&f used"
+      - "&f[&cx&f] {recipe}"
   wheat:
     amount: 10 # Amount of previous required to unlock
     price: 1000 # Price of upgrade

@@ -153,9 +153,10 @@ public class IsFarmingCommand implements SuperiorCommand {
                     item.setType(Material.valueOf(this.API.getConfig().getString("all.locked.material-unlockable")));
                     meta.setDisplayName(ChatColor.translateAlternateColorCodes('&',
                                     this.API.getConfig().getString("all.locked.display-name-unlockable"))
-                            .replace("{current}", ITEM_CONFIG.getString("display-name"))
+                            .replace("{current}", ChatColor.translateAlternateColorCodes('&', ITEM_CONFIG.getString(
+                                    "display-name")))
                             .replace("{current-no-color}",
-                                    ChatColorRemover.removeChatColors(ITEM_CONFIG.getString("display-name-unlockable"))));
+                                    ChatColorRemover.removeChatColors(ITEM_CONFIG.getString("display-name"))));
                     lore = FARMING_CONFIG.getStringList("lore.locked");
                 } else {
                     meta.setDisplayName(ChatColor.translateAlternateColorCodes('&',
