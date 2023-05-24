@@ -8,6 +8,7 @@ import com.bgsoftware.superiorskyblock.api.wrappers.SuperiorPlayer;
 import net.highskiesmc.progression.HSProgressionAPI;
 import net.highskiesmc.progression.enums.IslandDataType;
 import net.highskiesmc.progression.enums.TrackedNode;
+import net.highskiesmc.progression.util.ChatColorRemover;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -110,7 +111,9 @@ public class IsMiningCommand implements SuperiorCommand {
                 for (int i = 0; i < lore.size(); i++) {
                     String line = lore.get(i)
                             .replace("{amount}", "" + ITEM_DATA.getLong("amount"))
-                            .replace("{current}", ITEM_CONFIG.getString("display-name"));
+                            .replace("{current}", ITEM_CONFIG.getString("display-name"))
+                            .replace("{current-no-color}", ChatColorRemover.removeChatColors(ITEM_CONFIG.getString(
+                                    "display-name")));
                     lore.set(i, ChatColor.translateAlternateColorCodes('&', line));
                 }
                 meta.setLore(lore);
@@ -123,7 +126,10 @@ public class IsMiningCommand implements SuperiorCommand {
 
                 ItemMeta meta = item.getItemMeta();
                 meta.setDisplayName(ChatColor.translateAlternateColorCodes('&',
-                        this.API.getConfig().getString("all.conditions-met.display-name")));
+                                this.API.getConfig().getString("all.conditions-met.display-name"))
+                        .replace("{current}", ITEM_CONFIG.getString("display-name"))
+                        .replace("{current-no-color}",
+                                ChatColorRemover.removeChatColors(ITEM_CONFIG.getString("display-name"))));
 
                 List<String> lore = this.API.getConfig().getStringList("all.conditions-met.lore");
                 for (int i = 0; i < lore.size(); i++) {
@@ -146,7 +152,10 @@ public class IsMiningCommand implements SuperiorCommand {
                 if (previousIsUnlocked) {
                     item.setType(Material.valueOf(this.API.getConfig().getString("all.locked.material-unlockable")));
                     meta.setDisplayName(ChatColor.translateAlternateColorCodes('&',
-                            this.API.getConfig().getString("all.locked.display-name")));
+                                    this.API.getConfig().getString("all.locked.display-name-unlockable"))
+                            .replace("{current}", ITEM_CONFIG.getString("display-name"))
+                            .replace("{current-no-color}",
+                                    ChatColorRemover.removeChatColors(ITEM_CONFIG.getString("display-name-unlockable"))));
                     lore = MINING_CONFIG.getStringList("lore.locked");
                 } else {
                     meta.setDisplayName(ChatColor.translateAlternateColorCodes('&',
@@ -157,7 +166,9 @@ public class IsMiningCommand implements SuperiorCommand {
                     String line = lore.get(i)
                             .replace("{amount}", "" + MINING_DATA.getLong(previousKey + ".amount"))
                             .replace("{required}", "" + ITEM_CONFIG.getLong("amount"))
-                            .replace("{previous}", MINING_CONFIG.getString(previousKey + ".display-name"));
+                            .replace("{previous}", MINING_CONFIG.getString(previousKey + ".display-name"))
+                            .replace("{previous-no-color}", ChatColorRemover.removeChatColors(MINING_CONFIG.getString(
+                                    previousKey + ".display-name")));;
 
                     lore.set(i, ChatColor.translateAlternateColorCodes('&', line));
                 }
