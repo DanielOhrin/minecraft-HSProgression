@@ -7,21 +7,27 @@ import net.highskiesmc.progression.enums.TrackedCrop;
 import net.highskiesmc.progression.enums.TrackedEntity;
 import net.highskiesmc.progression.enums.TrackedNode;
 import net.highskiesmc.progression.events.events.IslandProgressedEvent;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class HSProgressionAPI {
     private final HSProgression MAIN;
+    private final NamespacedKey NAMESPACED_KEY_RECIPE_CROP_TYPE;
 
     public HSProgressionAPI(HSProgression main) {
         this.MAIN = main;
+        this.NAMESPACED_KEY_RECIPE_CROP_TYPE = new NamespacedKey(main, "recipe-crop-type");
     }
 
     /**
@@ -154,6 +160,25 @@ public class HSProgressionAPI {
         this.MAIN.saveIslands();
     }
 
+    /**
+     * Bypasses the provided section's conditions for the provided island (Currently used for farming recipe claiming)
+     *
+     * @param islandUUID UUID of island
+     * @param dataType   IslandDataType (mining/slayer/etc.)
+     * @param key        Name of tracked item. zombie, coal, etc.
+     */
+    public void meetIslandDataConditions(UUID islandUUID, IslandDataType dataType, String key) throws NullPointerException {
+        final ConfigurationSection ISLAND_DATA =
+                this.MAIN.getIslands().getConfigurationSection(islandUUID.toString() + '.' + dataType.getValue() + '.' + key);
+
+        if (ISLAND_DATA == null) {
+            throw new NullPointerException("Configuration section not found: " + islandUUID + '.' + dataType.getValue() + '.' + key);
+        }
+
+        ISLAND_DATA.set("conditions-met", true);
+        this.MAIN.saveIslands();
+    }
+
     public void sendNotUnlocked(Player player) {
         final ConfigurationSection CONFIG = this.MAIN.getConfig().getConfigurationSection("all.locked");
 
@@ -178,5 +203,45 @@ public class HSProgressionAPI {
      */
     public ConfigurationSection getIslands() {
         return this.MAIN.getIslands();
+    }
+
+    /**
+     *
+     * @return Full recipe for specified TrackedCrop
+     */
+    public ItemStack getFullRecipe(TrackedCrop crop) {
+        final ConfigurationSection RECIPE_CONFIG =
+                this.getConfig().getConfigurationSection(IslandDataType.FARMING.getValue() + ".recipe");
+
+        // Convert the name to "title case"
+        String current =
+                Arrays.stream(crop.getValue().split("-")).map(x -> x.substring(0, 1).toUpperCase() + x.substring(1)).collect(Collectors.joining(" "));
+
+        ItemStack recipe = new ItemStack(Material.PAPER);
+        ItemMeta meta = recipe.getItemMeta();
+
+        // Set the display name
+        String displayName = RECIPE_CONFIG.getString("display-name")
+                .replace("{current}", current);
+        meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', displayName));
+
+        // Set the lore
+        List<String> lore = RECIPE_CONFIG.getStringList("lore");
+        for (int i = 0; i < lore.size(); i++) {
+            String line = lore.get(i).replace("{current}", current);
+            lore.set(i, ChatColor.translateAlternateColorCodes('&', line));
+        }
+        meta.setLore(lore);
+
+        // Apply the persistent data
+        PersistentDataContainer pdc = meta.getPersistentDataContainer();
+        pdc.set(this.NAMESPACED_KEY_RECIPE_CROP_TYPE, PersistentDataType.STRING, crop.getValue());
+
+        recipe.setItemMeta(meta);
+        return recipe;
+    }
+
+    public NamespacedKey getRecipeCropTypeKey() {
+        return this.NAMESPACED_KEY_RECIPE_CROP_TYPE;
     }
 }
