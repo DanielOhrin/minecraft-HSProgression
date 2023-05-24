@@ -7,6 +7,7 @@ import net.highskiesmc.progression.enums.TrackedCrop;
 import net.highskiesmc.progression.enums.TrackedEntity;
 import net.highskiesmc.progression.enums.TrackedNode;
 import net.highskiesmc.progression.events.events.IslandProgressedEvent;
+import net.highskiesmc.progression.events.events.IslandUpgradedEvent;
 import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -109,12 +110,17 @@ public class HSProgressionAPI {
         if (indexOfCurrent != trackedItems.size() - 1) {
             String nextItemKey = trackedItems.get(indexOfCurrent + 1);
             if (!ISLAND_DATA.getBoolean(nextItemKey + '.' + "conditions-met")) {
-                if (currentValue + 1 >= this.MAIN.getConfig().getLong(dataType.getValue() + '.' + nextItemKey + '.' +
-                        "amount")) {
+                if (currentValue + 1 >= this.getConfig(dataType).getLong(nextItemKey + '.' + "amount")) {
                     ISLAND_DATA.set(nextItemKey + '.' + "conditions-met", true);
-
-                    // Call IslandProgressedEvent
-                    Bukkit.getPluginManager().callEvent(new IslandProgressedEvent(SuperiorSkyblockAPI.getIslandByUUID(islandUUID), dataType, nextItemKey));
+                    if (dataType == IslandDataType.FARMING) {
+                        ISLAND_DATA.set(nextItemKey + '.' + "unlocked", true);
+                    }
+                    // Call Event
+                    Bukkit.getPluginManager().callEvent(dataType == IslandDataType.FARMING
+                            ? new IslandUpgradedEvent(SuperiorSkyblockAPI.getIslandByUUID(islandUUID), dataType,
+                            nextItemKey)
+                            : new IslandProgressedEvent(SuperiorSkyblockAPI.getIslandByUUID(islandUUID), dataType,
+                            nextItemKey));
                 }
             }
         }
@@ -180,18 +186,44 @@ public class HSProgressionAPI {
     }
 
     public void sendNotUnlocked(Player player) {
-        final ConfigurationSection CONFIG = this.MAIN.getConfig().getConfigurationSection("all.locked");
+        final ConfigurationSection CONFIG = this.getConfig(null).getConfigurationSection("all.locked");
 
         player.sendMessage(ChatColor.translateAlternateColorCodes('&', CONFIG.getString("message")));
         player.playSound(player.getLocation(), Sound.valueOf(CONFIG.getString("sound")), 1, 1);
     }
 
-    public ConfigurationSection getConfig() {
-        return this.MAIN.getConfig();
+    public ConfigurationSection getConfig(IslandDataType dataType) {
+        if (dataType == null) {
+            return this.MAIN.getConfig();
+        }
+
+        switch (dataType) {
+            case FARMING:
+                return this.MAIN.getFarmingConfig();
+            case SLAYER:
+                return this.MAIN.getSlayerConfig();
+            case MINING:
+                return this.MAIN.getMiningConfig();
+            default:
+                return null;
+        }
     }
 
-    public void saveConfig() {
-        this.MAIN.saveConfig();
+    public void saveConfig(IslandDataType dataType) {
+        if (dataType == null) {
+            this.MAIN.saveConfig();
+        }
+
+        switch (dataType) {
+            case FARMING:
+                this.MAIN.saveFarmingConfig();
+            case SLAYER:
+                this.MAIN.saveSlayerConfig();
+            case MINING:
+                this.MAIN.saveMiningConfig();
+            default:
+                break;
+        }
     }
 
     public void saveIslands() {
@@ -206,12 +238,11 @@ public class HSProgressionAPI {
     }
 
     /**
-     *
      * @return Full recipe for specified TrackedCrop
      */
     public ItemStack getFullRecipe(TrackedCrop crop) {
         final ConfigurationSection RECIPE_CONFIG =
-                this.getConfig().getConfigurationSection(IslandDataType.FARMING.getValue() + ".recipe");
+                this.getConfig(IslandDataType.FARMING).getConfigurationSection("recipe");
 
         // Convert the name to "title case"
         String current =
@@ -243,5 +274,48 @@ public class HSProgressionAPI {
 
     public NamespacedKey getRecipeCropTypeKey() {
         return this.NAMESPACED_KEY_RECIPE_CROP_TYPE;
+    }
+
+    public void fullyUnlockIslandDataUpTo(UUID islandUUID, IslandDataType dataType, String finalKey) {
+        switch (dataType) {
+            case FARMING:
+                for (String key :
+                        Arrays.stream(TrackedCrop.values()).map(TrackedCrop::getValue).collect(Collectors.toList())) {
+                    if (key.equalsIgnoreCase(finalKey)) {
+                        break;
+                    }
+                    fullyUnlockIslandDataWithoutSaving(islandUUID, dataType, key);
+                }
+                break;
+            case MINING:
+                for (String key :
+                        Arrays.stream(TrackedNode.values()).map(TrackedNode::getValue).collect(Collectors.toList())) {
+                    if (key.equalsIgnoreCase(finalKey)) {
+                        break;
+                    }
+                    fullyUnlockIslandDataWithoutSaving(islandUUID, dataType, key);
+                }
+                break;
+            case SLAYER:
+                for (String key :
+                        Arrays.stream(TrackedEntity.values()).map(TrackedEntity::getValue).collect(Collectors.toList())) {
+                    if (key.equalsIgnoreCase(finalKey)) {
+                        break;
+                    }
+                    fullyUnlockIslandDataWithoutSaving(islandUUID, dataType, key);
+                }
+                break;
+            case FISHING:
+            default:
+                break;
+        }
+        fullyUnlockIslandDataWithoutSaving(islandUUID, dataType, finalKey);
+        saveIslands();
+    }
+
+    private void fullyUnlockIslandDataWithoutSaving(UUID islandUUID, IslandDataType dataType, String key) {
+        final ConfigurationSection ISLAND_DATA = this.getIslandData(islandUUID, dataType, key);
+        ISLAND_DATA.set("conditions-met", true);
+        ISLAND_DATA.set("unlocked", true);
     }
 }

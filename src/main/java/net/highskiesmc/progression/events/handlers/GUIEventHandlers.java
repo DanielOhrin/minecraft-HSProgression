@@ -61,8 +61,7 @@ public class GUIEventHandlers implements Listener {
                     if (!ISLAND_DATA.getBoolean("unlocked") && ISLAND_DATA.getBoolean("conditions-met")) {
                         UpgradeGUI gui = this.createConfirmationInventory((Player) e.getWhoClicked(),
                                 IslandDataType.SLAYER,
-                                this.API.getConfig().getDouble(IslandDataType.SLAYER.getValue() + '.' + entityType.getValue() +
-                                        ".price"),
+                                this.API.getConfig(IslandDataType.SLAYER).getDouble(entityType.getValue() + ".price"),
                                 null,
                                 null,
                                 entityType);
@@ -92,8 +91,7 @@ public class GUIEventHandlers implements Listener {
                     if (!ISLAND_DATA.getBoolean("unlocked") && ISLAND_DATA.getBoolean("conditions-met")) {
                         UpgradeGUI gui = this.createConfirmationInventory((Player) e.getWhoClicked(),
                                 IslandDataType.MINING,
-                                this.API.getConfig().getDouble(IslandDataType.MINING.getValue() + '.' + nodeType.getValue() +
-                                        ".price"),
+                                this.API.getConfig(IslandDataType.MINING).getDouble(nodeType.getValue() + ".price"),
                                 nodeType,
                                 null,
                                 null);
@@ -123,8 +121,7 @@ public class GUIEventHandlers implements Listener {
                     if (!ISLAND_DATA.getBoolean("unlocked") && ISLAND_DATA.getBoolean("conditions-met")) {
                         UpgradeGUI gui = this.createConfirmationInventory((Player) e.getWhoClicked(),
                                 IslandDataType.FARMING,
-                                this.API.getConfig().getDouble(IslandDataType.FARMING.getValue() + '.' + cropType.getValue() +
-                                        ".price"),
+                                this.API.getConfig(IslandDataType.FARMING).getDouble(cropType.getValue() + ".price"),
                                 null,
                                 cropType,
                                 null);

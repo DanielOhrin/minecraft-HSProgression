@@ -7,6 +7,7 @@ import net.highskiesmc.progression.HSProgressionAPI;
 import net.highskiesmc.progression.enums.IslandDataType;
 import net.highskiesmc.progression.enums.TrackedCrop;
 import net.highskiesmc.progression.events.events.IslandProgressedEvent;
+import net.highskiesmc.progression.events.events.IslandUpgradedEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -53,19 +54,28 @@ public class PlayerInteractHandler implements Listener {
                                 List<String> cropTypes =
                                         Arrays.stream(TrackedCrop.values()).map(TrackedCrop::getValue).collect(Collectors.toList());
                                 int currentIndex = cropTypes.indexOf(cropType);
-                                if (currentIndex != 1 && this.API.getIslandData(island.getUniqueId(),
+                                if (currentIndex == 1 || this.API.getIslandData(island.getUniqueId(),
                                         IslandDataType.FARMING,
                                         cropTypes.get(currentIndex - 1)).getBoolean("unlocked")) {
-                                    if (itemStackAmount > 1) {
-                                        itemStack.setAmount(itemStackAmount - 1);
+                                    if (this.API.getIslandData(island.getUniqueId(), IslandDataType.FARMING,
+                                            cropTypes.get(currentIndex - 1)).getLong("amount") >= this.API.getConfig(IslandDataType.FARMING).getLong(cropType + ".amount") / 2) {
+                                        if (itemStackAmount > 1) {
+                                            itemStack.setAmount(itemStackAmount - 1);
+                                        } else {
+                                            e.getPlayer().getInventory().remove(itemStack);
+                                            this.API.meetIslandDataConditions(island.getUniqueId(),
+                                                    IslandDataType.FARMING,
+                                                    cropType);
+                                            this.API.unlockIslandData(island.getUniqueId(),
+                                                    IslandDataType.FARMING,
+                                                    cropType);
+                                            // Call island upgraded event
+                                            IslandUpgradedEvent event = new IslandUpgradedEvent(island,
+                                                    IslandDataType.FARMING, cropType);
+                                            Bukkit.getPluginManager().callEvent(event);
+                                        }
                                     } else {
-                                        e.getPlayer().getInventory().remove(itemStack);
-                                        this.API.meetIslandDataConditions(island.getUniqueId(), IslandDataType.FARMING,
-                                                cropType);
-                                        // Call island progressed event
-                                        IslandProgressedEvent event = new IslandProgressedEvent(island,
-                                                IslandDataType.FARMING, cropType);
-                                        Bukkit.getPluginManager().callEvent(event);
+                                        this.API.sendNotUnlocked(e.getPlayer());
                                     }
                                 } else {
                                     this.API.sendNotUnlocked(e.getPlayer());
