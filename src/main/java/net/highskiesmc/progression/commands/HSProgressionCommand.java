@@ -4,6 +4,7 @@ import com.bgsoftware.superiorskyblock.api.SuperiorSkyblockAPI;
 import com.bgsoftware.superiorskyblock.api.island.Island;
 import net.highskiesmc.progression.HSProgression;
 import net.highskiesmc.progression.HSProgressionAPI;
+import net.highskiesmc.progression.enums.TrackedCrop;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -12,6 +13,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+
+import java.util.Arrays;
+import java.util.Optional;
 
 public class HSProgressionCommand implements CommandExecutor {
     private final HSProgression MAIN;
@@ -33,12 +37,38 @@ public class HSProgressionCommand implements CommandExecutor {
                 } else if (sender instanceof Player) {
                     sender.sendMessage(ChatColor.RED + "This can only be used from console!");
                 }
+            } else if (args[0].equalsIgnoreCase("getRecipe")) {
+                if (sender instanceof ConsoleCommandSender) {
+                    Bukkit.getLogger().warning("This command must be used by a player!");
+                } else if (sender instanceof Player) {
+                    sender.sendMessage(ChatColor.RED + "/hsp getRecipe <crop-name>");
+                }
+            } else {
+                if (sender instanceof ConsoleCommandSender) {
+                    Bukkit.getLogger().warning("/hsp <reload/fixislands>");
+                } else if (sender instanceof Player) {
+                    sender.sendMessage(ChatColor.RED + "/hsp <reload/getRecipe>");
+                }
+            }
+        } else if (args.length == 2) {
+            if (args[0].equalsIgnoreCase("getRecipe")) {
+                if (sender instanceof Player) {
+                    return this.getRecipe(sender, args);
+                } else if (sender instanceof ConsoleCommandSender) {
+                    Bukkit.getLogger().warning("This command must be used by a player!");
+                }
+            } else {
+                if (sender instanceof ConsoleCommandSender) {
+                    Bukkit.getLogger().warning("/hsp <reload/fixislands>");
+                } else if (sender instanceof Player) {
+                    sender.sendMessage(ChatColor.RED + "/hsp <reload/getRecipe>");
+                }
             }
         } else {
             if (sender instanceof Player) {
-                sender.sendMessage(ChatColor.RED + "/hsprogression <reload>");
+                sender.sendMessage(ChatColor.RED + "/hsp <reload/getRecipe>");
             } else if (sender instanceof ConsoleCommandSender) {
-                Bukkit.getLogger().warning("/hsprogression <reload/fixislands>");
+                Bukkit.getLogger().warning("/hsp <reload/fixislands>");
             }
         }
 
@@ -71,6 +101,21 @@ public class HSProgressionCommand implements CommandExecutor {
         }
 
         Bukkit.getLogger().info("Done!");
+        return true;
+    }
+
+    private boolean getRecipe(CommandSender sender, String[] args) {
+        if (sender.hasPermission("hsprogression.getrecipe")) {
+            Optional<TrackedCrop> optionalCrop =
+                    Arrays.stream(TrackedCrop.values()).filter(c -> c.getValue().equals(args[1].toLowerCase())).findFirst();
+
+            if (optionalCrop.isPresent() && optionalCrop.get() != TrackedCrop.values()[0]) {
+                ((Player) sender).getInventory().addItem(this.API.getFullRecipe(optionalCrop.get()));
+            } else {
+                sender.sendMessage(ChatColor.RED + "Invalid crop-type given.");
+            }
+        }
+
         return true;
     }
 }
