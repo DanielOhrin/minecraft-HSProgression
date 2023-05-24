@@ -114,7 +114,7 @@ public class HSProgressionAPI {
                     ISLAND_DATA.set(nextItemKey + '.' + "conditions-met", true);
 
                     // Call IslandProgressedEvent
-                    Bukkit.getPluginManager().callEvent(new IslandProgressedEvent(SuperiorSkyblockAPI.getIslandByUUID(islandUUID), dataType, key));
+                    Bukkit.getPluginManager().callEvent(new IslandProgressedEvent(SuperiorSkyblockAPI.getIslandByUUID(islandUUID), dataType, nextItemKey));
                 }
             }
         }
