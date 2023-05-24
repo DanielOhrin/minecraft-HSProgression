@@ -9,6 +9,7 @@ import net.highskiesmc.progression.enums.TrackedCrop;
 import net.highskiesmc.progression.events.events.IslandProgressedEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -34,45 +35,47 @@ public class PlayerInteractHandler implements Listener {
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent e) {
         if ((e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) && e.getHand().equals(EquipmentSlot.HAND)) {
-            if (e.getItem().hasItemMeta()) {
-                if (e.getItem().getItemMeta().getPersistentDataContainer().has(this.API.getRecipeCropTypeKey(),
-                        PersistentDataType.STRING)) {
-                    SuperiorPlayer superiorPlayer = SuperiorSkyblockAPI.getPlayer(e.getPlayer().getUniqueId());
-                    Island island = superiorPlayer.getIsland();
-                    ItemStack itemStack = e.getItem();
-                    int itemStackAmount = e.getItem().getAmount();
-                    String cropType =
-                            itemStack.getItemMeta().getPersistentDataContainer().get(this.API.getRecipeCropTypeKey(),
-                                    PersistentDataType.STRING);
+            if (e.getItem() != null && !e.getItem().getType().equals(Material.AIR)) {
+                if (e.getItem().hasItemMeta()) {
+                    if (e.getItem().getItemMeta().getPersistentDataContainer().has(this.API.getRecipeCropTypeKey(),
+                            PersistentDataType.STRING)) {
+                        SuperiorPlayer superiorPlayer = SuperiorSkyblockAPI.getPlayer(e.getPlayer().getUniqueId());
+                        Island island = superiorPlayer.getIsland();
+                        ItemStack itemStack = e.getItem();
+                        int itemStackAmount = e.getItem().getAmount();
+                        String cropType =
+                                itemStack.getItemMeta().getPersistentDataContainer().get(this.API.getRecipeCropTypeKey(),
+                                        PersistentDataType.STRING);
 
-                    if (island != null) {
-                        if (!this.API.getIslandData(island.getUniqueId(), IslandDataType.FARMING, cropType).getBoolean("conditions-met")) {
-                            // Check if the upgrade is locked
-                            List<String> cropTypes =
-                                    Arrays.stream(TrackedCrop.values()).map(TrackedCrop::getValue).collect(Collectors.toList());
-                            int currentIndex = cropTypes.indexOf(cropType);
-                            if (currentIndex != 1 && this.API.getIslandData(island.getUniqueId(),
-                                    IslandDataType.FARMING,
-                                    cropTypes.get(currentIndex - 1)).getBoolean("unlocked")) {
-                                if (itemStackAmount > 1) {
-                                    itemStack.setAmount(itemStackAmount - 1);
+                        if (island != null) {
+                            if (!this.API.getIslandData(island.getUniqueId(), IslandDataType.FARMING, cropType).getBoolean("conditions-met")) {
+                                // Check if the upgrade is locked
+                                List<String> cropTypes =
+                                        Arrays.stream(TrackedCrop.values()).map(TrackedCrop::getValue).collect(Collectors.toList());
+                                int currentIndex = cropTypes.indexOf(cropType);
+                                if (currentIndex != 1 && this.API.getIslandData(island.getUniqueId(),
+                                        IslandDataType.FARMING,
+                                        cropTypes.get(currentIndex - 1)).getBoolean("unlocked")) {
+                                    if (itemStackAmount > 1) {
+                                        itemStack.setAmount(itemStackAmount - 1);
+                                    } else {
+                                        e.getPlayer().getInventory().remove(itemStack);
+                                        this.API.meetIslandDataConditions(island.getUniqueId(), IslandDataType.FARMING,
+                                                cropType);
+                                        // Call island progressed event
+                                        IslandProgressedEvent event = new IslandProgressedEvent(island,
+                                                IslandDataType.FARMING, cropType);
+                                        Bukkit.getPluginManager().callEvent(event);
+                                    }
                                 } else {
-                                    e.getPlayer().getInventory().remove(itemStack);
-                                    this.API.meetIslandDataConditions(island.getUniqueId(), IslandDataType.FARMING,
-                                            cropType);
-                                    // Call island progressed event
-                                    IslandProgressedEvent event = new IslandProgressedEvent(island,
-                                            IslandDataType.FARMING, cropType);
-                                    Bukkit.getPluginManager().callEvent(event);
+                                    this.API.sendNotUnlocked(e.getPlayer());
                                 }
                             } else {
-                                this.API.sendNotUnlocked(e.getPlayer());
+                                e.getPlayer().sendMessage(ChatColor.RED + "Your island does not need this!");
                             }
                         } else {
-                            e.getPlayer().sendMessage(ChatColor.RED + "Your island does not need this!");
+                            e.getPlayer().sendMessage(ChatColor.RED + "You need an island to use this!");
                         }
-                    } else {
-                        e.getPlayer().sendMessage(ChatColor.RED + "You need an island to use this!");
                     }
                 }
             }
