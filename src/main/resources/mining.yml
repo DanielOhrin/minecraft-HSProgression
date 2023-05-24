@@ -1,0 +1,79 @@
+# Do not change the amount of items in the lists or attempt to change what is tracked for each item in the lists
+# Ex: Each material can be changed, but it will not change what is actually being tracked
+
+# Placeholders:
+# {current} - The current item's display name with its color codes
+# {current-no-color} - The current item's display name as plaintext (no color codes)
+# {previous} - The previous item's display name with its color codes
+# {previous-no-color} - the previous item's display name as plaintext (no color codes)
+# {price} - Price to unlock the current upgrade
+# {amount} - Amount of current item the island has tracked
+# {required} - Required amount of items to unlock the upgrade purchase
+# {recipe} - Colorized farming recipe display name
+# {data-type} - farming/slayer/mining/fishing
+# {required-half} - Specific to farming, it is half the amount required for the upgrade
+# {progress-indicator} - &f[&cx&f] or &f[&a✓& (If amount > required)
+
+# Important: Placeholders cannot be used everywhere. In-line comments will show where placeholders are available
+
+
+lore:
+  unlocked: # {amount} {current} {current-no-color}
+    - "&7{amount} {current-no-color} Nodes Mined"
+  locked: # {amount} {required} {previous} {previous-no-color} {price}
+    - "&7{amount}/{required} {previous-no-color} Nodes Mined"
+    - ""
+    - "&7Cost: &a${price}"
+cobblestone:
+  material: COBBLESTONE # Item that will show when unlocked
+  display-name: "&6&lCobblestone"
+coal:
+  amount: 10 # Amount of previous required to unlock
+  price: 1000 # Price of upgrade once amount is met
+  material: COAL_ORE # Item that will show when unlocked
+  display-name: "&6&lCoal"
+copper:
+  amount: 10 # Amount of previous required to unlock
+  price: 1000 # Price of upgrade once amount is met
+  material: COPPER_ORE # Item that will show when unlocked
+  display-name: "&6&lCopper"
+nether-gold:
+  amount: 10 # Amount of previous required to unlock
+  price: 1000 # Price of upgrade once amount is met
+  material: NETHER_GOLD_ORE # Item that will show when unlocked
+  display-name: "&6&lNether Gold"
+nether-quartz:
+  amount: 10 # Amount of previous required to unlock
+  price: 1000 # Price of upgrade once amount is met
+  material: NETHER_QUARTZ_ORE # Item that will show when unlocked
+  display-name: "&6&lNether Quartz"
+iron:
+  amount: 10 # Amount of previous required to unlock
+  price: 1000 # Price of upgrade once amount is met
+  material: IRON_ORE # Item that will show when unlocked
+  display-name: "&6&lIron"
+ruby:
+  amount: 10 # Amount of previous required to unlock
+  price: 1000 # Price of upgrade once amount is met
+  material: REDSTONE_ORE # Item that will show when unlocked
+  display-name: "&6&lRuby"
+lapis:
+  amount: 10 # Amount of previous required to unlock
+  price: 1000 # Price of upgrade once amount is met
+  material: LAPIS_ORE # Item that will show when unlocked
+  display-name: "&6&lLapis"
+diamond:
+  amount: 10 # Amount of previous required to unlock
+  price: 1000 # Price of upgrade once amount is met
+  material: DIAMOND_ORE # Item that will show when unlocked
+  display-name: "&6&lDiamond"
+emerald:
+  amount: 10 # Amount of previous required to unlock
+  price: 1000 # Price of upgrade once amount is met
+  material: EMERALD_ORE # Item that will show when unlocked
+  display-name: "&6&lEmerald"
+ancient-debris:
+  amount: 10 # Amount of previous required to unlock
+  price: 1000 # Price of upgrade once amount is met
+  material: ANCIENT_DEBRIS # Item that will show when unlocked
+  display-name: "&6&lAncient Debris"

@@ -24,10 +24,11 @@ public class IslandProgressionHandlers implements Listener {
 
     @EventHandler
     public void onIslandProgress(IslandProgressedEvent e) {
-        final ConfigurationSection EVENT_CONFIG = this.API.getConfig().getConfigurationSection("events" +
+        final ConfigurationSection EVENT_CONFIG = this.API.getConfig(null).getConfigurationSection("events" +
                 ".island-progressed");
         final String DATA_TYPE = e.getIslandDataType().getValue();
-        final String CURRENT = this.API.getConfig().getString(DATA_TYPE + '.' + e.getUnlockedKey() + ".display-name");
+        final String CURRENT = this.API.getConfig(e.getIslandDataType()).getString(e.getUnlockedKey() +
+                ".display-name");
         final String CURRENT_NO_COLOR = ChatColorRemover.removeChatColors(CURRENT);
 
 // CONSTRUCT MESSAGE
@@ -74,10 +75,11 @@ public class IslandProgressionHandlers implements Listener {
 
     @EventHandler
     void onIslandUpgraded(IslandUpgradedEvent e) {
-        final ConfigurationSection EVENT_CONFIG = this.API.getConfig().getConfigurationSection("events" +
+        final ConfigurationSection EVENT_CONFIG = this.API.getConfig(null).getConfigurationSection("events" +
                 ".island-upgraded");
         final String DATA_TYPE = e.getIslandDataType().getValue();
-        final String CURRENT = this.API.getConfig().getString(DATA_TYPE + '.' + e.getUnlockedKey() + ".display-name");
+        final String CURRENT = this.API.getConfig(e.getIslandDataType()).getString(e.getUnlockedKey() + ".display" +
+                "-name");
         final String CURRENT_NO_COLOR = ChatColorRemover.removeChatColors(CURRENT);
 
         // CONSTRUCT MESSAGE
