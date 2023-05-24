@@ -62,55 +62,7 @@ public class HSProgressionCommand implements CommandExecutor {
             } else if (sender instanceof Player) {
                 sender.sendMessage(ChatColor.RED + "/hsp <reload/getRecipe/unlock>");
             }
-
-            return false;
         }
-
-
-        if (args.length == 1) {
-            if (args[0].equalsIgnoreCase("reload")) {
-                return this.reload(sender);
-            } else if (args[0].equalsIgnoreCase("fixislands")) {
-                if (sender instanceof ConsoleCommandSender) {
-                    return this.fixIslands();
-                } else if (sender instanceof Player) {
-                    sender.sendMessage(ChatColor.RED + "This can only be used from console!");
-                }
-            } else if (args[0].equalsIgnoreCase("getRecipe")) {
-                if (sender instanceof ConsoleCommandSender) {
-                    Bukkit.getLogger().warning("This command must be used by a player!");
-                } else if (sender instanceof Player) {
-                    sender.sendMessage(ChatColor.RED + "/hsp getRecipe <crop-name>");
-                }
-            } else {
-                if (sender instanceof ConsoleCommandSender) {
-                    Bukkit.getLogger().warning("/hsp <reload/fixislands>");
-                } else if (sender instanceof Player) {
-                    sender.sendMessage(ChatColor.RED + "/hsp <reload/getRecipe>");
-                }
-            }
-        } else if (args.length == 2) {
-            if (args[0].equalsIgnoreCase("getRecipe")) {
-                if (sender instanceof Player) {
-                    return this.getRecipe(sender, args);
-                } else if (sender instanceof ConsoleCommandSender) {
-                    Bukkit.getLogger().warning("This command must be used by a player!");
-                }
-            } else {
-                if (sender instanceof ConsoleCommandSender) {
-                    Bukkit.getLogger().warning("/hsp <reload/fixislands/unlock>");
-                } else if (sender instanceof Player) {
-                    sender.sendMessage(ChatColor.RED + "/hsp <reload/getRecipe/unlock>");
-                }
-            }
-        } else {
-            if (sender instanceof Player) {
-                sender.sendMessage(ChatColor.RED + "/hsp <reload/getRecipe/unlock>");
-            } else if (sender instanceof ConsoleCommandSender) {
-                Bukkit.getLogger().warning("/hsp <reload/fixislands/unlock>");
-            }
-        }
-
         return false;
     }
 
