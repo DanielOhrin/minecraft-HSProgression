@@ -7,6 +7,7 @@ import net.highskiesmc.progression.enums.TrackedCrop;
 import net.highskiesmc.progression.enums.TrackedEntity;
 import net.highskiesmc.progression.enums.TrackedNode;
 import net.highskiesmc.progression.events.events.IslandProgressedEvent;
+import net.highskiesmc.progression.events.events.IslandUpgradedEvent;
 import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -111,9 +112,15 @@ public class HSProgressionAPI {
             if (!ISLAND_DATA.getBoolean(nextItemKey + '.' + "conditions-met")) {
                 if (currentValue + 1 >= this.getConfig(dataType).getLong(nextItemKey + '.' + "amount")) {
                     ISLAND_DATA.set(nextItemKey + '.' + "conditions-met", true);
-
-                    // Call IslandProgressedEvent
-                    Bukkit.getPluginManager().callEvent(new IslandProgressedEvent(SuperiorSkyblockAPI.getIslandByUUID(islandUUID), dataType, nextItemKey));
+                    if (dataType == IslandDataType.FARMING) {
+                        ISLAND_DATA.set(nextItemKey + '.' + "unlocked", true);
+                    }
+                    // Call Event
+                    Bukkit.getPluginManager().callEvent(dataType == IslandDataType.FARMING
+                            ? new IslandUpgradedEvent(SuperiorSkyblockAPI.getIslandByUUID(islandUUID), dataType,
+                            nextItemKey)
+                            : new IslandProgressedEvent(SuperiorSkyblockAPI.getIslandByUUID(islandUUID), dataType,
+                            nextItemKey));
                 }
             }
         }

@@ -171,9 +171,9 @@ public class IsFarmingCommand implements SuperiorCommand {
                 }
 
                 long amount = FARMING_DATA.getLong(previousKey + ".amount");
-                long amountOrHalfRequired = amount / 2;
                 long required = ITEM_CONFIG.getLong("amount");
                 long requiredHalf = required / 2;
+                long amountOrHalfRequired = Math.min(amount, requiredHalf);
                 final String PREVIOUS = FARMING_CONFIG.getString(previousKey + ".display-name");
                 final String PREVIOUS_NO_COLOR = ChatColorRemover.removeChatColors(PREVIOUS);
                 final String PROGRESS_INDICATOR = amount >= requiredHalf ?

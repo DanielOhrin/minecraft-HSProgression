@@ -20,10 +20,10 @@
 lore:
   unlocked: # {amount} {current} {current-no-color}
     - "&7{amount} {current-no-color} slain"
-    - ""
-    - "&7Cost: &a${price}"
   locked: # {amount} {required} {previous} {previous-no-color} {price}
     - "&7{amount}/{required} {previous} &7slain"
+    - ""
+    - "&7Cost: &a${price}"
 rabbit:
   amount: 10 # Amount of previous required to unlock
   price: 1000 # Price of upgrade

@@ -129,17 +129,19 @@ public class IsMiningCommand implements SuperiorCommand {
 
                 ItemMeta meta = item.getItemMeta();
                 final String CURRENT = ITEM_CONFIG.getString("display-name");
+                final String CURRENT_NO_COLOR = ChatColorRemover.removeChatColors(CURRENT);
                 meta.setDisplayName(ChatColor.translateAlternateColorCodes('&',
                                 this.API.getConfig(null).getString("all.conditions-met.display-name"))
                         .replace("{current}", CURRENT)
-                        .replace("{current-no-color}",
-                                ChatColorRemover.removeChatColors(CURRENT)));
+                        .replace("{current-no-color}", CURRENT_NO_COLOR));
 
                 List<String> lore = this.API.getConfig(null).getStringList("all.conditions-met.lore");
                 double price = ITEM_CONFIG.getDouble("price");
                 for (int i = 0; i < lore.size(); i++) {
                     String line = lore.get(i)
-                            .replace("{price}", "" + price);
+                            .replace("{price}", "" + price)
+                            .replace("{current}", CURRENT)
+                            .replace("{current-no-color}", CURRENT_NO_COLOR);
 
                     lore.set(i, ChatColor.translateAlternateColorCodes('&', line));
                 }

@@ -58,7 +58,7 @@ public class PlayerInteractHandler implements Listener {
                                         IslandDataType.FARMING,
                                         cropTypes.get(currentIndex - 1)).getBoolean("unlocked")) {
                                     if (this.API.getIslandData(island.getUniqueId(), IslandDataType.FARMING,
-                                            cropType).getLong("amount") >= this.API.getConfig(IslandDataType.FARMING).getLong(cropType + ".amount")) {
+                                            cropTypes.get(currentIndex - 1)).getLong("amount") >= this.API.getConfig(IslandDataType.FARMING).getLong(cropType + ".amount") / 2) {
                                         if (itemStackAmount > 1) {
                                             itemStack.setAmount(itemStackAmount - 1);
                                         } else {
@@ -69,7 +69,7 @@ public class PlayerInteractHandler implements Listener {
                                             this.API.unlockIslandData(island.getUniqueId(),
                                                     IslandDataType.FARMING,
                                                     cropType);
-                                            // Call island progressed event
+                                            // Call island upgraded event
                                             IslandUpgradedEvent event = new IslandUpgradedEvent(island,
                                                     IslandDataType.FARMING, cropType);
                                             Bukkit.getPluginManager().callEvent(event);

@@ -20,7 +20,7 @@
 events: # Dispatches sound + message + title to all members of the island
   island-progressed: # A new upgrade becomes purchasable
     sound: ENTITY_PLAYER_LEVELUP
-    message: "&e[&6&l!&e] {current} &7upgrade is now purchasable!" # {data-type} {current} {current-no-color}
+    message: "&e[&6&l!&e] &7Island can now buy {current} &7upgrade!" # {data-type} {current} {current-no-color}
     title:
       title: "&6&l/is {data-type} &7Progressed!" # Nullable {data-type} {current} {current-no-color}
       subtitle: "{current} &7upgrade is now purchasable!" # Nullable {data-type} {current} {current-no-color}
@@ -29,10 +29,10 @@ events: # Dispatches sound + message + title to all members of the island
       fade-out: 40 # Whole number of ticks
   island-upgraded: # An upgrade was purchased
     sound: UI_TOAST_CHALLENGE_COMPLETE
-    message: "&e[&6&l!&e] &7Purchased /is {data-type} {current} &7upgrade!" # {data-type} {current} {current-no-color}
+    message: "&e[&6&l!&e] &6&l/is {data-type} | &7{current} &7 unlocked!" # {data-type} {current} {current-no-color}
     title:
       title: "&6&l/is {data-type} &7Upgraded!" # Nullable {data-type} {current} {current-no-color}
-      subtitle: "{current} &7upgrade has been bought!" # Nullable {data-type} {current} {current-no-color}
+      subtitle: "{current} &7has been unlocked!" # Nullable {data-type} {current} {current-no-color}
       fade-in: 40 # Whole number of ticks
       persist: 100 # Whole number of ticks
       fade-out: 40 # Whole number of ticks
@@ -45,7 +45,7 @@ all:
     material: LIME_STAINED_GLASS_PANE # Item that will show when an upgrade is ready to be purchased
     display-name: "&7{current-no-color}" # {current} {current-no-color}
     lore:
-      - "&a&lSpend ${price} to purchase upgrade" # {price}
+    message: "&e[&6&l!&e] &6&l/is {data-type}&7 upgraded! {current} &7unlocked!" # {data-type} {current} {current-no-color}
   locked:
     display-name: "&7&l???" # Displays when it is locked and the previous is not unlocked
     display-name-unlockable: "&c&k{current-no-color}" # {current} {current-no-color} - Displays when it is locked and the previous IS unlocked.
