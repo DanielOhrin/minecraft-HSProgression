@@ -231,6 +231,7 @@ public class HSProgressionAPI {
             String line = lore.get(i).replace("{current}", current);
             lore.set(i, ChatColor.translateAlternateColorCodes('&', line));
         }
+        meta.setLore(lore);
 
         // Apply the persistent data
         PersistentDataContainer pdc = meta.getPersistentDataContainer();
