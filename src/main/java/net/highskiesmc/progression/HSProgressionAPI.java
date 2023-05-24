@@ -275,4 +275,47 @@ public class HSProgressionAPI {
     public NamespacedKey getRecipeCropTypeKey() {
         return this.NAMESPACED_KEY_RECIPE_CROP_TYPE;
     }
+
+    public void fullyUnlockIslandDataUpTo(UUID islandUUID, IslandDataType dataType, String finalKey) {
+        switch (dataType) {
+            case FARMING:
+                for (String key :
+                        Arrays.stream(TrackedCrop.values()).map(TrackedCrop::getValue).collect(Collectors.toList())) {
+                    if (key.equalsIgnoreCase(finalKey)) {
+                        break;
+                    }
+                    fullyUnlockIslandDataWithoutSaving(islandUUID, dataType, key);
+                }
+                break;
+            case MINING:
+                for (String key :
+                        Arrays.stream(TrackedNode.values()).map(TrackedNode::getValue).collect(Collectors.toList())) {
+                    if (key.equalsIgnoreCase(finalKey)) {
+                        break;
+                    }
+                    fullyUnlockIslandDataWithoutSaving(islandUUID, dataType, key);
+                }
+                break;
+            case SLAYER:
+                for (String key :
+                        Arrays.stream(TrackedEntity.values()).map(TrackedEntity::getValue).collect(Collectors.toList())) {
+                    if (key.equalsIgnoreCase(finalKey)) {
+                        break;
+                    }
+                    fullyUnlockIslandDataWithoutSaving(islandUUID, dataType, key);
+                }
+                break;
+            case FISHING:
+            default:
+                break;
+        }
+        fullyUnlockIslandDataWithoutSaving(islandUUID, dataType, finalKey);
+        saveIslands();
+    }
+
+    private void fullyUnlockIslandDataWithoutSaving(UUID islandUUID, IslandDataType dataType, String key) {
+        final ConfigurationSection ISLAND_DATA = this.getIslandData(islandUUID, dataType, key);
+        ISLAND_DATA.set("conditions-met", true);
+        ISLAND_DATA.set("unlocked", true);
+    }
 }
