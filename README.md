@@ -40,4 +40,4 @@ Anywhere configurations/data is accessed uses the API.
 Current, all island data is stored in `islands.yml`, and is accessed/written with the API.
 
 ### Staff documentation
-[This](https://docs.google.com/document/d/1oeefr-gxIYut2BSB2bATQ4YarS8YFH34N00bw9hnVSw/edit?usp=sharing) documentation is less technical and more from a configuration/overview standpoint.
+[This](https://docs.google.com/document/d/11qbgXMpqp4EFc7B_-gSXF8uJapG3yHoju-it_ez6UZk/edit?usp=sharing) documentation is less technical and more from a configuration/overview standpoint.

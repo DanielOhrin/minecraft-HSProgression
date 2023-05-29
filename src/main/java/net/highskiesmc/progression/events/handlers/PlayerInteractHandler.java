@@ -6,7 +6,6 @@ import com.bgsoftware.superiorskyblock.api.wrappers.SuperiorPlayer;
 import net.highskiesmc.progression.HSProgressionAPI;
 import net.highskiesmc.progression.enums.IslandDataType;
 import net.highskiesmc.progression.enums.TrackedCrop;
-import net.highskiesmc.progression.events.events.IslandProgressedEvent;
 import net.highskiesmc.progression.events.events.IslandUpgradedEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

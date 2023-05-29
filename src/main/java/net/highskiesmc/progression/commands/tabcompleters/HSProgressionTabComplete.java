@@ -24,15 +24,15 @@ public class HSProgressionTabComplete implements TabCompleter {
             if (sender.hasPermission("hsprogression.reload")) {
                 result.add("reload");
             }
-            if (sender.hasPermission("hsprogression.getrecipe")) {
-                result.add("getRecipe");
+            if (sender.hasPermission("hsprogression.get-recipe")) {
+                result.add("get-recipe");
             }
             if (sender.hasPermission("hsprogression.unlock")) {
                 result.add("unlock");
             }
         } else if (args.length == 2) {
-            if (args[0].equalsIgnoreCase("getRecipe") && sender.hasPermission("hsprogression" +
-                    ".getrecipe")) {
+            if (args[0].equalsIgnoreCase("get-recipe") && sender.hasPermission("hsprogression" +
+                    ".get-recipe")) {
                 result.addAll(Arrays.stream(TrackedCrop.values()).map(TrackedCrop::getValue).collect(Collectors.toList()));
                 result.remove(0);
             }

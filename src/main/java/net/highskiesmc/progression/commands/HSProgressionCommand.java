@@ -43,7 +43,7 @@ public class HSProgressionCommand implements CommandExecutor {
                     } else if (sender instanceof Player) {
                         sender.sendMessage(ChatColor.RED + "This command must be used by a console!");
                     }
-                case "getrecipe":
+                case "get-recipe":
                     if (sender instanceof ConsoleCommandSender) {
                         Bukkit.getLogger().warning("This command must be used by a player!");
                     } else if (sender instanceof Player) {
@@ -53,14 +53,14 @@ public class HSProgressionCommand implements CommandExecutor {
                     if (sender instanceof ConsoleCommandSender) {
                         Bukkit.getLogger().warning("/hsp <reload/fixislands/unlock>");
                     } else if (sender instanceof Player && sender.hasPermission("hsprogression.commands")) {
-                        sender.sendMessage(ChatColor.RED + "/hsp <reload/getRecipe/unlock>");
+                        sender.sendMessage(ChatColor.RED + "/hsp <reload/get-recipe/unlock>");
                     }
             }
         } else {
             if (sender instanceof ConsoleCommandSender) {
                 Bukkit.getLogger().warning("/hsp <reload/fixislands/unlock>");
             } else if (sender instanceof Player) {
-                sender.sendMessage(ChatColor.RED + "/hsp <reload/getRecipe/unlock>");
+                sender.sendMessage(ChatColor.RED + "/hsp <reload/get-recipe/unlock>");
             }
         }
         return false;
@@ -101,7 +101,7 @@ public class HSProgressionCommand implements CommandExecutor {
     }
 
     private boolean getRecipe(CommandSender sender, String[] args) {
-        if (sender.hasPermission("hsprogression.getrecipe")) {
+        if (sender.hasPermission("hsprogression.get-recipe")) {
             Optional<TrackedCrop> optionalCrop =
                     Arrays.stream(TrackedCrop.values()).filter(c -> c.getValue().equals(args[1].toLowerCase())).findFirst();
 
