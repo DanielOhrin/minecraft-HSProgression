@@ -78,10 +78,7 @@ public class IsFarmingCommand implements SuperiorCommand {
             return;
         }
 
-        Inventory inv = Bukkit.createInventory(player, 45, ChatColor.translateAlternateColorCodes('&', "&x&0&5&a&f&c" +
-                "&6&lI&x&0&c&b&6&c&b&ls&x&1&3&b&c&c&f&ll&x&1&a&c&3&d&4&la&x&2&0&c&9&d&8&ln&x&2&7&d&0&d&d&ld " +
-                "&x&2&e&d&6&e&2&lF&x&3&5&d&d&e&6&la&x&3&c&e&3&e&b&lr&x&4&3&e&a&e&f&lm&x&4&9&f&0&f&4&li&x&5&0&f&7&f&8" +
-                "&ln&x&5&7&f&d&f&d&lg"));
+        Inventory inv = Bukkit.createInventory(player, 45, IslandDataType.FARMING.getGUITitle());
 
         final ConfigurationSection FARMING_CONFIG = this.API.getConfig(IslandDataType.FARMING);
         final ConfigurationSection FARMING_DATA =

@@ -4,10 +4,7 @@ import com.bgsoftware.superiorskyblock.api.SuperiorSkyblockAPI;
 import com.bgsoftware.superiorskyblock.api.island.Island;
 import net.highskiesmc.progression.HSProgression;
 import net.highskiesmc.progression.HSProgressionAPI;
-import net.highskiesmc.progression.enums.IslandDataType;
-import net.highskiesmc.progression.enums.TrackedCrop;
-import net.highskiesmc.progression.enums.TrackedEntity;
-import net.highskiesmc.progression.enums.TrackedNode;
+import net.highskiesmc.progression.enums.*;
 import net.highskiesmc.progression.events.events.IslandUpgradedEvent;
 import net.highskiesmc.progression.util.UpgradeGUI;
 import org.bukkit.Bukkit;
@@ -64,7 +61,8 @@ public class GUIEventHandlers implements Listener {
                                 this.API.getConfig(IslandDataType.SLAYER).getDouble(entityType.getValue() + ".price"),
                                 null,
                                 null,
-                                entityType);
+                                entityType,
+                                null);
                         this.OPEN_CONFIRMATION_INVENTORIES.put(e.getWhoClicked().getUniqueId(), gui);
                         e.getView().close();
                         e.getWhoClicked().openInventory(gui.getInventory());
@@ -93,6 +91,7 @@ public class GUIEventHandlers implements Listener {
                                 IslandDataType.MINING,
                                 this.API.getConfig(IslandDataType.MINING).getDouble(nodeType.getValue() + ".price"),
                                 nodeType,
+                                null,
                                 null,
                                 null);
                         this.OPEN_CONFIRMATION_INVENTORIES.put(e.getWhoClicked().getUniqueId(), gui);
@@ -124,6 +123,7 @@ public class GUIEventHandlers implements Listener {
                                 this.API.getConfig(IslandDataType.FARMING).getDouble(cropType.getValue() + ".price"),
                                 null,
                                 cropType,
+                                null,
                                 null);
                         this.OPEN_CONFIRMATION_INVENTORIES.put(e.getWhoClicked().getUniqueId(), gui);
                         e.getView().close();
@@ -132,7 +132,35 @@ public class GUIEventHandlers implements Listener {
                 }
             } else if (title.equals(IslandDataType.FISHING.getGUITitle())) {
                 e.setCancelled(true);
-                //TODO: Handle fishing GUI
+
+                int[] slots = new int[]{11, 12, 13, 14, 15};
+                Map<Integer, TrackedFish> trackedSlotMap = new HashMap<>();
+                TrackedFish[] trackedFish = TrackedFish.values();
+
+                // i = 1 to skip the one that is unlocked by default.
+                for (int i = 1; i < slots.length; i++) {
+                    trackedSlotMap.put(slots[i], trackedFish[i]);
+                }
+
+                TrackedFish fishType = trackedSlotMap.getOrDefault(e.getRawSlot(), null);
+                if (fishType != null) {
+                    final ConfigurationSection ISLAND_DATA = this.API.getIslandData(island.getUniqueId(),
+                            IslandDataType.FISHING, fishType.getValue());
+
+                    // If it is NOT unlocked, AND the conditions are met for an upgrade
+                    if (!ISLAND_DATA.getBoolean("unlocked") && ISLAND_DATA.getBoolean("conditions-met")) {
+                        UpgradeGUI gui = this.createConfirmationInventory((Player) e.getWhoClicked(),
+                                IslandDataType.FARMING,
+                                this.API.getConfig(IslandDataType.FARMING).getDouble(fishType.getValue() + ".price"),
+                                null,
+                                null,
+                                null,
+                                fishType);
+                        this.OPEN_CONFIRMATION_INVENTORIES.put(e.getWhoClicked().getUniqueId(), gui);
+                        e.getView().close();
+                        e.getWhoClicked().openInventory(gui.getInventory());
+                    }
+                }
             } else {
                 this.OPEN_CONFIRMATION_INVENTORIES
                         .entrySet()
@@ -198,7 +226,8 @@ public class GUIEventHandlers implements Listener {
     }
 
     private UpgradeGUI createConfirmationInventory(Player player, IslandDataType dataType, double amount,
-                                                   TrackedNode node, TrackedCrop crop, TrackedEntity entity) {
+                                                   TrackedNode node, TrackedCrop crop, TrackedEntity entity,
+                                                   TrackedFish fish) {
         String title = ChatColor.GREEN.toString() + ChatColor.BOLD + "Upgrade for $" + amount;
 
         Inventory inv = Bukkit.createInventory(player, 27, title);
@@ -226,7 +255,7 @@ public class GUIEventHandlers implements Listener {
             }
         }
 
-        return new UpgradeGUI(inv, amount, dataType, node, crop, entity);
+        return new UpgradeGUI(inv, amount, dataType, node, crop, entity, fish);
     }
 }
 

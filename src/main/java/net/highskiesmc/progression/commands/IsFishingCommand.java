@@ -8,7 +8,7 @@ import com.bgsoftware.superiorskyblock.api.wrappers.SuperiorPlayer;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import net.highskiesmc.progression.HSProgressionAPI;
 import net.highskiesmc.progression.enums.IslandDataType;
-import net.highskiesmc.progression.enums.TrackedEntity;
+import net.highskiesmc.progression.enums.TrackedFish;
 import net.highskiesmc.progression.util.ChatColorRemover;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -22,16 +22,16 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.*;
 
-public class IsSlayerCommand implements SuperiorCommand {
+public class IsFishingCommand implements SuperiorCommand {
     private final HSProgressionAPI API;
 
-    public IsSlayerCommand(HSProgressionAPI api) {
+    public IsFishingCommand(HSProgressionAPI api) {
         this.API = api;
     }
 
     @Override
     public List<String> getAliases() {
-        return Collections.singletonList("slayer");
+        return Collections.singletonList("fishing");
     }
 
     @Override
@@ -41,12 +41,12 @@ public class IsSlayerCommand implements SuperiorCommand {
 
     @Override
     public String getUsage(Locale locale) {
-        return "slayer";
+        return "fishing";
     }
 
     @Override
     public String getDescription(Locale locale) {
-        return "Shows your island's slayer progression.";
+        return "Shows your island's fishing progression.";
     }
 
     @Override
@@ -79,40 +79,52 @@ public class IsSlayerCommand implements SuperiorCommand {
             return;
         }
 
-        Inventory inv = Bukkit.createInventory(player, 45, IslandDataType.SLAYER.getGUITitle());
+        Inventory inv = Bukkit.createInventory(player, 27, IslandDataType.FISHING.getGUITitle());
 
-        final ConfigurationSection SLAYER_CONFIG = this.API.getConfig(IslandDataType.SLAYER);
-        final ConfigurationSection SLAYER_DATA =
-                this.API.getIslands().getConfigurationSection(island.getUniqueId().toString() + '.' + IslandDataType.SLAYER.getValue());
+        final ConfigurationSection FISHING_CONFIG = this.API.getConfig(IslandDataType.FISHING);
+        final ConfigurationSection FISHING_DATA =
+                this.API.getIslands().getConfigurationSection(island.getUniqueId().toString() + '.' + IslandDataType.FISHING.getValue());
 
         List<ItemStack> trackedItems = new ArrayList<>();
         String previousKey = null;
         boolean previousIsUnlocked = false;
-        for (String key : SLAYER_CONFIG.getKeys(false)) {
+        for (String key : FISHING_CONFIG.getKeys(false)) {
             if (key.equalsIgnoreCase("lore")) {
                 continue;
             }
 
-            final ConfigurationSection ITEM_CONFIG = SLAYER_CONFIG.getConfigurationSection(key);
-            final ConfigurationSection ITEM_DATA = SLAYER_DATA.getConfigurationSection(key);
+            final ConfigurationSection ITEM_CONFIG = FISHING_CONFIG.getConfigurationSection(key);
+            final ConfigurationSection ITEM_DATA = FISHING_DATA.getConfigurationSection(key);
 
             ItemStack item;
-            if (key.equals(TrackedEntity.values()[0].getValue()) || ITEM_DATA.getBoolean("unlocked")) {
+            if (key.equals(TrackedFish.values()[0].getValue())) {
+                item = new HeadDatabaseAPI().getItemHead(ITEM_CONFIG.getString("head-id"));
+
+                ItemMeta meta = item.getItemMeta();
+                meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', ITEM_CONFIG.getString("display-name")));
+
+                List<String> lore = ITEM_CONFIG.getStringList("lore");
+                for (int i = 0; i < lore.size(); i++) {
+                    String line = lore.get(i)
+                            .replace("{amount}", String.valueOf(ITEM_DATA.getLong("amount")));
+                    lore.set(i, ChatColor.translateAlternateColorCodes('&', line));
+                }
+                meta.setLore(lore);
+                item.setItemMeta(meta);
+
+                previousIsUnlocked = true;
+            } else if (ITEM_DATA.getBoolean("unlocked")) {
                 // UNLOCKED ITEM
                 item = new HeadDatabaseAPI().getItemHead(ITEM_CONFIG.getString("head-id"));
 
                 ItemMeta meta = item.getItemMeta();
                 meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', ITEM_CONFIG.getString("display-name")));
 
-                List<String> lore = SLAYER_CONFIG.getStringList("lore.unlocked");
-                long amount = ITEM_DATA.getLong("amount");
-                final String CURRENT = ITEM_CONFIG.getString("display-name");
-                final String CURRENT_NO_COLOR = ChatColorRemover.removeChatColors(CURRENT);
+                List<String> lore = FISHING_CONFIG.getStringList("lore.unlocked");
                 for (int i = 0; i < lore.size(); i++) {
                     String line = lore.get(i)
-                            .replace("{amount}", "" + amount)
-                            .replace("{current}", CURRENT)
-                            .replace("{current-no-color}", CURRENT_NO_COLOR);
+                            .replace("{perks}", "{perks}"); //TODO: Replace with perks, which should be in the
+                    //TODO: TrackedFish enum
                     lore.set(i, ChatColor.translateAlternateColorCodes('&', line));
                 }
                 meta.setLore(lore);
@@ -165,24 +177,20 @@ public class IsSlayerCommand implements SuperiorCommand {
                                                     "display-name")))
                                     .replace("{current-no-color}",
                                             ChatColorRemover.removeChatColors(ITEM_CONFIG.getString("display-name")))));
-                    lore = SLAYER_CONFIG.getStringList("lore.locked");
+                    lore = FISHING_CONFIG.getStringList("lore.locked");
                 } else {
                     meta.setDisplayName(ChatColor.translateAlternateColorCodes('&',
                             ALL_LOCKED_CONFIG.getString("display-name")));
                     lore = ALL_LOCKED_CONFIG.getStringList("lore");
                 }
-                long amount = SLAYER_DATA.getLong(previousKey + ".amount");
+                long amount = FISHING_DATA.getLong(previousKey + ".amount");
                 long required = ITEM_CONFIG.getLong("amount");
                 double price = ITEM_CONFIG.getDouble("price");
-                final String PREVIOUS = SLAYER_CONFIG.getString(previousKey + ".display-name");
-                final String PREVIOUS_NO_COLOR = ChatColorRemover.removeChatColors(PREVIOUS);
                 for (int i = 0; i < lore.size(); i++) {
                     String line = lore.get(i)
                             .replace("{amount}", "" + amount)
                             .replace("{required}", "" + required)
-                            .replace("{price}", "" + price)
-                            .replace("{previous}", PREVIOUS)
-                            .replace("{previous-no-color}", PREVIOUS_NO_COLOR);
+                            .replace("{price}", "" + price);
 
                     lore.set(i, ChatColor.translateAlternateColorCodes('&', line));
                 }
@@ -198,7 +206,7 @@ public class IsSlayerCommand implements SuperiorCommand {
         }
 
         // Add the tracked items
-        List<Integer> slotsToSet = Arrays.asList(9, 18, 27, 28, 29, 20, 11, 12, 13, 22, 31, 32, 33, 24, 15, 16, 17);
+        List<Integer> slotsToSet = Arrays.asList(11, 12, 13, 14, 15);
 
         for (int i = 0; i < slotsToSet.size(); i++) {
             inv.setItem(slotsToSet.get(i), trackedItems.get(i));

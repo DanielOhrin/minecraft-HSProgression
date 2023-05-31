@@ -2,10 +2,7 @@ package net.highskiesmc.progression;
 
 import com.bgsoftware.superiorskyblock.api.SuperiorSkyblockAPI;
 import net.highskiesmc.nodes.HSNodes;
-import net.highskiesmc.progression.commands.HSProgressionCommand;
-import net.highskiesmc.progression.commands.IsFarmingCommand;
-import net.highskiesmc.progression.commands.IsMiningCommand;
-import net.highskiesmc.progression.commands.IsSlayerCommand;
+import net.highskiesmc.progression.commands.*;
 import net.highskiesmc.progression.commands.tabcompleters.HSProgressionTabComplete;
 import net.highskiesmc.progression.events.handlers.*;
 import net.milkbowl.vault.economy.Economy;
@@ -32,6 +29,8 @@ public final class HSProgression extends JavaPlugin {
     private FileConfiguration FARMING_CONFIG;
     private File MINING_FILE;
     private FileConfiguration MINING_CONFIG;
+    private File FISHING_FILE;
+    private FileConfiguration FISHING_CONFIG;
     private final HSProgressionAPI API = new HSProgressionAPI(this);
     private static Economy econ = null;
 
@@ -51,6 +50,7 @@ public final class HSProgression extends JavaPlugin {
         reloadSlayerConfig();
         reloadFarmingConfig();
         reloadMiningConfig();
+        reloadFishingConfig();
 
         getCommand("hsprogression").setExecutor(new HSProgressionCommand(this, this.API));
         getCommand("hsprogression").setTabCompleter(new HSProgressionTabComplete());
@@ -58,6 +58,7 @@ public final class HSProgression extends JavaPlugin {
         SuperiorSkyblockAPI.registerCommand(new IsMiningCommand(this.API));
         SuperiorSkyblockAPI.registerCommand(new IsSlayerCommand(this.API));
         SuperiorSkyblockAPI.registerCommand(new IsFarmingCommand(this.API));
+        SuperiorSkyblockAPI.registerCommand(new IsFishingCommand(this.API));
 
         Bukkit.getPluginManager().registerEvents(new GUIEventHandlers(this.API), this);
         Bukkit.getPluginManager().registerEvents(new IslandCreateHandler(this.API), this);
@@ -69,6 +70,7 @@ public final class HSProgression extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new BlockGrowHandler(this.API), this);
         Bukkit.getPluginManager().registerEvents(new BlockSpreadHandler(this.API), this);
         Bukkit.getPluginManager().registerEvents(new PlayerInteractHandler(this.API), this);
+        Bukkit.getPluginManager().registerEvents(new PlayerFishHandlers(this.API), this);
         Bukkit.getPluginManager().registerEvents(new IslandProgressionHandlers(this.API), this);
     }
 
@@ -204,6 +206,33 @@ public final class HSProgression extends JavaPlugin {
         this.MINING_FILE = file;
         this.MINING_CONFIG = YamlConfiguration.loadConfiguration(file);
     }
+    public void reloadFishingConfig() {
+        File dir = getDataFolder();
+        File file = new File(dir, "fishing.yml");
+
+        if (!dir.exists()) dir.mkdir();
+
+        try {
+            if (!file.exists()) {
+                file.createNewFile();
+
+                try (Reader stream = new InputStreamReader(this.getResource("fishing.yml"), StandardCharsets.UTF_8)) {
+                    if (stream != null) {
+                        this.FISHING_FILE = file;
+                        this.FISHING_CONFIG = YamlConfiguration.loadConfiguration(stream);
+                        this.saveFishingConfig();
+
+                        return;
+                    }
+                }
+            }
+        } catch (IOException ex) {
+            this.getLogger().severe(Arrays.toString(ex.getStackTrace()));
+        }
+
+        this.FISHING_FILE = file;
+        this.FISHING_CONFIG = YamlConfiguration.loadConfiguration(file);
+    }
 
     public FileConfiguration getSlayerConfig() {
         return this.SLAYER_CONFIG;
@@ -236,6 +265,18 @@ public final class HSProgression extends JavaPlugin {
     public void saveMiningConfig() {
         try {
             this.MINING_CONFIG.save(this.MINING_FILE);
+        } catch (IOException ex) {
+            this.getLogger().severe(Arrays.toString(ex.getStackTrace()));
+        }
+    }
+
+    public FileConfiguration getFishingConfig() {
+        return this.FISHING_CONFIG;
+    }
+
+    public void saveFishingConfig() {
+        try {
+            this.FISHING_CONFIG.save(this.FISHING_FILE);
         } catch (IOException ex) {
             this.getLogger().severe(Arrays.toString(ex.getStackTrace()));
         }

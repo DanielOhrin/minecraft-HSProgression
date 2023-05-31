@@ -2,10 +2,7 @@ package net.highskiesmc.progression;
 
 import com.bgsoftware.superiorskyblock.api.SuperiorSkyblockAPI;
 import com.bgsoftware.superiorskyblock.api.island.Island;
-import net.highskiesmc.progression.enums.IslandDataType;
-import net.highskiesmc.progression.enums.TrackedCrop;
-import net.highskiesmc.progression.enums.TrackedEntity;
-import net.highskiesmc.progression.enums.TrackedNode;
+import net.highskiesmc.progression.enums.*;
 import net.highskiesmc.progression.events.events.IslandProgressedEvent;
 import net.highskiesmc.progression.events.events.IslandUpgradedEvent;
 import org.bukkit.*;
@@ -75,6 +72,19 @@ public class HSProgressionAPI {
                 ISLANDS.set(ISLAND_ID + '.' + IslandDataType.FARMING.getValue() + '.' + trackedCrops[i].getValue() + '.' +
                         "conditions-met", false);
                 ISLANDS.set(ISLAND_ID + '.' + IslandDataType.FARMING.getValue() + '.' + trackedCrops[i].getValue() + '.' +
+                        "unlocked", false);
+            }
+        }
+
+        // FISHING
+        TrackedFish[] trackedFish = TrackedFish.values();
+        for (int i = 0; i < trackedFish.length; i++) {
+            ISLANDS.set(ISLAND_ID + '.' + IslandDataType.FISHING.getValue() + '.' + trackedFish[i].getValue() + '.' +
+                    "amount", 0);
+            if (i != 0) {
+                ISLANDS.set(ISLAND_ID + '.' + IslandDataType.FISHING.getValue() + '.' + trackedFish[i].getValue() + '.' +
+                        "conditions-met", false);
+                ISLANDS.set(ISLAND_ID + '.' + IslandDataType.FISHING.getValue() + '.' + trackedFish[i].getValue() + '.' +
                         "unlocked", false);
             }
         }
@@ -204,6 +214,8 @@ public class HSProgressionAPI {
                 return this.MAIN.getSlayerConfig();
             case MINING:
                 return this.MAIN.getMiningConfig();
+            case FISHING:
+                return this.MAIN.getFishingConfig();
             default:
                 return null;
         }
@@ -212,15 +224,21 @@ public class HSProgressionAPI {
     public void saveConfig(IslandDataType dataType) {
         if (dataType == null) {
             this.MAIN.saveConfig();
+            return;
         }
 
         switch (dataType) {
             case FARMING:
                 this.MAIN.saveFarmingConfig();
+                break;
             case SLAYER:
                 this.MAIN.saveSlayerConfig();
+                break;
             case MINING:
                 this.MAIN.saveMiningConfig();
+                break;
+            case FISHING:
+                this.MAIN.saveFishingConfig();
             default:
                 break;
         }
