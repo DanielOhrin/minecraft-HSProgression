@@ -1,9 +1,6 @@
 package net.highskiesmc.progression.util;
 
-import net.highskiesmc.progression.enums.IslandDataType;
-import net.highskiesmc.progression.enums.TrackedCrop;
-import net.highskiesmc.progression.enums.TrackedEntity;
-import net.highskiesmc.progression.enums.TrackedNode;
+import net.highskiesmc.progression.enums.*;
 import org.bukkit.inventory.Inventory;
 
 public class UpgradeGUI {
@@ -13,15 +10,17 @@ public class UpgradeGUI {
     private final TrackedNode TRACKED_NODE;
     private final TrackedCrop TRACKED_CROP;
     private final TrackedEntity TRACKED_ENTITY;
+    private final TrackedFish TRACKED_FISH;
 
     public UpgradeGUI(Inventory inventory, double amount, IslandDataType dataType, TrackedNode node, TrackedCrop crop
-            , TrackedEntity entity) {
+            , TrackedEntity entity, TrackedFish fish) {
         this.INVENTORY = inventory;
         this.AMOUNT = amount;
         this.DATA_TYPE = dataType;
         this.TRACKED_NODE = node;
         this.TRACKED_CROP = crop;
         this.TRACKED_ENTITY = entity;
+        this.TRACKED_FISH = fish;
     }
 
     public Inventory getInventory() {
@@ -36,6 +35,8 @@ public class UpgradeGUI {
                 return this.TRACKED_NODE.getValue();
             case FARMING:
                 return this.TRACKED_CROP.getValue();
+            case FISHING:
+                return this.TRACKED_FISH.getValue();
             default:
                 return null;
         }

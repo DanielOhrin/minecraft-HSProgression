@@ -1,0 +1,39 @@
+# For fishing there will be very few placeholders, as it does not follow the same structure as mining/slayer/farming
+# {perks} - List of perks, displayed similarly to a fishing rod's perks
+# {amount} - Amount of current item the island has tracked
+# {required} - Required amount of items to unlock the upgrade purchase
+# {price} - Price to unlock the current upgrade
+
+lore:
+  unlocked: # {perks}
+    - ""
+    - "{perks}"
+  locked: # {amount} {required} {price}
+    - "&7{amount}/{required} Fishing Drops"
+    - ""
+    - "&7Cost: &a${price}"
+treasure-hunter-one: # Does not use the "lore" key from above
+  head-id: 775 # ID of the head that will show when unlocked
+  display-name: "&b&lTreasure Hunter I"
+  lore: # {amount}
+    - "&7{amount} Fishing Drops"
+treasure-hunter-two:
+  amount: 10 # Amount of previous required to unlock
+  price: 1000 # Price of upgrade
+  head-id: 578 # ID of the head that will show when unlocked
+  display-name: "&b&lTreasure Hunter II"
+treasure-hunter-three:
+  amount: 10 # Amount of previous required to unlock
+  price: 1000 # Price of upgrade
+  head-id: 579 # ID of the head that will show when unlocked
+  display-name: "&b&lTreasure Hunter III"
+treasure-hunter-four:
+  amount: 10 # Amount of previous required to unlock
+  price: 1000 # Price of upgrade
+  head-id: 580 # ID of the head that will show when unlocked
+  display-name: "&b&lTreasure Hunter IV"
+treasure-hunter-five:
+  amount: 10 # Amount of previous required to unlock
+  price: 1000 # Price of upgrade
+  head-id: 581 # ID of the head that will show when unlocked
+  display-name: "&b&lTreasure Hunter V"
