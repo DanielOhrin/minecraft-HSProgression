@@ -70,7 +70,7 @@ public final class HSProgression extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new BlockGrowHandler(this.API), this);
         Bukkit.getPluginManager().registerEvents(new BlockSpreadHandler(this.API), this);
         Bukkit.getPluginManager().registerEvents(new PlayerInteractHandler(this.API), this);
-        Bukkit.getPluginManager().registerEvents(new PlayerFishHandlers(this.API), this);
+        Bukkit.getPluginManager().registerEvents(new PlayerFishHandlers(this, this.API), this);
         Bukkit.getPluginManager().registerEvents(new IslandProgressionHandlers(this.API), this);
     }
 
