@@ -16,10 +16,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 public class PlayerFishHandlers implements Listener {
     private final HSProgression MAIN;
@@ -36,16 +33,15 @@ public class PlayerFishHandlers implements Listener {
         Island island = SuperiorSkyblockAPI.getIslandAt(e.getHook().getLocation());
 
         if (island != null) {
-            double rng = new Random().nextDouble();
-
             final ConfigurationSection FISHING_DATA =
                     this.API.getIslands().getConfigurationSection(island.getUniqueId().toString() + '.' + IslandDataType.FISHING.getValue());
 
             // Find which milestone the island has unlocked
             String key = null;
-            for (String KEY : FISHING_DATA.getKeys(false)) {
-                if (FISHING_DATA.getBoolean(KEY + ".unlocked")) {
-                    key = KEY;
+            List<String> keys = new ArrayList<>(FISHING_DATA.getKeys(false));
+            for (int i = keys.size() - 1; i >= 0; i--) {
+                if (FISHING_DATA.getBoolean(keys.get(i) + ".unlocked")) {
+                    key = keys.get(i);
                     break;
                 }
             }
@@ -64,25 +60,27 @@ public class PlayerFishHandlers implements Listener {
                 List<DropEntry> drops = e.getDroppedItems();
 
                 if (buffs.containsKey(IslandFishingBuff.DOUBLE_XP)) {
+                    double rng = new Random().nextDouble();
                     if (rng <= buffs.get(IslandFishingBuff.DOUBLE_XP)) {
                         for (DropEntry drop : drops) {
                             drop.setExperience(drop.getExperience() * 2);
                         }
 
-                        HologramUtils.spawnAnimated(this.MAIN, e.getHook().getLocation(),
+                        HologramUtils.spawnAnimated(this.MAIN, e.getHook().getLocation().subtract(0, 1.5, 0),
                                 ChatColor.YELLOW.toString() + ChatColor.BOLD + "DOUBLE EXP",
-                                1, 1);
+                                0, 1);
                     }
                 }
                 if (buffs.containsKey(IslandFishingBuff.DOUBLE_DROPS)) {
+                    double rng = new Random().nextDouble();
                     if (rng <= buffs.get(IslandFishingBuff.DOUBLE_XP)) {
                         for (DropEntry drop : drops) {
                             drop.setAmount(drop.getAmount() * 2);
                         }
 
-                        HologramUtils.spawnAnimated(this.MAIN, e.getHook().getLocation(),
+                        HologramUtils.spawnAnimated(this.MAIN, e.getHook().getLocation().subtract(0, 1.5, 0),
                                 ChatColor.YELLOW.toString() + ChatColor.BOLD + "DOUBLE DROPS",
-                                1, 1);
+                                0, 1);
                     }
 
                 }
@@ -104,9 +102,10 @@ public class PlayerFishHandlers implements Listener {
 
             // Find which milestone the island has unlocked
             String key = null;
-            for (String KEY : FISHING_DATA.getKeys(false)) {
-                if (FISHING_DATA.getBoolean(KEY + ".unlocked")) {
-                    key = KEY;
+            List<String> keys = new ArrayList<>(FISHING_DATA.getKeys(false));
+            for (int i = keys.size() - 1; i >= 0; i--) {
+                if (FISHING_DATA.getBoolean(keys.get(i) + ".unlocked")) {
+                    key = keys.get(i);
                     break;
                 }
             }

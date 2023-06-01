@@ -5,8 +5,9 @@
 # {price} - Price to unlock the current upgrade
 
 lore:
-  unlocked: # {perks}
+  unlocked: # {perks} -- should be on its OWN LINE
     - ""
+    - "&f&lPerks"
     - "{perks}"
   locked: # {amount} {required} {price}
     - "&7{amount}/{required} Fishing Drops"

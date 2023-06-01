@@ -5,18 +5,21 @@ import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.checkerframework.common.value.qual.IntRange;
 
 import java.util.Random;
 
 public abstract class HologramUtils {
-    public static void spawnAnimated(JavaPlugin plugin, Location location, String text, double minOffset,
-                                     double maxOffset) {
+    public static void spawnAnimated(JavaPlugin plugin, Location location, String text,
+                                     @IntRange(from = -1, to = 1) double minOffset,
+                                     @IntRange(from = -1, to = 1) double maxOffset) {
         Random random = new Random();
         final double OFFSET_X = random.nextDouble(minOffset, maxOffset);
         final double OFFSET_Y = random.nextDouble(minOffset, maxOffset);
         final double OFFSET_Z = random.nextDouble(minOffset, maxOffset);
 
-        ArmorStand stand = (ArmorStand) location.getWorld().spawnEntity(location.add(OFFSET_X, OFFSET_Y, OFFSET_Z),
+        ArmorStand stand = (ArmorStand) location.getWorld().spawnEntity(
+                location.add(OFFSET_X, OFFSET_Y - 0.5, OFFSET_Z),
                 EntityType.ARMOR_STAND);
         stand.setInvisible(true);
         stand.setInvulnerable(true);
