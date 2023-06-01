@@ -8,6 +8,7 @@ import com.bgsoftware.superiorskyblock.api.wrappers.SuperiorPlayer;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import net.highskiesmc.progression.HSProgressionAPI;
 import net.highskiesmc.progression.enums.IslandDataType;
+import net.highskiesmc.progression.enums.IslandFishingBuff;
 import net.highskiesmc.progression.enums.TrackedFish;
 import net.highskiesmc.progression.util.ChatColorRemover;
 import org.bukkit.Bukkit;
@@ -20,7 +21,9 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.text.DecimalFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class IsFishingCommand implements SuperiorCommand {
     private final HSProgressionAPI API;
@@ -103,10 +106,16 @@ public class IsFishingCommand implements SuperiorCommand {
                 ItemMeta meta = item.getItemMeta();
                 meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', ITEM_CONFIG.getString("display-name")));
 
+                // Calculate total drops caught
+                long totalAmount = 0;
+                for (String KEY : FISHING_DATA.getKeys(false)) {
+                    totalAmount += FISHING_DATA.getLong(KEY + ".amount");
+                }
+
                 List<String> lore = ITEM_CONFIG.getStringList("lore");
                 for (int i = 0; i < lore.size(); i++) {
                     String line = lore.get(i)
-                            .replace("{amount}", String.valueOf(ITEM_DATA.getLong("amount")));
+                            .replace("{amount}", String.valueOf(totalAmount));
                     lore.set(i, ChatColor.translateAlternateColorCodes('&', line));
                 }
                 meta.setLore(lore);
@@ -120,12 +129,27 @@ public class IsFishingCommand implements SuperiorCommand {
                 ItemMeta meta = item.getItemMeta();
                 meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', ITEM_CONFIG.getString("display-name")));
 
+                List<String> splitKey = Arrays.stream(key.split("-")).collect(Collectors.toList());
+                TrackedFish milestone = TrackedFish.valueOf(splitKey.get(splitKey.size() - 1).toUpperCase());
+                Map<IslandFishingBuff, Double> buffs = milestone.getBuffs();
+                List<String> perks = new ArrayList<>();
+
+                for (Map.Entry<IslandFishingBuff, Double> entry : buffs.entrySet().stream()
+                        .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+                        .collect(Collectors.toList())) {
+                    perks.add(ChatColor.YELLOW + entry.getKey().getFormattedName() + ' ' +
+                            ChatColor.AQUA + new DecimalFormat("#.##").format(entry.getValue() * 100) + '%');
+                }
+
                 List<String> lore = FISHING_CONFIG.getStringList("lore.unlocked");
                 for (int i = 0; i < lore.size(); i++) {
-                    String line = lore.get(i)
-                            .replace("{perks}", "{perks}"); //TODO: Replace with perks, which should be in the
-                    //TODO: TrackedFish enum
-                    lore.set(i, ChatColor.translateAlternateColorCodes('&', line));
+                    boolean perksLine = lore.get(i).contains("{perks}");
+                    if (perksLine) {
+                        lore.addAll(i + 1, perks);
+                        lore.remove(i);
+                        continue;
+                    }
+                    lore.set(i, ChatColor.translateAlternateColorCodes('&', lore.get(i)));
                 }
                 meta.setLore(lore);
                 item.setItemMeta(meta);

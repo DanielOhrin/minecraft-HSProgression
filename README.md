@@ -30,6 +30,10 @@ Placeholders are present in every config file. There are comments showing where 
 The majority of access to the data within code is from `HSProgressionAPI`.
 Anywhere configurations/data is accessed uses the API.
 
+## Fishing Buffs
+Fishing buffs are added to HSFishing through this plugin. When fishing on an island that has reached certain milestones, the player may receive buff(s) to their fishing.
+Currently, this is all handled in the `PlayerFishHandlers` class, with a few extra global values (enums).
+
 ## Events
 
 `IslandProgressedEvent`- called when an island is ready to be upgraded with money.  

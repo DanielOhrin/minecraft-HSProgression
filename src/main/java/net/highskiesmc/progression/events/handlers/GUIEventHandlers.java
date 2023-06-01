@@ -150,8 +150,8 @@ public class GUIEventHandlers implements Listener {
                     // If it is NOT unlocked, AND the conditions are met for an upgrade
                     if (!ISLAND_DATA.getBoolean("unlocked") && ISLAND_DATA.getBoolean("conditions-met")) {
                         UpgradeGUI gui = this.createConfirmationInventory((Player) e.getWhoClicked(),
-                                IslandDataType.FARMING,
-                                this.API.getConfig(IslandDataType.FARMING).getDouble(fishType.getValue() + ".price"),
+                                IslandDataType.FISHING,
+                                this.API.getConfig(IslandDataType.FISHING).getDouble(fishType.getValue() + ".price"),
                                 null,
                                 null,
                                 null,
