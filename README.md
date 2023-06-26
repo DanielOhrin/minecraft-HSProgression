@@ -1,7 +1,7 @@
 # HSProgression Documentation
 
 HSProgression adds a progression system to islands with SuperiorSkyblock2.  
-Dependencies: HSNodes, HSFishing, WildStacker, SuperiorSkyblock2.  
+Dependencies: HSNodes, HSFishing, RoseStacker, SuperiorSkyblock2.  
 It adds four progression paths: /is mining/slayer/farming/fishing.  
 Each progression path is the same concept, you need to farm a certain amount of one thing to unlock the next.
 

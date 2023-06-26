@@ -3,7 +3,7 @@ author: Daniel Ohrin
 version: '${project.version}'
 main: net.highskiesmc.progression.HSProgression
 api-version: 1.19
-depend: [HSNodes, HSFishing, Vault, WildStacker]
+depend: [HSNodes, HSFishing, Vault, RoseStacker]
 commands:
   hsprogression:
     aliases:
