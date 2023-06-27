@@ -17,6 +17,8 @@ public class IslandNodeMineHandler implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onNodeMineOnIsland(IslandNodeMineEvent e) {
         // All the conditions are already checked, so we just have to increment the value
-        this.API.incrementIslandData(e.getIsland().getUniqueId(), IslandDataType.MINING, e.getNode().getType());
+        if (e.getIsland() != null) {
+            this.API.incrementIslandData(e.getIsland().getUniqueId(), IslandDataType.MINING, e.getNode().getType());
+        }
     }
 }
