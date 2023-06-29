@@ -4,10 +4,7 @@ import com.bgsoftware.superiorskyblock.api.SuperiorSkyblockAPI;
 import com.bgsoftware.superiorskyblock.api.island.Island;
 import net.highskiesmc.progression.HSProgression;
 import net.highskiesmc.progression.HSProgressionAPI;
-import net.highskiesmc.progression.enums.IslandDataType;
-import net.highskiesmc.progression.enums.TrackedCrop;
-import net.highskiesmc.progression.enums.TrackedEntity;
-import net.highskiesmc.progression.enums.TrackedNode;
+import net.highskiesmc.progression.enums.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -143,6 +140,9 @@ public class HSProgressionCommand implements CommandExecutor {
                             optionalTrackedThing =
                                     Arrays.stream(TrackedNode.values()).map(TrackedNode::getValue).filter(value -> value.equalsIgnoreCase(args[2])).findFirst();
                             break;
+                        case FISHING:
+                            optionalTrackedThing =
+                                    Arrays.stream(TrackedFish.values()).map(TrackedFish::getValue).filter(value -> value.equalsIgnoreCase(args[2])).findFirst();
                         default:
                             break;
                     }

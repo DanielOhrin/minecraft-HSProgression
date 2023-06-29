@@ -1,9 +1,6 @@
 package net.highskiesmc.progression.commands.tabcompleters;
 
-import net.highskiesmc.progression.enums.IslandDataType;
-import net.highskiesmc.progression.enums.TrackedCrop;
-import net.highskiesmc.progression.enums.TrackedEntity;
-import net.highskiesmc.progression.enums.TrackedNode;
+import net.highskiesmc.progression.enums.*;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -52,6 +49,8 @@ public class HSProgressionTabComplete implements TabCompleter {
                         result.addAll(Arrays.stream(TrackedNode.values()).map(TrackedNode::getValue).collect(Collectors.toList()));
                         break;
                     case "fishing":
+                        result.addAll(Arrays.stream(TrackedFish.values()).map(TrackedFish::getValue).collect(Collectors.toList()));
+                        break;
                     default:
                         break;
                 }

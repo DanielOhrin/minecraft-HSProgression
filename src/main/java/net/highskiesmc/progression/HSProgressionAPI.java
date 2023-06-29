@@ -324,6 +324,14 @@ public class HSProgressionAPI {
                 }
                 break;
             case FISHING:
+                for (String key:
+                        Arrays.stream(TrackedFish.values()).map(TrackedFish::getValue).collect(Collectors.toList())) {
+                    if (key.equalsIgnoreCase(finalKey)) {
+                        break;
+                    }
+                    fullyUnlockIslandDataWithoutSaving(islandUUID, dataType, key);
+                }
+                break;
             default:
                 break;
         }
