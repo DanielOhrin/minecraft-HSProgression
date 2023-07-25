@@ -89,7 +89,6 @@ public class HSProgressionAPI {
             }
         }
 
-        this.MAIN.saveIslands();
         return ISLANDS.getConfigurationSection(island.getUniqueId().toString());
     }
 
@@ -137,7 +136,6 @@ public class HSProgressionAPI {
 
         // Increment the value
         ISLAND_DATA.set(key + ".amount", currentValue + 1);
-        this.MAIN.saveIslands();
     }
 
     /**
@@ -173,7 +171,6 @@ public class HSProgressionAPI {
         }
 
         ISLAND_DATA.set("unlocked", true);
-        this.MAIN.saveIslands();
     }
 
     /**
@@ -192,7 +189,6 @@ public class HSProgressionAPI {
         }
 
         ISLAND_DATA.set("conditions-met", true);
-        this.MAIN.saveIslands();
     }
 
     public void sendNotUnlocked(Player player) {
@@ -336,7 +332,6 @@ public class HSProgressionAPI {
                 break;
         }
         fullyUnlockIslandDataWithoutSaving(islandUUID, dataType, finalKey);
-        saveIslands();
     }
 
     private void fullyUnlockIslandDataWithoutSaving(UUID islandUUID, IslandDataType dataType, String key) {

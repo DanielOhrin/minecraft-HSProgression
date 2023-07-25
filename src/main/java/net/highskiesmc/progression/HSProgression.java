@@ -11,6 +11,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,6 +22,7 @@ import java.util.Arrays;
 
 public final class HSProgression extends JavaPlugin {
     private final HSNodes hsNodes = HSNodes.getInstance();
+    private BukkitTask saveTask;
     private File ISLANDS_FILE;
     private FileConfiguration ISLANDS;
     private File SLAYER_FILE;
@@ -72,11 +74,14 @@ public final class HSProgression extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new PlayerInteractHandler(this.API), this);
         Bukkit.getPluginManager().registerEvents(new PlayerFishHandlers(this, this.API), this);
         Bukkit.getPluginManager().registerEvents(new IslandProgressionHandlers(this.API), this);
+
+        this.saveTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, this::saveIslands, 6000, 6000);
     }
 
     @Override
     public void onDisable() {
-
+        this.saveTask.cancel();
+        saveIslands();
     }
 
     public FileConfiguration getIslands() {
@@ -120,7 +125,7 @@ public final class HSProgression extends JavaPlugin {
             return false;
         }
         econ = rsp.getProvider();
-        return econ != null;
+        return true;
     }
 
     public void reloadFarmingConfig() {

@@ -17,7 +17,7 @@ public enum TrackedFish {
         put(IslandFishingBuff.DOUBLE_DROPS, 0.01D);
     }}),
     FIVE(new HashMap<IslandFishingBuff, Double>() {{
-        put(IslandFishingBuff.DOUBLE_XP, 0.05D);
+        put(IslandFishingBuff.DOUBLE_XP, 1.0D);
         put(IslandFishingBuff.DOUBLE_DROPS, 0.025D);
     }});
     private static final String VALUE = "Treasure Hunter";
