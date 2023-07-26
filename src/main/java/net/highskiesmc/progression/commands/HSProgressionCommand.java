@@ -69,7 +69,6 @@ public class HSProgressionCommand implements CommandExecutor {
             this.MAIN.reloadSlayerConfig();
             this.MAIN.reloadMiningConfig();
             this.MAIN.reloadFarmingConfig();
-            this.MAIN.reloadIslands();
             if (sender instanceof Player) {
                 sender.sendMessage(ChatColor.GREEN + "Successfully reloaded hsprogression!");
             } else if (sender instanceof ConsoleCommandSender) {
