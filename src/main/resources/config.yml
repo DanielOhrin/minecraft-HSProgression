@@ -29,7 +29,7 @@ events: # Dispatches sound + message + title to all members of the island
       fade-out: 40 # Whole number of ticks
   island-upgraded: # An upgrade was purchased
     sound: UI_TOAST_CHALLENGE_COMPLETE
-    message: "&e[&6&l!&e] &6&l/is {data-type} | &7{current} &7 unlocked!" # {data-type} {current} {current-no-color}
+    message: "&e[&6&l!&e] &6&l/is {data-type}&7 upgraded! {current} &7unlocked!" # {data-type} {current} {current-no-color}
     title:
       title: "&6&l/is {data-type} &7Upgraded!" # Nullable {data-type} {current} {current-no-color}
       subtitle: "{current} &7has been unlocked!" # Nullable {data-type} {current} {current-no-color}
@@ -45,7 +45,7 @@ all:
     material: LIME_STAINED_GLASS_PANE # Item that will show when an upgrade is ready to be purchased
     display-name: "&7{current-no-color}" # {current} {current-no-color}
     lore:
-    message: "&e[&6&l!&e] &6&l/is {data-type}&7 upgraded! {current} &7unlocked!" # {data-type} {current} {current-no-color}
+      - "&7Spend &a${price} &7to unlock {current}" # {price} {current} {current-no-color}
   locked:
     display-name: "&7&l???" # Displays when it is locked and the previous is not unlocked
     display-name-unlockable: "&c&k{current-no-color}" # {current} {current-no-color} - Displays when it is locked and the previous IS unlocked.

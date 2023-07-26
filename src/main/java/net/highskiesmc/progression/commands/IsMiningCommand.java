@@ -107,13 +107,10 @@ public class IsMiningCommand implements SuperiorCommand {
                 long amount = ITEM_DATA.getLong("amount");
                 final String CURRENT = ITEM_CONFIG.getString("display-name");
                 final String CURRENT_NO_COLOR = ChatColorRemover.removeChatColors(CURRENT);
-                for (int i = 0; i < lore.size(); i++) {
-                    String line = lore.get(i)
-                            .replace("{amount}", "" + amount)
-                            .replace("{current}", CURRENT)
-                            .replace("{current-no-color}", CURRENT_NO_COLOR);
-                    lore.set(i, ChatColor.translateAlternateColorCodes('&', line));
-                }
+                lore.replaceAll(s -> ChatColor.translateAlternateColorCodes('&', s
+                        .replace("{amount}", String.valueOf(amount))
+                        .replace("{current}", CURRENT)
+                        .replace("{current-no-color}", CURRENT_NO_COLOR)));
                 meta.setLore(lore);
                 item.setItemMeta(meta);
 
@@ -134,14 +131,10 @@ public class IsMiningCommand implements SuperiorCommand {
 
                 List<String> lore = this.API.getConfig(null).getStringList("all.conditions-met.lore");
                 double price = ITEM_CONFIG.getDouble("price");
-                for (int i = 0; i < lore.size(); i++) {
-                    String line = lore.get(i)
-                            .replace("{price}", "" + price)
-                            .replace("{current}", CURRENT)
-                            .replace("{current-no-color}", CURRENT_NO_COLOR);
-
-                    lore.set(i, ChatColor.translateAlternateColorCodes('&', line));
-                }
+                lore.replaceAll(s -> ChatColor.translateAlternateColorCodes('&', s
+                        .replace("{price}", String.valueOf(price))
+                        .replace("{current}", CURRENT)
+                        .replace("{current-no-color}", CURRENT_NO_COLOR)));
                 meta.setLore(lore);
                 item.setItemMeta(meta);
 
@@ -176,12 +169,11 @@ public class IsMiningCommand implements SuperiorCommand {
                 final String PREVIOUS_NO_COLOR = ChatColorRemover.removeChatColors(PREVIOUS);
                 for (int i = 0; i < lore.size(); i++) {
                     String line = lore.get(i)
-                            .replace("{amount}", "" + amount)
-                            .replace("{required}", "" + required)
-                            .replace("{price}", "" + price)
+                            .replace("{amount}", String.valueOf(amount))
+                            .replace("{required}", String.valueOf(required))
+                            .replace("{price}", String.valueOf(price))
                             .replace("{previous}", PREVIOUS)
                             .replace("{previous-no-color}", PREVIOUS_NO_COLOR);
-                    ;
 
                     lore.set(i, ChatColor.translateAlternateColorCodes('&', line));
                 }

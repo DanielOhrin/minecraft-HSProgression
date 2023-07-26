@@ -19,61 +19,61 @@
 
 lore:
   unlocked: # {amount} {current} {current-no-color}
-    - "&7{amount} {current-no-color} Nodes Mined"
+    - '&7{amount} {current-no-color} Nodes Mined'
   locked: # {amount} {required} {previous} {previous-no-color} {price}
-    - "&7{amount}/{required} {previous-no-color} Nodes Mined"
-    - ""
-    - "&7Cost: &a${price}"
+    - '&7{amount}/{required} {previous-no-color} Nodes Mined'
+    - ''
+    - '&7Cost: &a${price}'
 cobblestone:
   material: COBBLESTONE # Item that will show when unlocked
-  display-name: "&6&lCobblestone"
+  display-name: '&6&lCobblestone'
 coal:
-  amount: 10 # Amount of previous required to unlock
-  price: 1000 # Price of upgrade once amount is met
+  amount: 5000 # Amount of previous required to unlock
+  price: 50000 # Price of upgrade once amount is met
   material: COAL_ORE # Item that will show when unlocked
-  display-name: "&6&lCoal"
+  display-name: '&6&lCoal'
 copper:
-  amount: 10 # Amount of previous required to unlock
-  price: 1000 # Price of upgrade once amount is met
+  amount: 7000 # Amount of previous required to unlock
+  price: 100000 # Price of upgrade once amount is met
   material: COPPER_ORE # Item that will show when unlocked
-  display-name: "&6&lCopper"
+  display-name: '&6&lCopper'
 nether-gold:
-  amount: 10 # Amount of previous required to unlock
-  price: 1000 # Price of upgrade once amount is met
+  amount: 17500 # Amount of previous required to unlock
+  price: 135000 # Price of upgrade once amount is met
   material: NETHER_GOLD_ORE # Item that will show when unlocked
-  display-name: "&6&lNether Gold"
+  display-name: '&6&lNether Gold'
 nether-quartz:
-  amount: 10 # Amount of previous required to unlock
-  price: 1000 # Price of upgrade once amount is met
+  amount: 25000 # Amount of previous required to unlock
+  price: 200000 # Price of upgrade once amount is met
   material: NETHER_QUARTZ_ORE # Item that will show when unlocked
-  display-name: "&6&lNether Quartz"
+  display-name: '&6&lNether Quartz'
 iron:
-  amount: 10 # Amount of previous required to unlock
-  price: 1000 # Price of upgrade once amount is met
+  amount: 30000 # Amount of previous required to unlock
+  price: 600000 # Price of upgrade once amount is met
   material: IRON_ORE # Item that will show when unlocked
-  display-name: "&6&lIron"
+  display-name: '&6&lIron'
 ruby:
-  amount: 10 # Amount of previous required to unlock
-  price: 1000 # Price of upgrade once amount is met
+  amount: 40000 # Amount of previous required to unlock
+  price: 1000000 # Price of upgrade once amount is met
   material: REDSTONE_ORE # Item that will show when unlocked
-  display-name: "&6&lRuby"
+  display-name: '&6&lRuby'
 lapis:
-  amount: 10 # Amount of previous required to unlock
-  price: 1000 # Price of upgrade once amount is met
+  amount: 65000 # Amount of previous required to unlock
+  price: 3600000 # Price of upgrade once amount is met
   material: LAPIS_ORE # Item that will show when unlocked
-  display-name: "&6&lLapis"
+  display-name: '&6&lLapis'
 diamond:
-  amount: 10 # Amount of previous required to unlock
-  price: 1000 # Price of upgrade once amount is met
+  amount: 120000 # Amount of previous required to unlock
+  price: 6300000 # Price of upgrade once amount is met
   material: DIAMOND_ORE # Item that will show when unlocked
-  display-name: "&6&lDiamond"
+  display-name: '&6&lDiamond'
 emerald:
-  amount: 10 # Amount of previous required to unlock
-  price: 1000 # Price of upgrade once amount is met
+  amount: 150000 # Amount of previous required to unlock
+  price: 12000000 # Price of upgrade once amount is met
   material: EMERALD_ORE # Item that will show when unlocked
-  display-name: "&6&lEmerald"
+  display-name: '&6&lEmerald'
 ancient-debris:
-  amount: 10 # Amount of previous required to unlock
-  price: 1000 # Price of upgrade once amount is met
+  amount: 250000 # Amount of previous required to unlock
+  price: 35000000 # Price of upgrade once amount is met
   material: ANCIENT_DEBRIS # Item that will show when unlocked
-  display-name: "&6&lAncient Debris"
+  display-name: '&6&lAncient Debris'
