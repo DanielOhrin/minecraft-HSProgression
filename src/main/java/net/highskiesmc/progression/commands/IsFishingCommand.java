@@ -5,6 +5,7 @@ import com.bgsoftware.superiorskyblock.api.SuperiorSkyblockAPI;
 import com.bgsoftware.superiorskyblock.api.commands.SuperiorCommand;
 import com.bgsoftware.superiorskyblock.api.island.Island;
 import com.bgsoftware.superiorskyblock.api.wrappers.SuperiorPlayer;
+import dev.lone.itemsadder.api.CustomStack;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import net.highskiesmc.progression.HSProgressionAPI;
 import net.highskiesmc.progression.enums.IslandDataType;
@@ -100,57 +101,30 @@ public class IsFishingCommand implements SuperiorCommand {
             final ConfigurationSection ITEM_DATA = FISHING_DATA.getConfigurationSection(key);
 
             ItemStack item;
-            if (key.equals(TrackedFish.values()[0].getValue())) {
-                item = new HeadDatabaseAPI().getItemHead(ITEM_CONFIG.getString("head-id"));
-
-                ItemMeta meta = item.getItemMeta();
-                meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', ITEM_CONFIG.getString("display-name")));
-
-                // Calculate total drops caught
-                long totalAmount = 0;
-                for (String KEY : FISHING_DATA.getKeys(false)) {
-                    totalAmount += FISHING_DATA.getLong(KEY + ".amount");
-                }
-
-                List<String> lore = ITEM_CONFIG.getStringList("lore");
-                for (int i = 0; i < lore.size(); i++) {
-                    String line = lore.get(i)
-                            .replace("{amount}", String.valueOf(totalAmount));
-                    lore.set(i, ChatColor.translateAlternateColorCodes('&', line));
-                }
-                meta.setLore(lore);
-                item.setItemMeta(meta);
-
-                previousIsUnlocked = true;
-            } else if (ITEM_DATA.getBoolean("unlocked")) {
+            if (key.equals(TrackedFish.values()[0].getValue()) || ITEM_DATA.getBoolean("unlocked")) {
                 // UNLOCKED ITEM
-                item = new HeadDatabaseAPI().getItemHead(ITEM_CONFIG.getString("head-id"));
+                String material = ITEM_CONFIG.getString("material");
+                if (material != null) {
+                    item = new ItemStack(Material.valueOf(material));
+                } else {
+                    item = CustomStack.getInstance(ITEM_CONFIG.getString("namespaced-id")).getItemStack();
+                }
 
                 ItemMeta meta = item.getItemMeta();
-                meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', ITEM_CONFIG.getString("display-name")));
-
-                List<String> splitKey = Arrays.stream(key.split("-")).collect(Collectors.toList());
-                TrackedFish milestone = TrackedFish.valueOf(splitKey.get(splitKey.size() - 1).toUpperCase());
-                Map<IslandFishingBuff, Double> buffs = milestone.getBuffs();
-                List<String> perks = new ArrayList<>();
-
-                for (Map.Entry<IslandFishingBuff, Double> entry : buffs.entrySet().stream()
-                        .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
-                        .collect(Collectors.toList())) {
-                    perks.add(ChatColor.YELLOW + entry.getKey().getFormattedName() + ' ' +
-                            ChatColor.AQUA + new DecimalFormat("#.##").format(entry.getValue() * 100) + '%');
-                }
+                final String CURRENT = ITEM_CONFIG.getString("display-name");
+                final String CURRENT_NO_COLOR = ChatColorRemover.removeChatColors(CURRENT);
+                meta.setDisplayName(ChatColor.translateAlternateColorCodes('&',
+                        ITEM_CONFIG.getString("display-name")
+                                .replace("{current}", CURRENT)
+                                .replace("{current-no-color}", CURRENT_NO_COLOR)
+                ));
 
                 List<String> lore = FISHING_CONFIG.getStringList("lore.unlocked");
-                for (int i = 0; i < lore.size(); i++) {
-                    boolean perksLine = lore.get(i).contains("{perks}");
-                    if (perksLine) {
-                        lore.addAll(i + 1, perks);
-                        lore.remove(i);
-                        continue;
-                    }
-                    lore.set(i, ChatColor.translateAlternateColorCodes('&', lore.get(i)));
-                }
+                long amount = ITEM_DATA.getLong("amount");
+                lore.replaceAll(s -> ChatColor.translateAlternateColorCodes('&', s
+                        .replace("{amount}", String.valueOf(amount))
+                        .replace("{current}", CURRENT)
+                        .replace("{current-no-color}", CURRENT_NO_COLOR)));
                 meta.setLore(lore);
                 item.setItemMeta(meta);
 
@@ -171,14 +145,10 @@ public class IsFishingCommand implements SuperiorCommand {
 
                 List<String> lore = this.API.getConfig(null).getStringList("all.conditions-met.lore");
                 double price = ITEM_CONFIG.getDouble("price");
-                for (int i = 0; i < lore.size(); i++) {
-                    String line = lore.get(i)
-                            .replace("{price}", "" + price)
-                            .replace("{current}", CURRENT)
-                            .replace("{current-no-color}", CURRENT_NO_COLOR);
-
-                    lore.set(i, ChatColor.translateAlternateColorCodes('&', line));
-                }
+                lore.replaceAll(s -> ChatColor.translateAlternateColorCodes('&', s
+                        .replace("{price}", String.valueOf(price))
+                        .replace("{current}", CURRENT)
+                        .replace("{current-no-color}", CURRENT_NO_COLOR)));
                 meta.setLore(lore);
                 item.setItemMeta(meta);
 
@@ -190,7 +160,7 @@ public class IsFishingCommand implements SuperiorCommand {
                 item = new ItemStack(Material.valueOf(ALL_LOCKED_CONFIG.getString("material")));
 
                 ItemMeta meta = item.getItemMeta();
-                List<String> lore = null;
+                List<String> lore;
 
                 if (previousIsUnlocked) {
                     item.setType(Material.valueOf(ALL_LOCKED_CONFIG.getString("material-unlockable")));
@@ -210,14 +180,14 @@ public class IsFishingCommand implements SuperiorCommand {
                 long amount = FISHING_DATA.getLong(previousKey + ".amount");
                 long required = ITEM_CONFIG.getLong("amount");
                 double price = ITEM_CONFIG.getDouble("price");
-                for (int i = 0; i < lore.size(); i++) {
-                    String line = lore.get(i)
-                            .replace("{amount}", "" + amount)
-                            .replace("{required}", "" + required)
-                            .replace("{price}", "" + price);
-
-                    lore.set(i, ChatColor.translateAlternateColorCodes('&', line));
-                }
+                final String PREVIOUS = FISHING_CONFIG.getString(previousKey + ".display-name");
+                final String PREVIOUS_NO_COLOR = ChatColorRemover.removeChatColors(PREVIOUS);
+                lore.replaceAll(s -> ChatColor.translateAlternateColorCodes('&', s
+                        .replace("{amount}", String.valueOf(amount))
+                        .replace("{required}", String.valueOf(required))
+                        .replace("{price}", String.valueOf(price))
+                        .replace("{previous}", PREVIOUS)
+                        .replace("{previous-no-color}", PREVIOUS_NO_COLOR)));
                 meta.setLore(lore);
                 item.setItemMeta(meta);
 
@@ -230,7 +200,7 @@ public class IsFishingCommand implements SuperiorCommand {
         }
 
         // Add the tracked items
-        List<Integer> slotsToSet = Arrays.asList(11, 12, 13, 14, 15);
+        List<Integer> slotsToSet = Arrays.asList(9, 10, 11, 12, 13, 14, 15, 16, 17);
 
         for (int i = 0; i < slotsToSet.size(); i++) {
             inv.setItem(slotsToSet.get(i), trackedItems.get(i));

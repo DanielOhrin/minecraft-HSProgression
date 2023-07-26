@@ -133,7 +133,7 @@ public class GUIEventHandlers implements Listener {
             } else if (title.equals(IslandDataType.FISHING.getGUITitle())) {
                 e.setCancelled(true);
 
-                int[] slots = new int[]{11, 12, 13, 14, 15};
+                int[] slots = new int[]{9, 10, 11, 12, 13, 14, 15, 16, 17};
                 Map<Integer, TrackedFish> trackedSlotMap = new HashMap<>();
                 TrackedFish[] trackedFish = TrackedFish.values();
 
