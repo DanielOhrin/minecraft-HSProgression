@@ -35,7 +35,7 @@ public class PlayerFishHandlers implements Listener {
     // This handler just increments the island's /is fishing
     @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerCaughtItems(FishCaughtEvent e) {
-        Island island = SuperiorSkyblockAPI.getPlayer(e.getPlayer()).getIsland();
+        Island island = SuperiorSkyblockAPI.getIslandAt(e.getPlayer().getLocation());
 
         if (island != null) {
             final ConfigurationSection FISHING_DATA =
@@ -80,6 +80,12 @@ public class PlayerFishHandlers implements Listener {
                 DropEntry dropEntry = new DropEntry(item, 0, CAUGHT_FISH.getXp() * CAUGHT_AMOUNT);
                 dropEntry.setRarity(Rarity.ISLAND);
                 e.setDroppedItems(Collections.singletonList(dropEntry));
+            }
+        } else {
+            // Roll the chance to override their drops
+            if (new Random().nextDouble() <= ISLAND_FISH_CHANCE) {
+                e.setDroppedItems(new ArrayList<>());
+                e.getPlayer().sendMessage(ChatColor.RED + "The fish got away. You need an island to catch it!");
             }
         }
     }
