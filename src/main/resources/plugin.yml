@@ -2,9 +2,5 @@ name: HSProgression
 author: Daniel Ohrin
 version: '${project.version}'
 main: net.highskiesmc.progression.HSProgression
-api-version: 1.19
-depend: [HSNodes, HSFishing, Vault, RoseStacker, ItemsAdder]
+api-version: 1.13
 commands:
-  hsprogression:
-    aliases:
-      - hsp
