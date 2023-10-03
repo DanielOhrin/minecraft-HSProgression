@@ -13,32 +13,32 @@ import java.util.Locale;
 public class IslandUpgradeCommand implements SuperiorCommand {
     @Override
     public List<String> getAliases() {
-        return Arrays.asList("level", "levels", "upgrade", "upgrades");
+        return Arrays.asList("upgrade", "level", "levels", "upgrades");
     }
 
     @Override
     public String getPermission() {
-        return null;
+        return "hsprogression.cmd.upgrade";
     }
 
     @Override
     public String getUsage(Locale locale) {
-        return null;
+        return "upgrade";
     }
 
     @Override
     public String getDescription(Locale locale) {
-        return null;
+        return "Opens the upgrade menu for your island";
     }
 
     @Override
     public int getMinArgs() {
-        return 0;
+        return 1;
     }
 
     @Override
     public int getMaxArgs() {
-        return 0;
+        return 1;
     }
 
     @Override
@@ -48,11 +48,13 @@ public class IslandUpgradeCommand implements SuperiorCommand {
 
     @Override
     public boolean displayCommand() {
-        return false;
+        return true;
     }
 
     @Override
     public void execute(SuperiorSkyblock superiorSkyblock, CommandSender commandSender, String[] strings) {
+        // TODO: Make it so user has to be mod or admin to upgrade the island
+
         for(Player player : Bukkit.getOnlinePlayers())
         {
             player.sendMessage("hi - HSProgression");
