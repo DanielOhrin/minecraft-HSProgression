@@ -10,7 +10,7 @@ public class CommandPreProcessHandler implements Listener {
         String cmd = e.getMessage().toLowerCase();
 
         // Bypasses SuperiorSkyblock's default upgrade command
-        if (cmd.matches("^(?:is|island|islands) upgrade")) {
+        if (cmd.matches("^(?:is(?:lands?)?) upgrade")) {
             e.setMessage(cmd.replaceFirst("^(?:is|island|islands) upgrade", "is upgrades"));
         }
     }

@@ -1,7 +1,6 @@
 package net.highskiesmc.progression;
 
 import com.bgsoftware.superiorskyblock.api.SuperiorSkyblockAPI;
-import com.bgsoftware.superiorskyblock.api.upgrades.Upgrade;
 import com.mattisadev.mcore.highskies.HSPlugin;
 import net.highskiesmc.progression.commands.superior.IslandUpgradeCommand;
 import net.highskiesmc.progression.events.handlers.CommandPreProcessHandler;

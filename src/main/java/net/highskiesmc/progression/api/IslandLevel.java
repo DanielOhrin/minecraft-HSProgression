@@ -26,6 +26,7 @@ public enum IslandLevel {
     public final int ISLAND_RADIUS;
     public final int MAX_MEMBERS;
     public final long COST;
+    public static final int MAX = 18;
 
     // Constructor
     IslandLevel(int maxSpawners, int islandRadius, int maxMembers, long cost) {
