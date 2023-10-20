@@ -2,6 +2,7 @@ package net.highskiesmc.progression.commands.superior;
 
 import com.bgsoftware.superiorskyblock.api.SuperiorSkyblock;
 import com.bgsoftware.superiorskyblock.api.commands.SuperiorCommand;
+import net.highskiesmc.progression.inventories.IslandUpgradeGUI;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -55,10 +56,7 @@ public class IslandUpgradeCommand implements SuperiorCommand {
     public void execute(SuperiorSkyblock superiorSkyblock, CommandSender commandSender, String[] strings) {
         // TODO: Make it so user has to be mod or admin to upgrade the island
 
-        for(Player player : Bukkit.getOnlinePlayers())
-        {
-            player.sendMessage("hi - HSProgression");
-        }
+        ((Player)commandSender).openInventory(new IslandUpgradeGUI().getInventory());
     }
 
     @Override

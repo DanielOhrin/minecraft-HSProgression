@@ -1,5 +1,14 @@
 package net.highskiesmc.progression.api;
 
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import java.text.DecimalFormat;
+import java.util.*;
+
 public enum IslandLevel {
     // Instances
     L1(10, 16, 4, 0L),
@@ -38,6 +47,90 @@ public enum IslandLevel {
 
     // Public methods
 
+    /**
+     * @param islandLevel Island's current level
+     * @return ItemMeta for the item(s)
+     */
+    public ItemStack getItem(int islandLevel) {
+        DecimalFormat formatter = new DecimalFormat("#,###");
+        int itemLevel = ordinal() + 1;
+        boolean isUnlocked = islandLevel >= itemLevel;
+        String color = (isUnlocked ? ChatColor.GREEN : ChatColor.RED).toString() + ChatColor.BOLD;
+
+        ItemStack item = new ItemStack(ITEM.get(isUnlocked));
+        ItemMeta meta = item.getItemMeta();
+
+        meta.setDisplayName(color + "Level " + itemLevel);
+
+        String cost = itemLevel == 1 ? ChatColor.WHITE + " FREE" :
+                ChatColor.WHITE.toString() + ChatColor.BOLD + " $" + formatter.format(this.COST);
+        String prefix = ChatColor.GREEN.toString() + ChatColor.BOLD + " * ";
+        LinkedList<String> lore = new LinkedList<>()
+        {{
+            add("");
+            add(ChatColor.AQUA.toString() + ChatColor.BOLD + "Cost");
+            add(cost);
+            add("");
+            add(ChatColor.GREEN.toString() + ChatColor.BOLD + "Level Rewards");
+            add(prefix + ChatColor.WHITE + "Spawner Limit: " + formatter.format(MAX_SPAWNERS));
+            add(prefix + ChatColor.WHITE + "Island Radius: " + formatter.format(ISLAND_RADIUS));
+        }};
+
+        for(String line : LEVEL_REWARDS[itemLevel - 1])
+        {
+            lore.add(prefix + ChatColor.WHITE + line);
+        }
+
+        if (itemLevel != 1) {
+            int memberDifference = MAX_MEMBERS - IslandLevel.values()[ordinal() - 1].MAX_MEMBERS;
+            if (memberDifference > 0) {
+                lore.add(prefix + ChatColor.WHITE + "+" + memberDifference + " Max Members (" + MAX_MEMBERS + ")");
+            }
+        }
+// TODO: Possibly enchant unlocked items or the next unlockable one
+        lore.add("");
+        lore.add(color + (isUnlocked ? "UNLOCKED" : "LOCKED"));
+
+        // TODO: Check if player can afford the upgrade and add lore if not
+
+        if (itemLevel - islandLevel > 1) {
+            lore.add(ChatColor.RED + "Requires Island Level " + ChatColor.UNDERLINE + (itemLevel - 1) + ChatColor.RED + "!");
+        }
+
+
+        meta.setLore(lore);
+        item.setItemMeta(meta);
+        return item;
+    }
+
+    // Private fields
+    private static final Map<Boolean, Material> ITEM =
+            new HashMap<>() {{
+                put(true, Material.LIME_STAINED_GLASS);
+                put(false, Material.RED_STAINED_GLASS);
+            }};
+    private static final String[][] LEVEL_REWARDS = new String[][]
+            {
+                    new String[]{},
+                    new String[]{"Ability to place Furnaces"},
+                    new String[]{"Ability to place Redstone"},
+                    new String[]{},
+                    new String[]{"Ability to place Hoppers"},
+                    new String[]{"Ability to place Anvils"},
+                    new String[]{"Ability to place Enchant Tables"},
+                    new String[]{"Ability to place Observers"},
+                    new String[]{},
+                    new String[]{"Ability to place Pistons"},
+                    new String[]{},
+                    new String[]{},
+                    new String[]{},
+                    new String[]{},
+                    new String[]{},
+                    new String[]{},
+                    new String[]{},
+                    new String[]{},
+                    new String[]{},
+            };
 }
 
 //public enum IslandLevel {
