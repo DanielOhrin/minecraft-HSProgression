@@ -1,0 +1,64 @@
+# Do not change the amount of items in the lists or attempt to change what is tracked for each item in the lists
+# Ex: Each material can be changed, but it will not change what is actually being tracked
+
+# Placeholders:
+# {current} - The current item's display name with its color codes
+# {current-no-color} - The current item's display name as plaintext (no color codes)
+# {previous} - The previous item's display name with its color codes
+# {previous-no-color} - the previous item's display name as plaintext (no color codes)
+# {price} - Price to unlock the current upgrade
+# {amount} - Amount of current item the island has tracked
+# {required} - Required amount of items to unlock the upgrade purchase
+
+# Important: Placeholders cannot be used everywhere. In-line comments will show where placeholders are available
+
+lore:
+  unlocked: # {amount} {current} {current-no-color}
+    - "&7{amount} {current-no-color} Caught"
+  locked: # {amount} {required} {previous} {previous-no-color} {price}
+    - "&7{amount}/{required} {previous-no-color} Caught"
+    - ""
+    - "&7Cost: &a${price}"
+cod:
+  material: COD
+  display-name: "&b&lCod"
+salmon:
+  amount: 10 # Amount of previous required to unlock
+  price: 1000 # Price of upgrade
+  material: SALMON
+  display-name: "&b&lSalmon"
+tropical-fish:
+  amount: 100 # Amount of previous required to unlock
+  price: 10000 # Price of upgrade
+  material: TROPICAL_FISH
+  display-name: "&b&lTropcial Fish"
+pufferfish:
+  amount: 250 # Amount of previous required to unlock
+  price: 100000 # Price of upgrade
+  material: PUFFERFISH
+  display-name: "&b&lPufferfish"
+black-moor-goldfish:
+  amount: 500 # Amount of previous required to unlock
+  price: 1000 # Price of upgrade
+  namespaced-id: "highskiesmc:black_moor_goldfish"
+  display-name: "&b&lBlack Moor Goldfish"
+blue-parrotfish:
+  amount: 750 # Amount of previous required to unlock
+  price: 1000000 # Price of upgrade
+  namespaced-id: "highskiesmc:blue_parrotfish"
+  display-name: "&b&lBlue Parrotfish"
+goldfish:
+  amount: 1000 # Amount of previous required to unlock
+  price: 1000 # Price of upgrade
+  namespaced-id: "highskiesmc:goldfish"
+  display-name: "&b&lGoldfish"
+green-sunfish:
+  amount: 1500 # Amount of previous required to unlock
+  price: 10000000 # Price of upgrade
+  namespaced-id: "highskiesmc:green_sunfish"
+  display-name: "&b&lGreen Sunfish"
+tuna:
+  amount: 2000 # Amount of previous required to unlock
+  price: 100000000 # Price of upgrade
+  namespaced-id: "highskiesmc:tuna"
+  display-name: "&b&lTuna"
