@@ -15,6 +15,12 @@
 # {progress-indicator} - &f[&cx&f] or &f[&a✓& (If amount > required)
 
 # Important: Placeholders cannot be used everywhere. In-line comments will show where placeholders are available
+my-sql:
+  host: null
+  port: null
+  database: null
+  username: null
+  password: null
 
 # If a field says Nullable and you don't want to include it, just delete the value
 events: # Dispatches sound + message + title to all members of the island
