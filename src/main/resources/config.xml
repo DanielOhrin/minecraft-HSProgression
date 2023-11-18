@@ -1,116 +1,116 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <tables>
-    <island_level>
+    <table name="island_level">
         <row> <!-- 1 -->
             <Spawner_Limit>10</Spawner_Limit>
             <Island_Radius>16</Island_Radius>
-            <Max_Members>4</Max_Members>
+            <Member_Limit>4</Member_Limit>
             <Cost>0</Cost>
         </row>
         <row> <!-- 2 -->
             <Spawner_Limit>25</Spawner_Limit>
             <Island_Radius>20</Island_Radius>
-            <Max_Members>5</Max_Members>
+            <Member_Limit>5</Member_Limit>
             <Cost>2500</Cost>
         </row>
         <row> <!-- 3 -->
             <Spawner_Limit>50</Spawner_Limit>
             <Island_Radius>25</Island_Radius>
-            <Max_Members>5</Max_Members>
+            <Member_Limit>5</Member_Limit>
             <Cost>25000</Cost>
         </row>
         <row> <!-- 4 -->
             <Spawner_Limit>75</Spawner_Limit>
             <Island_Radius>29</Island_Radius>
-            <Max_Members>6</Max_Members>
+            <Member_Limit>6</Member_Limit>
             <Cost>50000</Cost>
         </row>
         <row> <!-- 5 -->
             <Spawner_Limit>100</Spawner_Limit>
             <Island_Radius>34</Island_Radius>
-            <Max_Members>7</Max_Members>
+            <Member_Limit>7</Member_Limit>
             <Cost>250000</Cost>
         </row>
         <row> <!-- 6 -->
             <Spawner_Limit>150</Spawner_Limit>
             <Island_Radius>38</Island_Radius>
-            <Max_Members>7</Max_Members>
+            <Member_Limit>7</Member_Limit>
             <Cost>750000</Cost>
         </row>
         <row> <!-- 7 -->
             <Spawner_Limit>250</Spawner_Limit>
             <Island_Radius>43</Island_Radius>
-            <Max_Members>8</Max_Members>
+            <Member_Limit>8</Member_Limit>
             <Cost>1500000</Cost>
         </row>
         <row> <!-- 8 -->
             <Spawner_Limit>500</Spawner_Limit>
             <Island_Radius>47</Island_Radius>
-            <Max_Members>8</Max_Members>
+            <Member_Limit>8</Member_Limit>
             <Cost>5000000</Cost>
         </row>
         <row> <!-- 9 -->
             <Spawner_Limit>750</Spawner_Limit>
             <Island_Radius>52</Island_Radius>
-            <Max_Members>9</Max_Members>
+            <Member_Limit>9</Member_Limit>
             <Cost>20000000</Cost>
         </row>
         <row> <!-- 10 -->
             <Spawner_Limit>1000</Spawner_Limit>
             <Island_Radius>54</Island_Radius>
-            <Max_Members>9</Max_Members>
+            <Member_Limit>9</Member_Limit>
             <Cost>50000000</Cost>
         </row>
         <row> <!-- 11 -->
             <Spawner_Limit>1250</Spawner_Limit>
             <Island_Radius>61</Island_Radius>
-            <Max_Members>10</Max_Members>
+            <Member_Limit>10</Member_Limit>
             <Cost>100000000</Cost>
         </row>
         <row> <!-- 12 -->
             <Spawner_Limit>1500</Spawner_Limit>
             <Island_Radius>65</Island_Radius>
-            <Max_Members>10</Max_Members>
+            <Member_Limit>10</Member_Limit>
             <Cost>200000000</Cost>
         </row>
         <row> <!-- 13 -->
             <Spawner_Limit>1750</Spawner_Limit>
             <Island_Radius>70</Island_Radius>
-            <Max_Members>10</Max_Members>
+            <Member_Limit>10</Member_Limit>
             <Cost>250000000</Cost>
         </row>
         <row> <!-- 14 -->
             <Spawner_Limit>2000</Spawner_Limit>
             <Island_Radius>75</Island_Radius>
-            <Max_Members>11</Max_Members>
+            <Member_Limit>11</Member_Limit>
             <Cost>500000000</Cost>
         </row>
         <row> <!-- 15 -->
             <Spawner_Limit>2500</Spawner_Limit>
             <Island_Radius>79</Island_Radius>
-            <Max_Members>11</Max_Members>
+            <Member_Limit>11</Member_Limit>
             <Cost>1000000000</Cost>
         </row>
         <row> <!-- 16 -->
             <Spawner_Limit>3000</Spawner_Limit>
             <Island_Radius>83</Island_Radius>
-            <Max_Members>12</Max_Members>
+            <Member_Limit>12</Member_Limit>
             <Cost>1500000000</Cost>
         </row>
         <row> <!-- 17 -->
             <Spawner_Limit>4000</Spawner_Limit>
             <Island_Radius>88</Island_Radius>
-            <Max_Members>12</Max_Members>
+            <Member_Limit>12</Member_Limit>
             <Cost>2500000000</Cost>
         </row>
         <row> <!-- 18 -->
             <Spawner_Limit>5000</Spawner_Limit>
             <Island_Radius>92</Island_Radius>
-            <Max_Members>13</Max_Members>
+            <Member_Limit>13</Member_Limit>
             <Cost>5000000000</Cost>
         </row>
-    </island_level>
-    <island_level_block>
+    </table>
+    <table name="island_level_block">
         <row>
             <Island_Level>2</Island_Level>
             <Encoding>Redstone</Encoding> <!-- Furnace -->
@@ -139,5 +139,5 @@
             <Island_Level>10</Island_Level>
             <Encoding>Redstone</Encoding> <!-- Piston -->
         </row>
-    </island_level_block>
+    </table>
 </tables>
