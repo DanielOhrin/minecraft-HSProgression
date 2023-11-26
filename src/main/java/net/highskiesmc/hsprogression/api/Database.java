@@ -42,12 +42,16 @@ class Database extends MySQLDatabase {
     @Override
     protected void tryCreateTables() throws SQLException {
         try (Connection conn = this.getHikari().getConnection()) {
-            Statement statement = conn.createStatement();
+            Statement drops = conn.createStatement();
+            Statement ddl = conn.createStatement();
 
             // ISLAND + ISLAND LEVELS
             // TODO: Create procedure for creating new island
             // TODO: Insert config values from the external file
-            statement.addBatch("CREATE TABLE IF NOT EXISTS island (" +
+            drops.addBatch("DROP TABLE IF EXISTS island_level_block;");
+            drops.addBatch("DROP TABLE IF EXISTS island_level;");
+
+            ddl.addBatch("CREATE TABLE IF NOT EXISTS island (" +
                     "Id INT AUTO_INCREMENT, " +
                     "Island_UUID VARCHAR(36) NOT NULL, " +
                     "Level INT NOT NULL DEFAULT(1), " +
@@ -55,8 +59,7 @@ class Database extends MySQLDatabase {
                     "PRIMARY KEY(Id)" +
                     ") ENGINE = INNODB;");
 
-            statement.addBatch("DROP TABLE IF EXISTS island_level;");
-            statement.addBatch("CREATE TABLE island_level (" +
+            ddl.addBatch("CREATE TABLE island_level (" +
                     "Id INT AUTO_INCREMENT, " +
                     "Spawner_Limit INT NOT NULL, " +
                     "Member_Limit TINYINT(30) UNSIGNED, " +
@@ -65,8 +68,7 @@ class Database extends MySQLDatabase {
                     "PRIMARY KEY(Id)" +
                     ") ENGINE = INNODB;");
 
-            statement.addBatch("DROP TABLE IF EXISTS island_level_block;");
-            statement.addBatch("CREATE TABLE island_level_block (" +
+            ddl.addBatch("CREATE TABLE island_level_block (" +
                     "Id INT AUTO_INCREMENT, " +
                     "Label VARCHAR(50) UNIQUE, " +
                     "Island_Level INT NOT NULL, " +
@@ -76,7 +78,8 @@ class Database extends MySQLDatabase {
                     ") ENGINE = INNODB;");
             // END
 
-            statement.executeBatch();
+            drops.executeBatch();
+            ddl.executeBatch();
         }
 
         try {
@@ -214,7 +217,8 @@ class Database extends MySQLDatabase {
         try (Connection conn = getHikari().getConnection()) {
             Statement statement = conn.createStatement();
 
-            ResultSet blocks = statement.executeQuery("SELECT Id, Island_Level, Encoding FROM island_level_block;");
+            ResultSet blocks = statement.executeQuery("SELECT Id, Label, Island_Level, Encoding FROM " +
+                    "island_level_block;");
 
             while (blocks.next()) {
                 int islandLevel = blocks.getInt("Island_Level");
