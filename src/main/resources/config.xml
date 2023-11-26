@@ -112,30 +112,37 @@
     </table>
     <table name="island_level_block">
         <row>
+            <Label>Furnace</Label>
             <Island_Level>2</Island_Level>
             <Encoding>Redstone</Encoding> <!-- Furnace -->
         </row>
         <row>
+            <Label>Redstone</Label>
             <Island_Level>3</Island_Level>
             <Encoding>Redstone</Encoding> <!-- Redstone *EXCEPTION* -->
         </row>
         <row>
+            <Label>Hopper</Label>
             <Island_Level>5</Island_Level>
             <Encoding>Redstone</Encoding> <!-- Hopper -->
         </row>
         <row>
+            <Label>Anvil</Label>
             <Island_Level>6</Island_Level>
             <Encoding>Redstone</Encoding> <!-- Anvil -->
         </row>
         <row>
+            <Label>Enchantment Table</Label>
             <Island_Level>7</Island_Level>
             <Encoding>Redstone</Encoding> <!-- Enchantment Table -->
         </row>
         <row>
+            <Label>Observer</Label>
             <Island_Level>8</Island_Level>
             <Encoding>Redstone</Encoding> <!-- Observer -->
         </row>
         <row>
+            <Label>Pistons</Label>
             <Island_Level>10</Island_Level>
             <Encoding>Redstone</Encoding> <!-- Piston -->
         </row>

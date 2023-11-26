@@ -1,7 +1,7 @@
 package net.highskiesmc.hsprogression.inventories;
 
 import net.highskiesmc.hscore.inventory.GUI;
-import net.highskiesmc.hsprogression.api.IslandLevel;
+import net.highskiesmc.hsprogression.api.IslandLevelOld;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -36,10 +36,10 @@ public class IslandUpgradeGUI implements GUI {
     public void addContent(Inventory inv) {
         inv.clear();
 
-        IslandLevel[] levels = IslandLevel.values();
+        IslandLevelOld[] levels = IslandLevelOld.values();
 
         for(int i = 0; i < levels.length; i++) {
-            IslandLevel level = levels[i];
+            IslandLevelOld level = levels[i];
 
             // TODO: Update this to take the player's island level
             inv.setItem(i, level.getItem(1));

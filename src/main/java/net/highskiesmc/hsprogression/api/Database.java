@@ -1,8 +1,9 @@
 package net.highskiesmc.hsprogression.api;
 
 import net.highskiesmc.hscore.data.MySQLDatabase;
+import net.highskiesmc.hscore.utils.TextUtils;
+import net.highskiesmc.hscore.utils.item.ItemUtils;
 import net.highskiesmc.hsprogression.HSProgression;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.w3c.dom.Document;
@@ -15,17 +16,11 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
+import java.sql.*;
+import java.util.*;
 
-public class Database extends MySQLDatabase {
-    public Database(@NonNull ConfigurationSection DB_CONFIG) throws SQLException, IOException {
+class Database extends MySQLDatabase {
+    Database(@NonNull ConfigurationSection DB_CONFIG) throws SQLException {
         super(DB_CONFIG);
     }
 
@@ -73,9 +68,11 @@ public class Database extends MySQLDatabase {
             statement.addBatch("DROP TABLE IF EXISTS island_level_block;");
             statement.addBatch("CREATE TABLE island_level_block (" +
                     "Id INT AUTO_INCREMENT, " +
+                    "Label VARCHAR(50) UNIQUE, " +
                     "Island_Level INT NOT NULL, " +
                     "Encoding VARCHAR(16000), " +
-                    "PRIMARY KEY(Id)" +
+                    "PRIMARY KEY(Id), " +
+                    "FOREIGN KEY(Island_Level) REFERENCES island_level(Id)" +
                     ") ENGINE = INNODB;");
             // END
 
@@ -84,13 +81,13 @@ public class Database extends MySQLDatabase {
 
         try {
             insertConfigurationTables();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ex) {
+            throw new SQLException(ex);
         }
     }
 
     /**
-     * Yeah this is documentation...
+     * Inserts config values from resource `config.xml`
      */
     protected void insertConfigurationTables() throws IOException, SQLException {
         // TODO: Try to get the file and read just one line for now to test!
@@ -180,5 +177,63 @@ public class Database extends MySQLDatabase {
                 statement.executeBatch();
             }
         }
+    }
+
+    /**
+     * Grabs Island Levels from the database
+     */
+    public List<IslandLevel> getIslandLevels() throws SQLException {
+        List<IslandLevel> result = new ArrayList<>();
+
+        try (Connection conn = getHikari().getConnection()) {
+            Statement statement = conn.createStatement();
+
+            ResultSet levels = statement.executeQuery("SELECT Id, Spawner_Limit, Member_Limit, Island_Radius, Cost " +
+                    "FROM island_level;");
+
+            while (levels.next()) {
+                result.add(new IslandLevel(
+                        levels.getInt("Id"),
+                        levels.getInt("Spawner_Limit"),
+                        levels.getInt("Member_Limit"),
+                        levels.getInt("Island_Radius"),
+                        levels.getLong("Cost")
+                ));
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Grabs config from the database
+     */
+    public Map<Integer, List<IslandBlock>> getIslandBlocks() throws SQLException, IOException {
+        Map<Integer, List<IslandBlock>> result = new HashMap<>();
+
+        try (Connection conn = getHikari().getConnection()) {
+            Statement statement = conn.createStatement();
+
+            ResultSet blocks = statement.executeQuery("SELECT Id, Island_Level, Encoding FROM island_level_block;");
+
+            while (blocks.next()) {
+                int islandLevel = blocks.getInt("Island_Level");
+                IslandBlock block = new IslandBlock(
+                        islandLevel,
+                        ItemUtils.fromBase64(blocks.getString("Encoding")),
+                        TextUtils.translateColor(blocks.getString("Label"))
+                );
+
+                if (result.containsKey(islandLevel)) {
+                    result.get(islandLevel).add(block);
+                } else {
+                    result.put(islandLevel, new ArrayList<>() {{
+                        add(block);
+                    }});
+                }
+            }
+        }
+
+        return result;
     }
 }
