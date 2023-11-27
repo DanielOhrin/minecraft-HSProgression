@@ -1,8 +1,10 @@
 package net.highskiesmc.hsprogression.api;
 
+import com.bgsoftware.superiorskyblock.api.wrappers.SuperiorPlayer;
 import net.highskiesmc.hsprogression.HSProgression;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.common.value.qual.IntRange;
 import org.w3c.dom.Document;
@@ -132,6 +134,7 @@ public class HSProgressionApi {
 
     /**
      * Creates an island in HSProgression data. Default level is 1 and isDeleted is false
+     *
      * @param island Source island
      */
     public void createIsland(com.bgsoftware.superiorskyblock.api.island.Island island) {
@@ -149,10 +152,39 @@ public class HSProgressionApi {
     public void createIsland(com.bgsoftware.superiorskyblock.api.island.Island island, int level, boolean isDeleted) {
         createIsland(island.getUniqueId(), island.getOwner().getUniqueId(), level, isDeleted);
     }
+
+    //</editor-fold>
+    //<editor-fold desc="Update">
+    public void setIslandLevel(Island island, int level) throws NullPointerException {
+        islands.get(island.getIslandUuid()).setLevel(level);
+    }
+
+    public void setIslandLevel(UUID islandUuid, int level) throws NullPointerException {
+        islands.get(islandUuid).setLevel(level);
+    }
+
+    public void setIslandLevel(com.bgsoftware.superiorskyblock.api.island.Island island, int level) throws NullPointerException {
+        setIslandLevel(island.getUniqueId(), level);
+    }
+
+    public void setIslandLeader(UUID islandUuid, UUID leaderUuid) throws NullPointerException {
+        islands.get(islandUuid).setLeaderUuid(leaderUuid);
+    }
+
+    public void setIslandLeader(com.bgsoftware.superiorskyblock.api.island.Island island, Player leader) throws NullPointerException {
+        setIslandLeader(island.getUniqueId(), leader.getUniqueId());
+    }
+
+    public void setIslandLeader(com.bgsoftware.superiorskyblock.api.island.Island island, SuperiorPlayer leader) throws NullPointerException {
+        setIslandLeader(island.getUniqueId(), leader.asOfflinePlayer().getUniqueId());
+    }
+
     //</editor-fold>
     //<editor-fold desc="Delete">
+
     /**
      * Soft-deletes an island
+     *
      * @param island Source island
      * @throws NullPointerException If island does not exist in the cache
      */
@@ -162,6 +194,7 @@ public class HSProgressionApi {
 
     /**
      * Soft-deletes an island
+     *
      * @param island Source island
      * @throws NullPointerException If island does not exist in the cache
      */
