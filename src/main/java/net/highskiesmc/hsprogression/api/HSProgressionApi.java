@@ -4,6 +4,7 @@ import net.highskiesmc.hsprogression.HSProgression;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.common.value.qual.IntRange;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -15,6 +16,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -24,6 +26,7 @@ public class HSProgressionApi {
     //<editor-fold desc="Fields">
     private final HSProgression main;
     private List<IslandLevel> islandLevels;
+    private final int maxIslandLevel;
     private Map<Integer, List<IslandBlock>> islandBlocks;
     private Map<UUID, Island> islands;
     private Database db;
@@ -38,6 +41,7 @@ public class HSProgressionApi {
 
         // Populate with data
         this.islandLevels = db.getIslandLevels();
+        this.maxIslandLevel = islandLevels.size();
         this.islandBlocks = db.getIslandBlocks();
         this.islands = db.getIslands();
 
@@ -67,7 +71,7 @@ public class HSProgressionApi {
                 throw new IOException("cache.upload.interval.seconds not found in config.xml");
             }
 
-            cachePushInterval = Long.parseLong(node.getNodeValue()) * 20L;
+            cachePushInterval = Long.parseLong(node.getTextContent()) * 20L;
         } catch (SAXException | ParserConfigurationException ex) {
             throw new IOException(ex);
         }
@@ -100,4 +104,20 @@ public class HSProgressionApi {
     }
     //</editor-fold>
     //</editor-fold>
+
+    @NonNull
+    public List<IslandLevel> getIslandLevels() {
+        return this.islandLevels;
+    }
+
+    @NonNull
+    public IslandLevel getIslandLevel(int level) throws IndexOutOfBoundsException {
+        return this.islandLevels.get(level - 1);
+    }
+
+    @NonNull
+    public List<IslandBlock> getIslandBlocks(int level) {
+        return this.islandBlocks.getOrDefault(level, new ArrayList<>());
+    }
+
 }

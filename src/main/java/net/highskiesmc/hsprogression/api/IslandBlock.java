@@ -19,4 +19,8 @@ public class IslandBlock {
     public ItemStack getItem() {
         return item;
     }
+
+    public String getLabel() {
+        return label;
+    }
 }

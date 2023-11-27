@@ -55,7 +55,8 @@ public class IslandUpgradeCommand implements SuperiorCommand {
     public void execute(SuperiorSkyblock superiorSkyblock, CommandSender commandSender, String[] strings) {
         // TODO: Make it so user has to be mod or admin to upgrade the island
 
-        ((Player)commandSender).openInventory(new IslandUpgradeGUI().getInventory());
+        //TODO: Make islandLevel take the player's actual island level
+        ((Player)commandSender).openInventory(new IslandUpgradeGUI(1).getInventory());
     }
 
     @Override
