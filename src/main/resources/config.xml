@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <config>
-    <value key="cache.upload.interval.seconds">60</value>
+    <value key="cache.upload.interval.seconds">300</value>
     <tables>
         <table name="island_level">
             <row> <!-- 1 -->

@@ -150,6 +150,25 @@ public class HSProgressionApi {
         createIsland(island.getUniqueId(), island.getOwner().getUniqueId(), level, isDeleted);
     }
     //</editor-fold>
+    //<editor-fold desc="Delete">
+    /**
+     * Soft-deletes an island
+     * @param island Source island
+     * @throws NullPointerException If island does not exist in the cache
+     */
+    public void deleteIsland(com.bgsoftware.superiorskyblock.api.island.Island island) throws NullPointerException {
+        this.islands.get(island.getUniqueId()).delete();
+    }
+
+    /**
+     * Soft-deletes an island
+     * @param island Source island
+     * @throws NullPointerException If island does not exist in the cache
+     */
+    public void deleteIsland(@NonNull Island island) throws NullPointerException {
+        this.islands.get(island.getIslandUuid()).delete();
+    }
+    //</editor-fold>
     //</editor-fold>
     //</editor-fold>
 }

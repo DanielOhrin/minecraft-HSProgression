@@ -1,6 +1,7 @@
 package net.highskiesmc.hsprogression.events.handlers;
 
 import com.bgsoftware.superiorskyblock.api.events.IslandCreateEvent;
+import com.bgsoftware.superiorskyblock.api.events.IslandDisbandEvent;
 import net.highskiesmc.hscore.highskies.HSListener;
 import net.highskiesmc.hsprogression.HSProgression;
 import org.bukkit.event.EventHandler;
@@ -14,5 +15,10 @@ public class IslandEventsHandler extends HSListener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onIslandCreated(IslandCreateEvent e) {
         HSProgression.getApi().createIsland(e.getIsland());
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onIslandDisband(IslandDisbandEvent e) {
+        HSProgression.getApi().deleteIsland(e.getIsland());
     }
 }

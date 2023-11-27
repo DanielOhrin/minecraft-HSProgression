@@ -3,7 +3,6 @@ package net.highskiesmc.hsprogression.inventories;
 import net.highskiesmc.hscore.inventory.GUI;
 import net.highskiesmc.hsprogression.HSProgression;
 import net.highskiesmc.hsprogression.api.IslandLevel;
-import net.highskiesmc.hsprogression.api.IslandLevelOld;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.event.inventory.InventoryClickEvent;
