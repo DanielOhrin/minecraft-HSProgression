@@ -1,10 +1,13 @@
 package net.highskiesmc.hsprogression.api;
 
 import net.highskiesmc.hscore.data.MySQLDatabase;
+import net.highskiesmc.hscore.exceptions.Exception;
 import net.highskiesmc.hscore.utils.TextUtils;
 import net.highskiesmc.hscore.utils.item.ItemUtils;
 import net.highskiesmc.hsprogression.HSProgression;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.plugin.Plugin;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
@@ -45,17 +48,16 @@ class Database extends MySQLDatabase {
             Statement drops = conn.createStatement();
             Statement ddl = conn.createStatement();
 
-            // ISLAND + ISLAND LEVELS
-            // TODO: Create procedure for creating new island
-            // TODO: Insert config values from the external file
+            // Note: While dropping a table is DDL, it is good to have it separate from the batch that recreates them.
             drops.addBatch("DROP TABLE IF EXISTS island_level_block;");
             drops.addBatch("DROP TABLE IF EXISTS island_level;");
 
             ddl.addBatch("CREATE TABLE IF NOT EXISTS island (" +
                     "Id INT AUTO_INCREMENT, " +
+                    "Leader_UUID VARCHAR(36) NOT NULL, " +
                     "Island_UUID VARCHAR(36) NOT NULL, " +
-                    "Level INT NOT NULL DEFAULT(1), " +
-                    "IsDeleted BIT(1) NOT NULL DEFAULT(0), " +
+                    "Level INT NOT NULL DEFAULT 1, " +
+                    "Is_Deleted BIT(1) NOT NULL DEFAULT 0, " +
                     "PRIMARY KEY(Id)" +
                     ") ENGINE = INNODB;");
 
@@ -76,6 +78,10 @@ class Database extends MySQLDatabase {
                     "PRIMARY KEY(Id), " +
                     "FOREIGN KEY(Island_Level) REFERENCES island_level(Id)" +
                     ") ENGINE = INNODB;");
+
+            // Try Running this line if plugin startup time becomes high
+            // You will want to add a guard clause of some sort.
+            // ddl.addBatch("CREATE INDEX idx_islands_active ON island(Is_Deleted);");
             // END
 
             drops.executeBatch();
@@ -90,13 +96,12 @@ class Database extends MySQLDatabase {
     }
 
     /**
-     * Inserts config values from resource `config.xml`
+     * Inserts config values from resource `config.xml` into the database
      */
     protected void insertConfigurationTables() throws IOException, SQLException {
-        // TODO: Try to get the file and read just one line for now to test!
         try (Connection conn = getHikari().getConnection()) {
             Queue<PreparedStatement> statements = new LinkedList<>();
-
+            // TODO: Extract to HSCore
             try (InputStream stream = HSProgression.class.getResourceAsStream("/config.xml")) {
                 DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
                 Document doc = builder.parse(stream);
@@ -182,6 +187,83 @@ class Database extends MySQLDatabase {
         }
     }
 
+    //<editor-fold desc="Islands">
+    //<editor-fold desc="Island">
+
+    /**
+     *
+     * @return HashMap of Islands by their UUID
+     * @throws SQLException
+     */
+    public Map<UUID, Island> getIslands() throws SQLException {
+        Map<UUID, Island> result = new HashMap<>();
+
+        try (Connection conn = getHikari().getConnection()) {
+            Statement statement = conn.createStatement();
+
+            ResultSet island = statement.executeQuery("SELECT Id, Leader_UUID, Island_UUID, Level FROM " +
+                    "island WHERE Is_Deleted = 0;");
+
+            while (island.next()) {
+                UUID islandUuid = UUID.fromString(island.getString("Island_UUID"));
+                result.put(islandUuid, new Island(
+                        island.getInt("Id"),
+                        UUID.fromString(island.getString("Leader_UUID")),
+                        islandUuid,
+                        island.getInt("Level"),
+                        island.getBoolean("IsDeleted")
+                        )
+                );
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     *
+     * @param plugin Plugin calling this method
+     * @param islands List of islands to upsert into the database
+     */
+    public void upsertIslandsAsync(@NonNull Plugin plugin, @NonNull List<Island> islands) {
+        if (islands.isEmpty()) {
+            Bukkit.getLogger().info("No island to update. Skipped batch upsert...");
+        }
+
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+            Bukkit.getLogger().info("Updating islands...");
+            // Upsert, Then Delete!
+            try (Connection conn = getHikari().getConnection()) {
+                PreparedStatement upsert = conn.prepareStatement(
+                        "INSERT INTO island (Leader_UUID, Island_UUID, Level, Is_Deleted) VALUES (?, ?, ?, ?)" +
+                                "ON DUPLICATE KEY UPDATE Leader_UUID = ?, Level = ?, Is_Deleted = ?"
+                );
+
+                for (Island island : islands) {
+                    upsert.setString(1, island.getLeaderUuid().toString());
+                    upsert.setString(2, island.getIslandUuid().toString());
+                    upsert.setInt(3, island.getLevel());
+                    upsert.setBoolean(4, island.isDeleted());
+
+                    upsert.setString(5, island.getLeaderUuid().toString());
+                    upsert.setInt(6, island.getLevel());
+                    upsert.setBoolean(7, island.isDeleted());
+
+                    upsert.addBatch();
+                }
+
+                int[] islandsUpdated = upsert.executeBatch();
+
+                Bukkit.getLogger().info("Islands updated: " + Arrays.stream(islandsUpdated).sum());
+                Bukkit.getLogger().info("Done!");
+            } catch (SQLException ex) {
+                Exception.useStackTrace(Bukkit.getLogger()::severe, ex);
+            }
+        });
+    }
+    //</editor-fold>
+    //<editor-fold desc="Island Levels">
+
     /**
      * Grabs Island Levels from the database
      */
@@ -240,4 +322,6 @@ class Database extends MySQLDatabase {
 
         return result;
     }
+    //</editor-fold>
+    //</editor-fold>
 }
