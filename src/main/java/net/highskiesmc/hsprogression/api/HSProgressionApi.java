@@ -102,9 +102,10 @@ public class HSProgressionApi {
     private void uploadCacheToDatabaseAsync() {
         db.upsertIslandsAsync(this.main, islands.values().stream().toList());
     }
-    //</editor-fold>
-    //</editor-fold>
 
+    //</editor-fold>
+    //</editor-fold>
+    //<editor-fold desc="Getters">
     @NonNull
     public List<IslandLevel> getIslandLevels() {
         return this.islandLevels;
@@ -119,5 +120,36 @@ public class HSProgressionApi {
     public List<IslandBlock> getIslandBlocks(int level) {
         return this.islandBlocks.getOrDefault(level, new ArrayList<>());
     }
+    //</editor-fold>
 
+    //<editor-fold desc="Data Handling">
+
+    //<editor-fold desc="Island">
+    //<editor-fold desc="Create">
+    private void createIsland(@NonNull UUID islandUuid, @NonNull UUID leaderUuid, int level, boolean isDeleted) {
+        this.islands.put(islandUuid, new Island(leaderUuid, islandUuid, level, isDeleted));
+    }
+
+    /**
+     * Creates an island in HSProgression data. Default level is 1 and isDeleted is false
+     * @param island Source island
+     */
+    public void createIsland(com.bgsoftware.superiorskyblock.api.island.Island island) {
+        createIsland(island.getUniqueId(), island.getOwner().getUniqueId(), 1, false);
+    }
+
+    public void createIsland(com.bgsoftware.superiorskyblock.api.island.Island island, boolean isDeleted) {
+        createIsland(island.getUniqueId(), island.getOwner().getUniqueId(), 1, isDeleted);
+    }
+
+    public void createIsland(com.bgsoftware.superiorskyblock.api.island.Island island, int level) {
+        createIsland(island.getUniqueId(), island.getOwner().getUniqueId(), level, false);
+    }
+
+    public void createIsland(com.bgsoftware.superiorskyblock.api.island.Island island, int level, boolean isDeleted) {
+        createIsland(island.getUniqueId(), island.getOwner().getUniqueId(), level, isDeleted);
+    }
+    //</editor-fold>
+    //</editor-fold>
+    //</editor-fold>
 }

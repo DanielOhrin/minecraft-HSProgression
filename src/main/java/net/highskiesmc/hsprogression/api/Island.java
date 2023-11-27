@@ -1,11 +1,12 @@
 package net.highskiesmc.hsprogression.api;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.UUID;
 
 public class Island {
-    private final int id;
+    private final Integer id;
     private UUID leaderUuid;
     private final UUID islandUuid;
     private int level;
@@ -19,7 +20,16 @@ public class Island {
         this.isDeleted = isDeleted;
     }
 
-    int getId() {
+    Island(@NonNull UUID leaderUuid, @NonNull UUID islandUuid, int level, boolean isDeleted) {
+        this.id = null;
+        this.leaderUuid = leaderUuid;
+        this.islandUuid = islandUuid;
+        this.level = level;
+        this.isDeleted = isDeleted;
+    }
+
+    @Nullable
+    Integer getId() {
         return id;
     }
 

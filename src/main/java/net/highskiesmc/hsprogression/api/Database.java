@@ -227,11 +227,11 @@ class Database extends MySQLDatabase {
      */
     public void upsertIslandsAsync(@NonNull Plugin plugin, @NonNull List<Island> islands) {
         if (islands.isEmpty()) {
-            Bukkit.getLogger().info("No island to update. Skipped batch upsert...");
+            plugin.getLogger().info("No island to update. Skipped batch upsert...");
         }
 
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-            Bukkit.getLogger().info("Updating islands...");
+            plugin.getLogger().info("Updating islands...");
             // Upsert, Then Delete!
             try (Connection conn = getHikari().getConnection()) {
                 PreparedStatement upsert = conn.prepareStatement(
@@ -254,10 +254,9 @@ class Database extends MySQLDatabase {
 
                 int[] islandsUpdated = upsert.executeBatch();
 
-                Bukkit.getLogger().info("Islands updated: " + Arrays.stream(islandsUpdated).sum());
-                Bukkit.getLogger().info("Done!");
+                plugin.getLogger().info("Done! Islands updated: " + Arrays.stream(islandsUpdated).sum());
             } catch (SQLException ex) {
-                Exception.useStackTrace(Bukkit.getLogger()::severe, ex);
+                Exception.useStackTrace(plugin.getLogger()::severe, ex);
             }
         });
     }
