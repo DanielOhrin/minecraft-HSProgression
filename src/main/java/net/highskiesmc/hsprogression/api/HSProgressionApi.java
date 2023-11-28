@@ -85,7 +85,7 @@ public class HSProgressionApi {
                 cachePushInterval
         ).getTaskId();
     }
-//</editor-fold>
+    //</editor-fold>
     //<editor-fold desc="Methods">
 
     /**
@@ -93,7 +93,7 @@ public class HSProgressionApi {
      */
     public void dispose() {
         Bukkit.getScheduler().cancelTask(this.taskId);
-        this.uploadCacheToDatabaseAsync();
+        this.uploadCacheToDatabase();
         this.db.disconnect();
         this.islands = null;
         this.islandLevels = null;
@@ -101,8 +101,18 @@ public class HSProgressionApi {
         this.db = null;
     }
 
+    /**
+     * Uploads cache to DB (Async)
+     */
     private void uploadCacheToDatabaseAsync() {
-        db.upsertIslandsAsync(this.main, islands.values().stream().toList());
+        Bukkit.getScheduler().runTaskAsynchronously(this.main, this::uploadCacheToDatabase);
+    }
+
+    /**
+     * Uploads cache to DB (Sync)
+     */
+    private void uploadCacheToDatabase() {
+        db.upsertIslands(this.main, islands.values().stream().toList());
     }
 
     //</editor-fold>
@@ -151,6 +161,16 @@ public class HSProgressionApi {
 
     public void createIsland(com.bgsoftware.superiorskyblock.api.island.Island island, int level, boolean isDeleted) {
         createIsland(island.getUniqueId(), island.getOwner().getUniqueId(), level, isDeleted);
+    }
+
+    //</editor-fold>
+    //<editor-fold desc="Read">
+    public Island getIsland(UUID islandUuid) throws NullPointerException {
+        return islands.get(islandUuid);
+    }
+
+    public Island getIsland(com.bgsoftware.superiorskyblock.api.island.Island island) {
+        return getIsland(island.getUniqueId());
     }
 
     //</editor-fold>

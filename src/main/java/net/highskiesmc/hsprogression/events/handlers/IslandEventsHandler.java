@@ -3,6 +3,7 @@ package net.highskiesmc.hsprogression.events.handlers;
 import com.bgsoftware.superiorskyblock.api.SuperiorSkyblockAPI;
 import com.bgsoftware.superiorskyblock.api.events.IslandCreateEvent;
 import com.bgsoftware.superiorskyblock.api.events.IslandDisbandEvent;
+import com.bgsoftware.superiorskyblock.api.events.IslandTransferEvent;
 import com.bgsoftware.superiorskyblock.api.events.PlayerChangeRoleEvent;
 import net.highskiesmc.hscore.highskies.HSListener;
 import net.highskiesmc.hsprogression.HSProgression;
@@ -25,9 +26,7 @@ public class IslandEventsHandler extends HSListener {
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onIslandLeaderChange(PlayerChangeRoleEvent e) {
-        if (e.getNewRole().isLastRole()) {
-            HSProgression.getApi().setIslandLeader(e.getPlayer().getIsland(), e.getPlayer());
-        }
+    public void onIslandLeaderChange(IslandTransferEvent e) {
+        HSProgression.getApi().setIslandLeader(e.getNewOwner().getIsland(), e.getNewOwner());
     }
 }

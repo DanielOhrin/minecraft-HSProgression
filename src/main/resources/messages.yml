@@ -1,0 +1,5 @@
+
+common:
+  no-island: "&c&lError | &7You don't have an island."
+
+commands:

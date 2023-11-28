@@ -1,7 +1,11 @@
 package net.highskiesmc.hsprogression.commands.superior;
 
 import com.bgsoftware.superiorskyblock.api.SuperiorSkyblock;
+import com.bgsoftware.superiorskyblock.api.SuperiorSkyblockAPI;
 import com.bgsoftware.superiorskyblock.api.commands.SuperiorCommand;
+import com.bgsoftware.superiorskyblock.api.island.Island;
+import com.bgsoftware.superiorskyblock.api.wrappers.SuperiorPlayer;
+import net.highskiesmc.hsprogression.HSProgression;
 import net.highskiesmc.hsprogression.inventories.IslandUpgradeGUI;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -53,10 +57,18 @@ public class IslandUpgradeCommand implements SuperiorCommand {
 
     @Override
     public void execute(SuperiorSkyblock superiorSkyblock, CommandSender commandSender, String[] strings) {
-        // TODO: Make it so user has to be mod or admin to upgrade the island
+        // TODO: Make it so user has to be mod or admin to upgrade the island (configurable)
+        Player player = (Player) commandSender;
+        SuperiorPlayer sPlayer = SuperiorSkyblockAPI.getPlayer(player);
 
-        //TODO: Make islandLevel take the player's actual island level
-        ((Player)commandSender).openInventory(new IslandUpgradeGUI(1).getInventory());
+        if (!sPlayer.hasIsland()) {
+            // TODO: Send configurable error message
+            player.sendMessage("No island is bad!");
+            return;
+        }
+
+        Island island = sPlayer.getIsland();
+        (player).openInventory(new IslandUpgradeGUI(island, player).getInventory());
     }
 
     @Override

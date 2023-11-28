@@ -25,13 +25,14 @@ public class IslandLevel {
     private final int maxMembers;
     private final int islandRadius;
     private final long cost;
-
-    IslandLevel(int level, int maxSpawners, int maxMembers, int islandRadius, long cost) {
+    private final boolean isAnnounced;
+    IslandLevel(int level, int maxSpawners, int maxMembers, int islandRadius, long cost, boolean isAnnounced) {
         this.level = level;
         this.maxSpawners = maxSpawners;
         this.maxMembers = maxMembers;
         this.islandRadius = islandRadius;
         this.cost = cost;
+        this.isAnnounced = isAnnounced;
     }
     //<editor-fold desc="Getters">
     public int getLevel() {
@@ -53,6 +54,11 @@ public class IslandLevel {
     public long getCost() {
         return cost;
     }
+
+    public boolean isAnnounced() {
+        return isAnnounced;
+    }
+
     //</editor-fold>
     @NonNull
     public ItemStack toDisplayItem(int islandLevel) {
