@@ -7,6 +7,7 @@ import net.highskiesmc.hsprogression.api.HSProgressionApi;
 import net.highskiesmc.hsprogression.commands.superior.IslandUpgradeCommand;
 import net.highskiesmc.hsprogression.events.handlers.CommandPreProcessHandler;
 import net.highskiesmc.hsprogression.events.handlers.IslandEventsHandler;
+import net.highskiesmc.hsprogression.events.handlers.IslandLevelRestrictionsHandler;
 import org.bukkit.Bukkit;
 
 import javax.annotation.Nonnull;
@@ -21,14 +22,6 @@ public class HSProgression extends HSPlugin {
 
     @Override
     public void enable() {
-        //<editor-fold desc="Island Levels">
-        // Register SuperiorCommands
-        SuperiorSkyblockAPI.registerCommand(new IslandUpgradeCommand());
-
-        // Register Event Handlers
-        register(new CommandPreProcessHandler());
-        register(new IslandEventsHandler(this));
-        //</editor-fold>
         //<editor-fold desc="API">
         try {
             api = new HSProgressionApi(this, Objects.requireNonNull(getConfig().getConfigurationSection("my-sql")));
@@ -37,6 +30,16 @@ public class HSProgression extends HSPlugin {
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
+        //</editor-fold>
+
+        //<editor-fold desc="Island Levels">
+        // Register SuperiorCommands
+        SuperiorSkyblockAPI.registerCommand(new IslandUpgradeCommand());
+
+        // Register Event Handlers
+        register(new CommandPreProcessHandler());
+        register(new IslandEventsHandler(this, api));
+        register(new IslandLevelRestrictionsHandler(this, api));
         //</editor-fold>
 
         return;

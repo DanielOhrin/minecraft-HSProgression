@@ -25,6 +25,7 @@ import java.util.*;
 class Database extends MySQLDatabase {
     Database(@NonNull ConfigurationSection DB_CONFIG) throws SQLException {
         super(DB_CONFIG);
+        this.getHikari().getConnection();
     }
 
     @Override

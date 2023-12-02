@@ -5,6 +5,7 @@ import net.highskiesmc.hsprogression.HSProgression;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.common.value.qual.IntRange;
 import org.w3c.dom.Document;
@@ -18,10 +19,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class HSProgressionApi {
     //<editor-fold desc="Structure">
@@ -120,7 +118,7 @@ public class HSProgressionApi {
     //<editor-fold desc="Getters">
     @NonNull
     public List<IslandLevel> getIslandLevels() {
-        return this.islandLevels;
+        return Collections.unmodifiableList(this.islandLevels);
     }
 
     @NonNull
@@ -130,7 +128,7 @@ public class HSProgressionApi {
 
     @NonNull
     public List<IslandBlock> getIslandBlocks(int level) {
-        return this.islandBlocks.getOrDefault(level, new ArrayList<>());
+        return Collections.unmodifiableList(this.islandBlocks.getOrDefault(level, new ArrayList<>()));
     }
     //</editor-fold>
 
@@ -223,5 +221,30 @@ public class HSProgressionApi {
     }
     //</editor-fold>
     //</editor-fold>
+    //</editor-fold>
+    //<editor-fold desc="Util">
+
+    /**
+     * Checks IslandLevelBlocks to see if the block is unlocked. Be careful, as this does NOT check max allowed placed.
+     *
+     * @param island Island to check
+     * @param item   Item being placed
+     * @return Whether the item can be placed, or default to TRUE if not restricted in the first place
+     */
+    public boolean canPlace(Island island, ItemStack item) {
+        int level = island.getLevel();
+
+        for (int i = 0; i < islandBlocks.size(); i++) {
+            List<IslandBlock> blocks = getIslandBlocks(i + 1);
+
+            for (IslandBlock block : blocks) {
+                if (block.getItem().isSimilar(item)) {
+                    return (i + 1) <= level;
+                }
+            }
+        }
+
+        return true;
+    }
     //</editor-fold>
 }
