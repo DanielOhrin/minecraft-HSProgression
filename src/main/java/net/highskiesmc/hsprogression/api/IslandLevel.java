@@ -83,6 +83,7 @@ public class IslandLevel {
             add(prefix + ChatColor.WHITE + "Island Radius: " + FORMATTER.format(islandRadius));
         }};
 
+        // TODO: Group similar labels together as one
         List<IslandBlock> blocks = HSProgression.getApi().getIslandBlocks(level);
         for (IslandBlock block : blocks) {
             lore.add(prefix + ChatColor.WHITE + block.getLabel());

@@ -38,6 +38,7 @@ public class IslandLevelRestrictionsHandler extends HSListener {
             e.setCancelled(true);
 
             // TODO: make configurable message for this...
+            // TODO: add a {label} placeholder for the item's label... and {required-level} and {level}
             e.getPlayer().sendMessage("You cant place that yet...");
         }
     }
