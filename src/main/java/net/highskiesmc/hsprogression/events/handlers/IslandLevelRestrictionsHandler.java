@@ -1,6 +1,8 @@
 package net.highskiesmc.hsprogression.events.handlers;
 
 import com.bgsoftware.superiorskyblock.api.SuperiorSkyblockAPI;
+import com.bgsoftware.superiorskyblock.api.events.IslandInviteEvent;
+import com.bgsoftware.superiorskyblock.api.events.IslandJoinEvent;
 import com.bgsoftware.superiorskyblock.api.island.Island;
 import net.highskiesmc.hscore.highskies.HSListener;
 import net.highskiesmc.hscore.highskies.HSPlugin;
@@ -18,7 +20,7 @@ public class IslandLevelRestrictionsHandler extends HSListener {
 
         this.api = api;
     }
-    //<editor-fold desc="Island Blocks">
+
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     public void onPlaceOnIsland(BlockPlaceEvent e) {
         Block block = e.getBlockPlaced();
@@ -42,9 +44,52 @@ public class IslandLevelRestrictionsHandler extends HSListener {
             e.getPlayer().sendMessage("You cant place that yet...");
         }
     }
-    //</editor-fold>
-    //<editor-fold desc="Island Radius">
 
-    //</editor-fold>
-    //</editor-fold>
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
+    public void onInviteToIsland(IslandInviteEvent e) {
+        Island sIsland = e.getIsland();
+
+        if (sIsland == null) {
+            return;
+        }
+
+        net.highskiesmc.hsprogression.api.Island island = api.getIsland(sIsland);
+
+        if (island == null) {
+            return;
+        }
+
+        int members = sIsland.getIslandMembers(true).size();
+        int memberLimit = api.getIslandLevel(island.getLevel()).getMaxMembers();
+
+        if (memberLimit == members) {
+            // TODO: Make configurable msg
+            e.setCancelled(true);
+            e.getPlayer().asPlayer().sendMessage("Erm... member limit reached.");
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
+    public void onJoinIsland(IslandJoinEvent e) {
+        Island sIsland = e.getIsland();
+
+        if (sIsland == null) {
+            return;
+        }
+
+        net.highskiesmc.hsprogression.api.Island island = api.getIsland(sIsland);
+
+        if (island == null) {
+            return;
+        }
+
+        int members = sIsland.getIslandMembers(true).size();
+        int memberLimit = api.getIslandLevel(island.getLevel()).getMaxMembers();
+
+        if (memberLimit == members) {
+            // TODO: Make configurable msg
+            e.setCancelled(true);
+            e.getPlayer().asPlayer().sendMessage("Erm... that island is full.");
+        }
+    }
 }

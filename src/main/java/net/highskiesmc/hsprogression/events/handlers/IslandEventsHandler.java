@@ -22,6 +22,8 @@ public class IslandEventsHandler extends HSListener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onIslandCreated(IslandCreateEvent e) {
         api.createIsland(e.getIsland());
+
+        e.getIsland().setIslandSize(api.getIslandLevel(1).getIslandRadius());
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)

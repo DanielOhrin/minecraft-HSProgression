@@ -32,6 +32,8 @@ public class HSProgression extends HSPlugin {
         }
         //</editor-fold>
 
+        // TODO: Upload the rest of the things
+
         //<editor-fold desc="Island Levels">
         // Register SuperiorCommands
         SuperiorSkyblockAPI.registerCommand(new IslandUpgradeCommand());
