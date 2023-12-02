@@ -53,13 +53,16 @@ public class IslandUpgradeGUI implements GUI {
 
         // If slot clicked is next unlock-able level
         if (slot != 0 && slot < levels.size() && slot == level) {
+            //TODO: Take money here with a confirmation menu
             IslandUpgradeEvent event = new IslandUpgradeEvent(island, player, levels.get(level));
 
             if (!event.isCancelled()) {
                 // Upgrade logic
                 level++;
                 api.setIslandLevel(island, level);
-
+                SuperiorSkyblockAPI.getIslandByUUID(island.getIslandUuid()).setIslandSize(
+                        api.getIslandLevel(level).getIslandRadius()
+                );
                 // Cosmetics and post-processing
                 addContent(e.getInventory()); // <-- Updates inventory
                 if (levels.get(level - 1).isAnnounced()) {
