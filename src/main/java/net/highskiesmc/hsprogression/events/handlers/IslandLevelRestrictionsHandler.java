@@ -91,5 +91,6 @@ public class IslandLevelRestrictionsHandler extends HSListener {
             e.setCancelled(true);
             e.getPlayer().asPlayer().sendMessage("Erm... that island is full.");
         }
+        // TOTO: Add max spawner restrictions
     }
 }
