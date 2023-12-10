@@ -1,6 +1,7 @@
 package net.highskiesmc.hsprogression.api;
 
 import net.highskiesmc.hsprogression.HSProgression;
+import net.milkbowl.vault.economy.Economy;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -61,7 +62,7 @@ public class IslandLevel {
 
     //</editor-fold>
     @NonNull
-    public ItemStack toDisplayItem(int islandLevel) {
+    public ItemStack toDisplayItem(double balance, int islandLevel) {
         boolean isUnlocked = islandLevel >= level;
         String color = (isUnlocked ? ChatColor.GREEN : ChatColor.RED).toString() + ChatColor.BOLD;
 
@@ -98,13 +99,16 @@ public class IslandLevel {
         }
 
         lore.add("");
-        lore.add(color + (isUnlocked ? "UNLOCKED" : "LOCKED"));
-
-        // TODO: Check if player can afford the upgrade and add lore if not
+        boolean isCurrent = islandLevel == level;
+        lore.add(color + (isUnlocked ? isCurrent ? "CURRENT LEVEL" : "UNLOCKED" : "LOCKED"));
 
         if (level - islandLevel > 1) {
             lore.add(ChatColor.RED + "Requires Island Level " + ChatColor.UNDERLINE + (level - 1) + ChatColor.RED +
                     "!");
+        } else if (balance < this.cost) {
+            lore.add(ChatColor.RED + "You cannot afford this level up!");
+        } else {
+            lore.add(ChatColor.GRAY + "Click to level up!");
         }
 
         meta.setLore(lore);

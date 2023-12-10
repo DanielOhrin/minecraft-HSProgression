@@ -9,13 +9,24 @@ import net.highskiesmc.hsprogression.commands.superior.IslandUpgradeCommand;
 import net.highskiesmc.hsprogression.events.handlers.CommandPreProcessHandler;
 import net.highskiesmc.hsprogression.events.handlers.IslandEventsHandler;
 import net.highskiesmc.hsprogression.events.handlers.IslandLevelRestrictionsHandler;
+import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.plugin.RegisteredServiceProvider;
 
 public class HSProgression extends HSPlugin {
     private static HSProgressionApi api;
+    private static Economy econ = null;
+
     @Override
     public void enable() {
+        if (!setupEconomy()) {
+            getLogger().severe(String.format("[%s] - Disabled due to no Vault dependency found!",
+                    getDescription().getName()));
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
+
         config.addSource(new FileConfigSource("config.yml", this));
         config.addSource(new FileConfigSource("messages.yml", this));
         config.reload();
@@ -62,5 +73,21 @@ public class HSProgression extends HSPlugin {
 
     public static HSProgressionApi getApi() {
         return api;
+    }
+
+    public static Economy getEconomy() {
+        return econ;
+    }
+
+    private boolean setupEconomy() {
+        if (getServer().getPluginManager().getPlugin("Vault") == null) {
+            return false;
+        }
+        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+        if (rsp == null) {
+            return false;
+        }
+        econ = rsp.getProvider();
+        return econ != null;
     }
 }

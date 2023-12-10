@@ -9,7 +9,9 @@ import net.highskiesmc.hsprogression.api.HSProgressionApi;
 import net.highskiesmc.hsprogression.api.Island;
 import net.highskiesmc.hsprogression.api.IslandLevel;
 import net.highskiesmc.hsprogression.events.events.IslandUpgradeEvent;
+import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -52,11 +54,24 @@ public class IslandUpgradeGUI implements GUI {
 
         // If slot clicked is next unlock-able level
         if (slot != 0 && slot < levels.size() && slot == level) {
-            //TODO: Take money here with a confirmation menu
+            Economy econ = HSProgression.getEconomy();
+
+            // If player has enough money
+            long cost = levels.get(level).getCost();
+            OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(player.getUniqueId());
+            if (econ.getBalance(offlinePlayer) < cost) {
+                player.closeInventory();
+                player.sendMessage(TextUtils.translateColor(
+                        main.getConfigs().get("common.need-money", String.class, "&cInsufficient funds.")
+                ));
+                return;
+            }
+
             IslandUpgradeEvent event = new IslandUpgradeEvent(island, player, levels.get(level));
 
             if (!event.isCancelled()) {
                 // Upgrade logic
+                econ.withdrawPlayer(offlinePlayer, cost);
                 level++;
                 api.setIslandLevel(island, level);
                 SuperiorSkyblockAPI.getIslandByUUID(island.getIslandUuid()).setIslandSize(
@@ -78,7 +93,8 @@ public class IslandUpgradeGUI implements GUI {
                                                     "island.upgraded",
                                                     String.class,
                                                     "&4&l[!]&c {owner}'s Island has been upgraded to level &f&l{level}!"
-                                            ).replace("{owner}", Bukkit.getOfflinePlayer(island.getLeaderUuid()).getName())
+                                            ).replace("{owner}",
+                                                    Bukkit.getOfflinePlayer(island.getLeaderUuid()).getName())
                                             .replace("{level}", String.valueOf(level))
                             ));
                         }
@@ -107,7 +123,9 @@ public class IslandUpgradeGUI implements GUI {
         for (int i = 0; i < levels.size(); i++) {
             IslandLevel level = levels.get(i);
 
-            inv.setItem(i, level.toDisplayItem(this.level));
+            Economy econ = HSProgression.getEconomy();
+            inv.setItem(i, level.toDisplayItem(econ.getBalance(Bukkit.getOfflinePlayer(player.getUniqueId())),
+                    this.level));
         }
     }
 

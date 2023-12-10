@@ -1,5 +1,6 @@
 common:
   no-island: "&c&lError | &7You don't have an island."
+  need-money: "&cInsufficient funds."
 
 island:
   member-limit: "&4&l[!]&c Island has reached its member limit."

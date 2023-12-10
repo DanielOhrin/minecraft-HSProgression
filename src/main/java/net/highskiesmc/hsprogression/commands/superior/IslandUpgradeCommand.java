@@ -69,7 +69,6 @@ public class IslandUpgradeCommand implements SuperiorCommand {
 
     @Override
     public void execute(SuperiorSkyblock superiorSkyblock, CommandSender commandSender, String[] strings) {
-        // TODO: Make it so user has to be mod or admin to upgrade the island (configurable)
         Player player = (Player) commandSender;
         SuperiorPlayer sPlayer = SuperiorSkyblockAPI.getPlayer(player);
 
