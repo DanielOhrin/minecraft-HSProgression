@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class IslandLevel {
     private static final DecimalFormat FORMATTER = new DecimalFormat("#,###");
@@ -84,11 +85,10 @@ public class IslandLevel {
             add(prefix + ChatColor.WHITE + "Spawner Limit: " + FORMATTER.format(maxSpawners));
             add(prefix + ChatColor.WHITE + "Island Radius: " + FORMATTER.format(islandRadius));
         }};
-
-        // TODO: Group similar labels together as one
+        
         List<IslandBlock> blocks = HSProgression.getApi().getIslandBlocks(level);
-        for (IslandBlock block : blocks) {
-            lore.add(prefix + ChatColor.WHITE + block.getLabel());
+        for (String label : blocks.stream().map(IslandBlock::getLabel).collect(Collectors.toSet())) {
+            lore.add(prefix + ChatColor.WHITE + label);
         }
 
         if (level != 1) {
