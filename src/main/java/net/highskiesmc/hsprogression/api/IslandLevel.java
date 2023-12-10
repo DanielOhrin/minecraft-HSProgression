@@ -66,6 +66,7 @@ public class IslandLevel {
         String color = (isUnlocked ? ChatColor.GREEN : ChatColor.RED).toString() + ChatColor.BOLD;
 
         ItemStack item = new ItemStack(ITEM.get(isUnlocked));
+
         ItemMeta meta = item.getItemMeta();
 
         meta.setDisplayName(color + "Level " + level);
@@ -95,7 +96,7 @@ public class IslandLevel {
                 lore.add(prefix + ChatColor.WHITE + "+" + memberDifference + " Max Members (" + maxMembers + ")");
             }
         }
-// TODO: Possibly enchant unlocked items or the next unlockable one
+
         lore.add("");
         lore.add(color + (isUnlocked ? "UNLOCKED" : "LOCKED"));
 

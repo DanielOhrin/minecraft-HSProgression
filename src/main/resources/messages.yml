@@ -1,5 +1,8 @@
-
 common:
   no-island: "&c&lError | &7You don't have an island."
 
+island:
+  member-limit: "&4&l[!]&c Island has reached its member limit."
+  not-unlocked: "&4&l[!]&c Island has not unlocked that! &cReason: &f{reason}" # {reason}
+  upgraded: "&4&l[!]&c {owner}'s Island has been upgraded to level &f&l{level}!" # {owner} {level}
 commands:

@@ -6,7 +6,7 @@ import com.bgsoftware.superiorskyblock.api.events.IslandJoinEvent;
 import com.bgsoftware.superiorskyblock.api.island.Island;
 import net.highskiesmc.hscore.highskies.HSListener;
 import net.highskiesmc.hscore.highskies.HSPlugin;
-import net.highskiesmc.hsprogression.HSProgression;
+import net.highskiesmc.hscore.utils.TextUtils;
 import net.highskiesmc.hsprogression.api.HSProgressionApi;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
@@ -15,9 +15,9 @@ import org.bukkit.event.block.BlockPlaceEvent;
 
 public class IslandLevelRestrictionsHandler extends HSListener {
     private final HSProgressionApi api;
+
     public IslandLevelRestrictionsHandler(HSPlugin main, HSProgressionApi api) {
         super(main);
-
         this.api = api;
     }
 
@@ -39,9 +39,13 @@ public class IslandLevelRestrictionsHandler extends HSListener {
         if (!api.canPlace(island, e.getItemInHand())) {
             e.setCancelled(true);
 
-            // TODO: make configurable message for this...
-            // TODO: add a {label} placeholder for the item's label... and {required-level} and {level}
-            e.getPlayer().sendMessage("You cant place that yet...");
+            e.getPlayer().sendMessage(TextUtils.translateColor(
+                    config.get(
+                            "island.not-unlocked",
+                            String.class,
+                            "&4&l[!]&c Island has not unlocked that! &cReason: &f{reason}"
+                    ).replace("{reason}", "Level too low")
+            ));
         }
     }
 
@@ -63,9 +67,10 @@ public class IslandLevelRestrictionsHandler extends HSListener {
         int memberLimit = api.getIslandLevel(island.getLevel()).getMaxMembers();
 
         if (memberLimit == members) {
-            // TODO: Make configurable msg
             e.setCancelled(true);
-            e.getPlayer().asPlayer().sendMessage("Erm... member limit reached.");
+            e.getPlayer().asPlayer().sendMessage(TextUtils.translateColor(
+                    config.get("island.member-limit", String.class, "&4&l[!]&c Island has reached its member limit.")
+            ));
         }
     }
 
@@ -87,9 +92,10 @@ public class IslandLevelRestrictionsHandler extends HSListener {
         int memberLimit = api.getIslandLevel(island.getLevel()).getMaxMembers();
 
         if (memberLimit == members) {
-            // TODO: Make configurable msg
             e.setCancelled(true);
-            e.getPlayer().asPlayer().sendMessage("Erm... that island is full.");
+            e.getPlayer().asPlayer().sendMessage(TextUtils.translateColor(
+                    config.get("island.member-limit", String.class, "&4&l[!]&c Island has reached its member limit.")
+            ));
         }
         // TOTO: Add max spawner restrictions
     }

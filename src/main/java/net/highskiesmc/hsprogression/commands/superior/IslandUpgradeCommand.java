@@ -5,6 +5,9 @@ import com.bgsoftware.superiorskyblock.api.SuperiorSkyblockAPI;
 import com.bgsoftware.superiorskyblock.api.commands.SuperiorCommand;
 import com.bgsoftware.superiorskyblock.api.island.Island;
 import com.bgsoftware.superiorskyblock.api.wrappers.SuperiorPlayer;
+import net.highskiesmc.hscore.configuration.Config;
+import net.highskiesmc.hscore.highskies.HSPlugin;
+import net.highskiesmc.hscore.utils.TextUtils;
 import net.highskiesmc.hsprogression.HSProgression;
 import net.highskiesmc.hsprogression.inventories.IslandUpgradeGUI;
 import org.bukkit.command.CommandSender;
@@ -15,6 +18,15 @@ import java.util.List;
 import java.util.Locale;
 
 public class IslandUpgradeCommand implements SuperiorCommand {
+    private final HSPlugin main;
+    private final Config config;
+
+    public IslandUpgradeCommand(HSPlugin main) {
+        super();
+        this.main = main;
+        this.config = main.getConfigs();
+    }
+
     @Override
     public List<String> getAliases() {
         return Arrays.asList("upgrade", "level", "levels", "upgrades");
@@ -62,13 +74,14 @@ public class IslandUpgradeCommand implements SuperiorCommand {
         SuperiorPlayer sPlayer = SuperiorSkyblockAPI.getPlayer(player);
 
         if (!sPlayer.hasIsland()) {
-            // TODO: Send configurable error message
-            player.sendMessage("No island is bad!");
+            player.sendMessage(TextUtils.translateColor(
+                    config.get("common.no-island", String.class, "&c&lError | &7You don't have an island.")
+            ));
             return;
         }
 
         Island island = sPlayer.getIsland();
-        (player).openInventory(new IslandUpgradeGUI(island, player).getInventory());
+        (player).openInventory(new IslandUpgradeGUI((HSProgression) main, island, player).getInventory());
     }
 
     @Override

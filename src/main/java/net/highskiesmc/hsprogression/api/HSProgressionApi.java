@@ -26,7 +26,6 @@ public class HSProgressionApi {
     //<editor-fold desc="Fields">
     private final HSProgression main;
     private List<IslandLevel> islandLevels;
-    private final int maxIslandLevel;
     private Map<Integer, List<IslandBlock>> islandBlocks;
     private Map<UUID, Island> islands;
     private Database db;
@@ -37,16 +36,14 @@ public class HSProgressionApi {
     public HSProgressionApi(@NonNull HSProgression main, @NonNull ConfigurationSection dbConfig) throws SQLException,
             IOException {
         this.main = main;
-        db = new Database(dbConfig);
+        db = new Database(main, dbConfig);
 
         // Populate with data
         this.islandLevels = db.getIslandLevels();
-        this.maxIslandLevel = islandLevels.size();
         this.islandBlocks = db.getIslandBlocks();
         this.islands = db.getIslands();
 
-        // TODO: extract to HSCore
-        // TODO: Add info logging to it.
+        // TODO: Create XmlUtils in HSCore to abstract this...
         long cachePushInterval;
         try (InputStream stream = HSProgression.class.getResourceAsStream("/config.xml")) {
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
