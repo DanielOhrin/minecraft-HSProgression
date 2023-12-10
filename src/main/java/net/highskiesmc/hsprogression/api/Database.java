@@ -64,9 +64,9 @@ class Database extends MySQLDatabase {
 
             ddl.addBatch("CREATE TABLE island_level_block (" +
                     "Id INT AUTO_INCREMENT, " +
-                    "Label VARCHAR(50) UNIQUE, " +
+                    "Label VARCHAR(50), " +
                     "Island_Level INT NOT NULL, " +
-                    "Encoding VARCHAR(16000), " +
+                    "Encoding VARCHAR(16000) UNIQUE, " +
                     "PRIMARY KEY(Id), " +
                     "FOREIGN KEY(Island_Level) REFERENCES island_level(Id)" +
                     ") ENGINE = INNODB;");

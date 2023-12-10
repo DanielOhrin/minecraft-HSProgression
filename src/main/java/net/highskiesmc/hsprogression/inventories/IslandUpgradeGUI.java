@@ -81,8 +81,15 @@ public class IslandUpgradeGUI implements GUI {
                 addContent(e.getInventory()); // <-- Updates inventory
                 if (levels.get(level - 1).isAnnounced()) {
                     for (Player player : Bukkit.getOnlinePlayers()) {
-                        player.sendMessage(Bukkit.getOfflinePlayer(this.island.getLeaderUuid()).getName() + "'s " +
-                                "island has reached level " + level);
+                        player.sendMessage(TextUtils.translateColor(
+                                main.getConfigs().get(
+                                                "island.upgraded",
+                                                String.class,
+                                                "&4&l[!]&c {owner}'s Island has been upgraded to level &f&l{level}!"
+                                        ).replace("{owner}",
+                                                Bukkit.getOfflinePlayer(island.getLeaderUuid()).getName())
+                                        .replace("{level}", String.valueOf(level))
+                        ));
                     }
                 } else {
                     for (SuperiorPlayer player :

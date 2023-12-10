@@ -85,7 +85,7 @@ public class IslandLevel {
             add(prefix + ChatColor.WHITE + "Spawner Limit: " + FORMATTER.format(maxSpawners));
             add(prefix + ChatColor.WHITE + "Island Radius: " + FORMATTER.format(islandRadius));
         }};
-        
+
         List<IslandBlock> blocks = HSProgression.getApi().getIslandBlocks(level);
         for (String label : blocks.stream().map(IslandBlock::getLabel).collect(Collectors.toSet())) {
             lore.add(prefix + ChatColor.WHITE + label);
