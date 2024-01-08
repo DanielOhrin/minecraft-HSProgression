@@ -6,6 +6,6 @@ island:
   member-limit: "&4&l[!]&c Island has reached its member limit."
   not-unlocked: "&4&l[!]&c Island has not unlocked that! &cReason: &f{reason}" # {reason}
   upgraded: "&4&l[!]&c {owner}'s Island has been upgraded to level &f&l{level}!" # {owner} {level}
-
-
+  spawner-limit: "&4&l[!]&c {owner}'s Island cannot hold that many spawners. &c{amount}/{max}" # {owner}, {amount}, {max}
+  spawner-limit-reached: "&4&l[!]&c {owner}'s Island has reached its max spawners. &c{amount}/{max}" # {owner}, {amount}, {max}
 commands:

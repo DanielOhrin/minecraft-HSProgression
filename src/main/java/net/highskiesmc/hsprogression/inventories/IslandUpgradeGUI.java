@@ -8,7 +8,7 @@ import net.highskiesmc.hsprogression.HSProgression;
 import net.highskiesmc.hsprogression.api.HSProgressionApi;
 import net.highskiesmc.hsprogression.api.Island;
 import net.highskiesmc.hsprogression.api.IslandLevel;
-import net.highskiesmc.hsprogression.events.events.IslandUpgradeEvent;
+import net.highskiesmc.hsprogression.events.events.IslandLevelUpEvent;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -67,7 +67,7 @@ public class IslandUpgradeGUI implements GUI {
                 return;
             }
 
-            IslandUpgradeEvent event = new IslandUpgradeEvent(island, player, levels.get(level));
+            IslandLevelUpEvent event = new IslandLevelUpEvent(island, player, levels.get(level));
 
             if (!event.isCancelled()) {
                 // Upgrade logic

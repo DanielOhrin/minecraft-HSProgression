@@ -107,7 +107,7 @@ public class IslandLevel {
                     "!");
         } else if (balance < this.cost) {
             lore.add(ChatColor.RED + "You cannot afford this level up!");
-        } else {
+        } else if (level - 1 == islandLevel) {
             lore.add(ChatColor.GRAY + "Click to level up!");
         }
 
