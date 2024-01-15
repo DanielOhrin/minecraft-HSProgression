@@ -133,8 +133,9 @@ public class HSProgressionApi {
 
     //<editor-fold desc="Island">
     //<editor-fold desc="Create">
-    private void createIsland(@NonNull UUID islandUuid, @NonNull UUID leaderUuid, int level, boolean isDeleted) {
-        this.islands.put(islandUuid, new Island(leaderUuid, islandUuid, level, isDeleted));
+    private void createIsland(@NonNull UUID islandUuid, @NonNull UUID leaderUuid, int level,
+                              int slayerLevel, boolean isDeleted) {
+        this.islands.put(islandUuid, new Island(leaderUuid, islandUuid, level, slayerLevel, isDeleted));
     }
 
     /**
@@ -143,19 +144,20 @@ public class HSProgressionApi {
      * @param island Source island
      */
     public void createIsland(com.bgsoftware.superiorskyblock.api.island.Island island) {
-        createIsland(island.getUniqueId(), island.getOwner().getUniqueId(), 1, false);
+        createIsland(island.getUniqueId(), island.getOwner().getUniqueId(), 1, 1, false);
     }
 
     public void createIsland(com.bgsoftware.superiorskyblock.api.island.Island island, boolean isDeleted) {
-        createIsland(island.getUniqueId(), island.getOwner().getUniqueId(), 1, isDeleted);
+        createIsland(island.getUniqueId(), island.getOwner().getUniqueId(), 1, 1, isDeleted);
     }
 
-    public void createIsland(com.bgsoftware.superiorskyblock.api.island.Island island, int level) {
-        createIsland(island.getUniqueId(), island.getOwner().getUniqueId(), level, false);
+    public void createIsland(com.bgsoftware.superiorskyblock.api.island.Island island, int level, int slayerLevel) {
+        createIsland(island.getUniqueId(), island.getOwner().getUniqueId(), level, slayerLevel, false);
     }
 
-    public void createIsland(com.bgsoftware.superiorskyblock.api.island.Island island, int level, boolean isDeleted) {
-        createIsland(island.getUniqueId(), island.getOwner().getUniqueId(), level, isDeleted);
+    public void createIsland(com.bgsoftware.superiorskyblock.api.island.Island island, int level,
+                             int slayerLevel, boolean isDeleted) {
+        createIsland(island.getUniqueId(), island.getOwner().getUniqueId(), level, slayerLevel, isDeleted);
     }
 
     //</editor-fold>

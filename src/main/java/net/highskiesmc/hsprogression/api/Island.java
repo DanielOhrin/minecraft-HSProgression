@@ -14,22 +14,24 @@ public class Island {
     private Map<IslandProgressionType, Integer> levels;
     private boolean isDeleted;
 
-    Island(int id, @NonNull UUID leaderUuid, @NonNull UUID islandUuid, int level, boolean isDeleted) {
+    Island(int id, @NonNull UUID leaderUuid, @NonNull UUID islandUuid, int level, int slayerLevel, boolean isDeleted) {
         this.id = id;
         this.leaderUuid = leaderUuid;
         this.islandUuid = islandUuid;
         this.levels = new HashMap<>(){{
             put(IslandProgressionType.ISLAND, level);
+            put(IslandProgressionType.SLAYER, slayerLevel);
         }};
         this.isDeleted = isDeleted;
     }
 
-    Island(@NonNull UUID leaderUuid, @NonNull UUID islandUuid, int level, boolean isDeleted) {
+    Island(@NonNull UUID leaderUuid, @NonNull UUID islandUuid, int level, int slayerLevel, boolean isDeleted) {
         this.id = null;
         this.leaderUuid = leaderUuid;
         this.islandUuid = islandUuid;
         this.levels = new HashMap<>(){{
             put(IslandProgressionType.ISLAND, level);
+            put(IslandProgressionType.SLAYER, slayerLevel);
         }};
         this.isDeleted = isDeleted;
     }

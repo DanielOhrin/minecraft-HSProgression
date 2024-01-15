@@ -8,6 +8,7 @@ import net.highskiesmc.hsprogression.HSProgression;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.Plugin;
 import org.checkerframework.checker.nullness.qual.NonNull;
+
 import java.io.*;
 import java.sql.*;
 import java.util.*;
@@ -48,6 +49,7 @@ class Database extends MySQLDatabase {
                     "Leader_UUID VARCHAR(36) NOT NULL, " +
                     "Island_UUID VARCHAR(36) NOT NULL UNIQUE, " +
                     "Level INT NOT NULL DEFAULT 1, " +
+                    "Slayer_Level INT NOT NULL DEFAULT 1, " +
                     "Is_Deleted BIT(1) NOT NULL DEFAULT 0, " +
                     "PRIMARY KEY(Id)" +
                     ") ENGINE = INNODB;");
@@ -71,6 +73,11 @@ class Database extends MySQLDatabase {
                     "FOREIGN KEY(Island_Level) REFERENCES island_level(Id)" +
                     ") ENGINE = INNODB;");
 
+            ddl.addBatch("CREATE TABLE island_slayer (" +
+                    "Id INT AUTO_INCREMENT, " +
+                    "Entity VARCHAR(50) UNIQUE, " +
+                    "Previous_Required INT NOT NULL" +
+                    ") ENGINE = INNODB;");
             // Try Running this line if plugin startup time becomes high
             // You will want to add a guard clause of some sort.
             // ddl.addBatch("CREATE INDEX idx_islands_active ON island(Is_Deleted);");
@@ -100,7 +107,8 @@ class Database extends MySQLDatabase {
         try (Connection conn = getHikari().getConnection()) {
             Statement statement = conn.createStatement();
 
-            ResultSet island = statement.executeQuery("SELECT Id, Leader_UUID, Island_UUID, Level, Is_Deleted FROM " +
+            ResultSet island = statement.executeQuery("SELECT Id, Leader_UUID, Island_UUID, Level, Slayer_Level, " +
+                    "Is_Deleted FROM " +
                     "island WHERE Is_Deleted = 0;");
 
             while (island.next()) {
@@ -110,6 +118,7 @@ class Database extends MySQLDatabase {
                                 UUID.fromString(island.getString("Leader_UUID")),
                                 islandUuid,
                                 island.getInt("Level"),
+                                island.getInt("Slayer_Level"),
                                 island.getBoolean("Is_Deleted")
                         )
                 );
@@ -128,33 +137,33 @@ class Database extends MySQLDatabase {
             plugin.getLogger().info("No island to update. Skipped batch upsert...");
         }
 
-            plugin.getLogger().info("Updating islands...");
-            // Upsert, Then Delete!
-            try (Connection conn = getHikari().getConnection()) {
-                PreparedStatement upsert = conn.prepareStatement(
-                        "INSERT INTO island (Leader_UUID, Island_UUID, Level, Is_Deleted) VALUES (?, ?, ?, ?)" +
-                                "ON DUPLICATE KEY UPDATE Leader_UUID = ?, Level = ?, Is_Deleted = ?"
-                );
+        plugin.getLogger().info("Updating islands...");
+        // Upsert, Then Delete!
+        try (Connection conn = getHikari().getConnection()) {
+            PreparedStatement upsert = conn.prepareStatement(
+                    "INSERT INTO island (Leader_UUID, Island_UUID, Level, Is_Deleted) VALUES (?, ?, ?, ?)" +
+                            "ON DUPLICATE KEY UPDATE Leader_UUID = ?, Level = ?, Is_Deleted = ?"
+            );
 
-                for (Island island : islands) {
-                    upsert.setString(1, island.getLeaderUuid().toString());
-                    upsert.setString(2, island.getIslandUuid().toString());
-                    upsert.setInt(3, island.getLevel(IslandProgressionType.ISLAND));
-                    upsert.setBoolean(4, island.isDeleted());
+            for (Island island : islands) {
+                upsert.setString(1, island.getLeaderUuid().toString());
+                upsert.setString(2, island.getIslandUuid().toString());
+                upsert.setInt(3, island.getLevel(IslandProgressionType.ISLAND));
+                upsert.setBoolean(4, island.isDeleted());
 
-                    upsert.setString(5, island.getLeaderUuid().toString());
-                    upsert.setInt(6, island.getLevel(IslandProgressionType.ISLAND));
-                    upsert.setBoolean(7, island.isDeleted());
+                upsert.setString(5, island.getLeaderUuid().toString());
+                upsert.setInt(6, island.getLevel(IslandProgressionType.ISLAND));
+                upsert.setBoolean(7, island.isDeleted());
 
-                    upsert.addBatch();
-                }
-
-                int[] islandsUpdated = upsert.executeBatch();
-
-                plugin.getLogger().info("Done! Islands updated: " + Arrays.stream(islandsUpdated).sum());
-            } catch (SQLException ex) {
-                Exception.useStackTrace(plugin.getLogger()::severe, ex);
+                upsert.addBatch();
             }
+
+            int[] islandsUpdated = upsert.executeBatch();
+
+            plugin.getLogger().info("Done! Islands updated: " + Arrays.stream(islandsUpdated).sum());
+        } catch (SQLException ex) {
+            Exception.useStackTrace(plugin.getLogger()::severe, ex);
+        }
     }
     //</editor-fold>
     //<editor-fold desc="Island Levels">
