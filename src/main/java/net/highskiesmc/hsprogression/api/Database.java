@@ -139,11 +139,11 @@ class Database extends MySQLDatabase {
                 for (Island island : islands) {
                     upsert.setString(1, island.getLeaderUuid().toString());
                     upsert.setString(2, island.getIslandUuid().toString());
-                    upsert.setInt(3, island.getLevel());
+                    upsert.setInt(3, island.getLevel(IslandProgressionType.ISLAND));
                     upsert.setBoolean(4, island.isDeleted());
 
                     upsert.setString(5, island.getLeaderUuid().toString());
-                    upsert.setInt(6, island.getLevel());
+                    upsert.setInt(6, island.getLevel(IslandProgressionType.ISLAND));
                     upsert.setBoolean(7, island.isDeleted());
 
                     upsert.addBatch();

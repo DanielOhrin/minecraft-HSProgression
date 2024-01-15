@@ -8,6 +8,7 @@ import net.highskiesmc.hsprogression.HSProgression;
 import net.highskiesmc.hsprogression.api.HSProgressionApi;
 import net.highskiesmc.hsprogression.api.Island;
 import net.highskiesmc.hsprogression.api.IslandLevel;
+import net.highskiesmc.hsprogression.api.IslandProgressionType;
 import net.highskiesmc.hsprogression.events.events.IslandLevelUpEvent;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
@@ -33,7 +34,7 @@ public class IslandUpgradeGUI implements GUI {
         this.main = main;
         this.api = HSProgression.getApi();
         this.island = island;
-        this.level = island.getLevel();
+        this.level = island.getLevel(IslandProgressionType.ISLAND);
         this.levels = api.getIslandLevels();
         this.player = player;
     }
@@ -43,7 +44,7 @@ public class IslandUpgradeGUI implements GUI {
         this.main = main;
         this.api = HSProgression.getApi();
         this.island = api.getIsland(island);
-        this.level = this.island.getLevel();
+        this.level = this.island.getLevel(IslandProgressionType.ISLAND);
         this.levels = api.getIslandLevels();
         this.player = player;
     }

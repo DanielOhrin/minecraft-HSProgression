@@ -229,7 +229,7 @@ public class HSProgressionApi {
      * @return Whether the item can be placed, or default to TRUE if not restricted in the first place
      */
     public boolean canPlace(Island island, ItemStack item) {
-        int level = island.getLevel();
+        int level = island.getLevel(IslandProgressionType.ISLAND);
 
         for (int i = 0; i < islandBlocks.size(); i++) {
             List<IslandBlock> blocks = getIslandBlocks(i + 1);

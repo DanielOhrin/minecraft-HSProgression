@@ -9,6 +9,7 @@ import net.highskiesmc.hscore.highskies.HSListener;
 import net.highskiesmc.hscore.highskies.HSPlugin;
 import net.highskiesmc.hscore.utils.TextUtils;
 import net.highskiesmc.hsprogression.api.HSProgressionApi;
+import net.highskiesmc.hsprogression.api.IslandProgressionType;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
@@ -69,7 +70,7 @@ public class IslandLevelRestrictionsHandler extends HSListener {
         }
 
         int members = sIsland.getIslandMembers(true).size();
-        int memberLimit = api.getIslandLevel(island.getLevel()).getMaxMembers();
+        int memberLimit = api.getIslandLevel(island.getLevel(IslandProgressionType.ISLAND)).getMaxMembers();
 
         if (memberLimit == members) {
             e.setCancelled(true);
@@ -94,7 +95,7 @@ public class IslandLevelRestrictionsHandler extends HSListener {
         }
 
         int members = sIsland.getIslandMembers(true).size();
-        int memberLimit = api.getIslandLevel(island.getLevel()).getMaxMembers();
+        int memberLimit = api.getIslandLevel(island.getLevel(IslandProgressionType.ISLAND)).getMaxMembers();
 
         if (memberLimit == members) {
             e.setCancelled(true);
@@ -128,7 +129,7 @@ public class IslandLevelRestrictionsHandler extends HSListener {
 
         int amountPlaced =
                 sIsland.getBlocksTracker().getBlockCounts().entrySet().stream().filter(x -> x.getKey().getGlobalKey().toLowerCase().contains("spawner")).mapToInt(x -> x.getValue().intValue()).sum();
-        int spawnerLimit = api.getIslandLevel(island.getLevel()).getMaxSpawners();
+        int spawnerLimit = api.getIslandLevel(island.getLevel(IslandProgressionType.ISLAND)).getMaxSpawners();
 
         String feedback = TextUtils.translateColor(
                 config.get("island.spawner-limit",

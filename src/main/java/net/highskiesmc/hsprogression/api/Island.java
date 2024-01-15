@@ -3,20 +3,24 @@ package net.highskiesmc.hsprogression.api;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class Island {
     private final Integer id;
     private UUID leaderUuid;
     private final UUID islandUuid;
-    private int level;
+    private Map<IslandProgressionType, Integer> levels;
     private boolean isDeleted;
 
     Island(int id, @NonNull UUID leaderUuid, @NonNull UUID islandUuid, int level, boolean isDeleted) {
         this.id = id;
         this.leaderUuid = leaderUuid;
         this.islandUuid = islandUuid;
-        this.level = level;
+        this.levels = new HashMap<>(){{
+            put(IslandProgressionType.ISLAND, level);
+        }};
         this.isDeleted = isDeleted;
     }
 
@@ -24,7 +28,9 @@ public class Island {
         this.id = null;
         this.leaderUuid = leaderUuid;
         this.islandUuid = islandUuid;
-        this.level = level;
+        this.levels = new HashMap<>(){{
+            put(IslandProgressionType.ISLAND, level);
+        }};
         this.isDeleted = isDeleted;
     }
 
@@ -37,8 +43,8 @@ public class Island {
         return islandUuid;
     }
 
-    public int getLevel() {
-        return level;
+    public int getLevel(@NonNull IslandProgressionType type) {
+        return levels.get(type);
     }
 
     public UUID getLeaderUuid() {
