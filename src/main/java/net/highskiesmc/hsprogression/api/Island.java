@@ -63,7 +63,7 @@ public class Island {
         this.leaderUuid = leaderUuid;
     }
 
-    public void setLevel(int newLevel) {
-        this.level = newLevel;
+    public void setLevel(IslandProgressionType type, int newLevel) {
+        this.levels.put(type, newLevel);
     }
 }

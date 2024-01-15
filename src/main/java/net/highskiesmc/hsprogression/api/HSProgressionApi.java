@@ -171,11 +171,11 @@ public class HSProgressionApi {
     //</editor-fold>
     //<editor-fold desc="Update">
     public void setIslandLevel(Island island, int level) throws NullPointerException {
-        islands.get(island.getIslandUuid()).setLevel(level);
+        islands.get(island.getIslandUuid()).setLevel(IslandProgressionType.ISLAND, level);
     }
 
     public void setIslandLevel(UUID islandUuid, int level) throws NullPointerException {
-        islands.get(islandUuid).setLevel(level);
+        islands.get(islandUuid).setLevel(IslandProgressionType.ISLAND, level);
     }
 
     public void setIslandLevel(com.bgsoftware.superiorskyblock.api.island.Island island, int level) throws NullPointerException {
