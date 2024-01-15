@@ -692,5 +692,11 @@
                 </Encoding>
             </row>
         </table>
+        <table name="island_slayer">
+        <row> <!-- 1 -->
+            <Entity>Rabbit</Entity>
+            <Previous_Required>0</Previous_Required>
+        </row>
+        </table>
     </tables>
 </config>

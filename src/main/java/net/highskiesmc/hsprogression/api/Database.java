@@ -52,7 +52,8 @@ class Database extends MySQLDatabase {
                     "Slayer_Level INT NOT NULL DEFAULT 1, " +
                     "Is_Deleted BIT(1) NOT NULL DEFAULT 0, " +
                     "PRIMARY KEY(Id)" +
-                    ") ENGINE = INNODB;");
+                    ") ENGINE = INNODB;"
+            );
 
             ddl.addBatch("CREATE TABLE island_level (" +
                     "Id INT AUTO_INCREMENT, " +
@@ -62,8 +63,10 @@ class Database extends MySQLDatabase {
                     "Cost BIGINT UNSIGNED, " +
                     "Is_Announced BIT(1) NOT NULL DEFAULT 0, " +
                     "PRIMARY KEY(Id)" +
-                    ") ENGINE = INNODB;");
-
+                    ") ENGINE = INNODB;"
+            );
+            // TODO: TRACK ENTITY SLAIN BY ENTITY NAME, NOT SLAYER LEVEL!
+            // TODO: ONLY COUNT IF ITS BEING TRACKED AND IS UNLOCKED?
             ddl.addBatch("CREATE TABLE island_level_block (" +
                     "Id INT AUTO_INCREMENT, " +
                     "Label VARCHAR(50), " +
@@ -71,13 +74,35 @@ class Database extends MySQLDatabase {
                     "Encoding VARCHAR(16000) UNIQUE, " +
                     "PRIMARY KEY(Id), " +
                     "FOREIGN KEY(Island_Level) REFERENCES island_level(Id)" +
-                    ") ENGINE = INNODB;");
+                    ") ENGINE = INNODB;"
+            );
 
             ddl.addBatch("CREATE TABLE island_slayer (" +
                     "Id INT AUTO_INCREMENT, " +
                     "Entity VARCHAR(50) UNIQUE, " +
-                    "Previous_Required INT NOT NULL" +
-                    ") ENGINE = INNODB;");
+                    "Previous_Required INT NOT NULL, " +
+                    "PRIMARY KEY(Id)" +
+                    ") ENGINE = INNODB;"
+            );
+
+            ddl.addBatch("CREATE TABLE island_contributor (" +
+                    "Id INT AUTO_INCREMENT, " +
+                    "Player_UUID VARCHAR(36) NOT NULL, " +
+                    "Island_Id INT, " +
+                    "PRIMARY KEY(Id), " +
+                    "FOREIGN KEY(Island_Id) REFERENCES island(Id)" +
+                    ") ENGINE = INNODB;"
+            );
+
+            ddl.addBatch("CREATE TABLE slayer_contribution (" +
+                    "Id INT AUTO_INCREMENT, " +
+                    "Contributor_Id INT UNIQUE, " +
+                    "Entity VARCHAR(50), " +
+                    "Amount INT, " +
+                    "PRIMARY KEY(Id), " +
+                    "FOREIGN KEY(Contributor_Id) REFERENCES island_contributor(Id)" +
+                    ") ENGINE = INNODB;"
+            );
             // Try Running this line if plugin startup time becomes high
             // You will want to add a guard clause of some sort.
             // ddl.addBatch("CREATE INDEX idx_islands_active ON island(Is_Deleted);");
