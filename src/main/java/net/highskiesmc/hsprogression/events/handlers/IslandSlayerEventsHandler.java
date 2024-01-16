@@ -15,7 +15,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 
 import java.util.Map;
@@ -52,6 +51,8 @@ public class IslandSlayerEventsHandler extends HSListener {
         if (!trackedEntityTypes.containsKey(spawner.getSpawner().getSpawnedType())) {
             main.getLogger().warning(e.getPlayer().getName() + "attempted to place " + e.getIncreaseAmount() + spawner.getSpawner().getSpawnedType()
                     + " spawner at " + LocationUtils.serializeLocation(spawner.getLocation(), true));
+            e.setCancelled(true);
+            return;
         }
 
         if (island.getLevel(IslandProgressionType.SLAYER) < trackedEntityTypes.get(spawner.getSpawner().getSpawnedType())) {

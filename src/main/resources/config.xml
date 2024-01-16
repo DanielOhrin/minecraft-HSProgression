@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <config>
     <value key="cache.upload.interval.seconds">300</value>
+    <value key="slayer.gui.slots">10-19</value> <!-- Example: 1st slayer mob is in first number slot listed -->
     <tables>
         <table name="island_level">
             <row> <!-- 1 -->

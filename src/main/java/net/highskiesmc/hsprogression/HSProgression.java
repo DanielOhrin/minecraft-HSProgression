@@ -3,6 +3,7 @@ package net.highskiesmc.hsprogression;
 import com.bgsoftware.superiorskyblock.api.SuperiorSkyblockAPI;
 import dev.rosewood.rosestacker.api.RoseStackerAPI;
 import net.highskiesmc.hscore.configuration.sources.FileConfigSource;
+import net.highskiesmc.hscore.configuration.sources.XmlConfigSource;
 import net.highskiesmc.hscore.exceptions.Exception;
 import net.highskiesmc.hscore.highskies.HSPlugin;
 import net.highskiesmc.hsprogression.api.HSProgressionApi;
@@ -35,6 +36,7 @@ public class HSProgression extends HSPlugin {
 
         config.addSource(new FileConfigSource("config.yml", this));
         config.addSource(new FileConfigSource("messages.yml", this));
+        config.addSource(new XmlConfigSource(this, "/config.xml"));
         config.reload();
 
         //<editor-fold desc="API">

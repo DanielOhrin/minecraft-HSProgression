@@ -7,16 +7,8 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -44,36 +36,7 @@ public class HSProgressionApi {
         this.islandBlocks = db.getIslandBlocks();
         this.islands = db.getIslands();
 
-        // TODO: Create XmlUtils in HSCore to abstract this...
-        long cachePushInterval;
-        try (InputStream stream = HSProgression.class.getResourceAsStream("/config.xml")) {
-            DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-            Document doc = builder.parse(stream);
-            doc.getDocumentElement().normalize();
-
-            NodeList values = doc.getElementsByTagName("value");
-
-            boolean matchFound = false;
-            Node node = null;
-            for (int i = 0; i < values.getLength(); i++) {
-                node = values.item(i);
-
-                if (node.getAttributes().getNamedItem("key").getNodeValue().equalsIgnoreCase("cache.upload.interval" +
-                        ".seconds")) {
-                    matchFound = true;
-                    break;
-                }
-            }
-
-            if (!matchFound) {
-                throw new IOException("cache.upload.interval.seconds not found in config.xml");
-            }
-
-            cachePushInterval = Long.parseLong(node.getTextContent()) * 20L;
-        } catch (SAXException | ParserConfigurationException ex) {
-            throw new IOException(ex);
-        }
-
+        long cachePushInterval = main.getConfigs().get("cache.upload.interval.seconds", Long.class, 300L);
         this.taskId = Bukkit.getScheduler().runTaskTimerAsynchronously(
                 this.main,
                 this::uploadCacheToDatabaseAsync,
@@ -93,6 +56,7 @@ public class HSProgressionApi {
         this.db.disconnect();
         this.islands = null;
         this.islandLevels = null;
+        this.slayerLevels = null;
         this.islandBlocks = null;
         this.db = null;
     }
@@ -124,11 +88,13 @@ public class HSProgressionApi {
         return this.islandLevels.get(level - 1);
     }
 
-    @NonNull public List<SlayerLevel> getSlayerLevels() {
+    @NonNull
+    public List<SlayerLevel> getSlayerLevels() {
         return Collections.unmodifiableList(this.slayerLevels);
     }
 
-    @NonNull public SlayerLevel getSlayerLevel(int level) throws IndexOutOfBoundsException {
+    @NonNull
+    public SlayerLevel getSlayerLevel(int level) throws IndexOutOfBoundsException {
         return this.slayerLevels.get(level - 1);
     }
 

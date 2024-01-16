@@ -12,6 +12,7 @@ import net.highskiesmc.hscore.utils.TextUtils;
 import net.highskiesmc.hsprogression.HSProgression;
 import net.highskiesmc.hsprogression.api.HSProgressionApi;
 import net.highskiesmc.hsprogression.api.IslandProgressionType;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.CreatureSpawner;
@@ -152,8 +153,12 @@ public class IslandLevelRestrictionsHandler extends HSListener {
             e.setCancelled(true);
             e.getPlayer().sendMessage(feedback.replace("{amount}", String.valueOf(amountPlaced)));
         } else if (amountPlaced + increaseAmount > spawnerLimit) {
-            e.setIncreaseAmount(spawnerLimit - amountPlaced);
-            e.getPlayer().sendMessage(feedbackReached.replace("{amount}", String.valueOf(amountPlaced)));
+            int newIncreaseAmount = spawnerLimit - amountPlaced;
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
+                    "rs give spawner " + e.getPlayer().getName() + " " + e.getStack().getSpawner().getSpawnedType() + " " + (increaseAmount - newIncreaseAmount));
+            main.getLogger().info("Refunded overflow spawners to " + e.getPlayer().getName());
+            e.setIncreaseAmount(newIncreaseAmount);
+            e.getPlayer().sendMessage(feedbackReached.replace("{amount}", String.valueOf(spawnerLimit)));
         }
     }
 }
