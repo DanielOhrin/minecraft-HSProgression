@@ -5,16 +5,20 @@ import com.bgsoftware.superiorskyblock.api.events.IslandInviteEvent;
 import com.bgsoftware.superiorskyblock.api.events.IslandJoinEvent;
 import com.bgsoftware.superiorskyblock.api.island.Island;
 import com.bgsoftware.superiorskyblock.api.key.Key;
+import dev.rosewood.rosestacker.event.SpawnerStackEvent;
 import net.highskiesmc.hscore.highskies.HSListener;
 import net.highskiesmc.hscore.highskies.HSPlugin;
 import net.highskiesmc.hscore.utils.TextUtils;
+import net.highskiesmc.hsprogression.HSProgression;
 import net.highskiesmc.hsprogression.api.HSProgressionApi;
 import net.highskiesmc.hsprogression.api.IslandProgressionType;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.CreatureSpawner;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.inventory.ItemStack;
 
 import java.math.BigInteger;
 import java.util.stream.Collectors;
@@ -106,16 +110,11 @@ public class IslandLevelRestrictionsHandler extends HSListener {
         // TOTO: Add max spawner restrictions
     }
 
-    // TODO: Change to SpawnerStackEvent watcher...
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
-    public void onPlaceSpawnerOnIsland(BlockPlaceEvent e) {
-        Block block = e.getBlockPlaced();
+    public void onPlaceSpawnerOnIsland(SpawnerStackEvent e) {
+        int increaseAmount = e.getIncreaseAmount();
 
-        if (block.getType() != Material.SPAWNER) {
-            return;
-        }
-
-        Island sIsland = SuperiorSkyblockAPI.getIslandAt(block.getLocation());
+        Island sIsland = SuperiorSkyblockAPI.getIslandAt(e.getStack().getLocation());
 
         if (sIsland == null) {
             return;
@@ -149,11 +148,11 @@ public class IslandLevelRestrictionsHandler extends HSListener {
                         .replace("{max}", String.valueOf(spawnerLimit))
         );
 
-        int amountInHand = 1; // TODO Update to stacksize in hand.
         if (amountPlaced == spawnerLimit) {
             e.setCancelled(true);
             e.getPlayer().sendMessage(feedback.replace("{amount}", String.valueOf(amountPlaced)));
-        } else if (amountPlaced + amountInHand > spawnerLimit) {
+        } else if (amountPlaced + increaseAmount > spawnerLimit) {
+            e.setIncreaseAmount(spawnerLimit - amountPlaced);
             e.getPlayer().sendMessage(feedbackReached.replace("{amount}", String.valueOf(amountPlaced)));
         }
     }

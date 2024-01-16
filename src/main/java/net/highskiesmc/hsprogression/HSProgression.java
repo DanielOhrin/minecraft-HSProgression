@@ -1,6 +1,7 @@
 package net.highskiesmc.hsprogression;
 
 import com.bgsoftware.superiorskyblock.api.SuperiorSkyblockAPI;
+import dev.rosewood.rosestacker.api.RoseStackerAPI;
 import net.highskiesmc.hscore.configuration.sources.FileConfigSource;
 import net.highskiesmc.hscore.exceptions.Exception;
 import net.highskiesmc.hscore.highskies.HSPlugin;
@@ -9,6 +10,7 @@ import net.highskiesmc.hsprogression.commands.superior.IslandUpgradeCommand;
 import net.highskiesmc.hsprogression.events.handlers.CommandPreProcessHandler;
 import net.highskiesmc.hsprogression.events.handlers.IslandEventsHandler;
 import net.highskiesmc.hsprogression.events.handlers.IslandLevelRestrictionsHandler;
+import net.highskiesmc.hsprogression.events.handlers.IslandSlayerEventsHandler;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
@@ -17,7 +19,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 public class HSProgression extends HSPlugin {
     private static HSProgressionApi api;
     private static Economy econ = null;
-
+    private static RoseStackerAPI rsAPI = null;
     @Override
     public void enable() {
         if (!setupEconomy()) {
@@ -25,6 +27,10 @@ public class HSProgression extends HSPlugin {
                     getDescription().getName()));
             getServer().getPluginManager().disablePlugin(this);
             return;
+        }
+
+        if (Bukkit.getPluginManager().isPluginEnabled("RoseStacker")) {
+            rsAPI = RoseStackerAPI.getInstance();
         }
 
         config.addSource(new FileConfigSource("config.yml", this));
@@ -49,6 +55,7 @@ public class HSProgression extends HSPlugin {
         register(new CommandPreProcessHandler());
         register(new IslandEventsHandler(this, api));
         register(new IslandLevelRestrictionsHandler(this, api));
+        register(new IslandSlayerEventsHandler(this, api));
         //</editor-fold>
 
         return;
@@ -89,5 +96,9 @@ public class HSProgression extends HSPlugin {
         }
         econ = rsp.getProvider();
         return econ != null;
+    }
+
+    public static RoseStackerAPI getRsAPI() {
+        return rsAPI;
     }
 }

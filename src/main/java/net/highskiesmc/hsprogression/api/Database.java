@@ -6,6 +6,7 @@ import net.highskiesmc.hscore.utils.TextUtils;
 import net.highskiesmc.hscore.utils.item.ItemUtils;
 import net.highskiesmc.hsprogression.HSProgression;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.EntityType;
 import org.bukkit.plugin.Plugin;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -43,6 +44,7 @@ class Database extends MySQLDatabase {
             // Note: While dropping a table is DDL, it is good to have it separate from the batch that recreates them.
             drops.addBatch("DROP TABLE IF EXISTS island_level_block;");
             drops.addBatch("DROP TABLE IF EXISTS island_level;");
+            drops.addBatch("DROP TABLE IF EXISTS island_slayer;");
 
             ddl.addBatch("CREATE TABLE IF NOT EXISTS island (" +
                     "Id INT AUTO_INCREMENT, " +
@@ -85,7 +87,7 @@ class Database extends MySQLDatabase {
                     ") ENGINE = INNODB;"
             );
 
-            ddl.addBatch("CREATE TABLE island_contributor (" +
+            ddl.addBatch("CREATE TABLE IF NOT EXISTS island_contributor (" +
                     "Id INT AUTO_INCREMENT, " +
                     "Player_UUID VARCHAR(36) NOT NULL, " +
                     "Island_Id INT, " +
@@ -94,7 +96,7 @@ class Database extends MySQLDatabase {
                     ") ENGINE = INNODB;"
             );
 
-            ddl.addBatch("CREATE TABLE slayer_contribution (" +
+            ddl.addBatch("CREATE TABLE IF NOT EXISTS slayer_contribution (" +
                     "Id INT AUTO_INCREMENT, " +
                     "Contributor_Id INT UNIQUE, " +
                     "Entity VARCHAR(50), " +
@@ -107,7 +109,9 @@ class Database extends MySQLDatabase {
             // You will want to add a guard clause of some sort.
             // ddl.addBatch("CREATE INDEX idx_islands_active ON island(Is_Deleted);");
             // END
-
+            // TODO: Store only the current batch, then delete it and just have it as a number on the Island?
+            // TODO: Then track the next 5 mins, etc.
+            // TODO: Leaderboards can be locked behind
             drops.executeBatch();
             ddl.executeBatch();
         }
@@ -213,6 +217,26 @@ class Database extends MySQLDatabase {
                         levels.getInt("Island_Radius"),
                         levels.getLong("Cost"),
                         levels.getBoolean("Is_Announced")
+                ));
+            }
+        }
+
+        return result;
+    }
+
+    public List<SlayerLevel> getSlayerLevels() throws SQLException {
+        List<SlayerLevel> result = new ArrayList<>();
+
+        try (Connection conn = getHikari().getConnection()) {
+            Statement statement = conn.createStatement();
+
+            ResultSet levels = statement.executeQuery("SELECT Id, Entity, Previous_Required FROM island_slayer;");
+
+            while (levels.next()) {
+                result.add(new SlayerLevel(
+                        levels.getInt("Id"),
+                        EntityType.valueOf(levels.getString("Entity")),
+                        levels.getLong("Previous_Required")
                 ));
             }
         }

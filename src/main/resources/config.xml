@@ -694,7 +694,7 @@
         </table>
         <table name="island_slayer">
         <row> <!-- 1 -->
-            <Entity>Rabbit</Entity>
+            <Entity>RABBIT</Entity>
             <Previous_Required>0</Previous_Required>
         </row>
         </table>

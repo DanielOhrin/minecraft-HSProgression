@@ -7,7 +7,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.common.value.qual.IntRange;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -26,6 +25,7 @@ public class HSProgressionApi {
     //<editor-fold desc="Fields">
     private final HSProgression main;
     private List<IslandLevel> islandLevels;
+    private List<SlayerLevel> slayerLevels;
     private Map<Integer, List<IslandBlock>> islandBlocks;
     private Map<UUID, Island> islands;
     private Database db;
@@ -40,6 +40,7 @@ public class HSProgressionApi {
 
         // Populate with data
         this.islandLevels = db.getIslandLevels();
+        this.slayerLevels = db.getSlayerLevels();
         this.islandBlocks = db.getIslandBlocks();
         this.islands = db.getIslands();
 
@@ -121,6 +122,14 @@ public class HSProgressionApi {
     @NonNull
     public IslandLevel getIslandLevel(int level) throws IndexOutOfBoundsException {
         return this.islandLevels.get(level - 1);
+    }
+
+    @NonNull public List<SlayerLevel> getSlayerLevels() {
+        return Collections.unmodifiableList(this.slayerLevels);
+    }
+
+    @NonNull public SlayerLevel getSlayerLevel(int level) throws IndexOutOfBoundsException {
+        return this.slayerLevels.get(level - 1);
     }
 
     @NonNull
