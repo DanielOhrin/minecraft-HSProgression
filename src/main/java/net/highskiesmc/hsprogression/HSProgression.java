@@ -7,6 +7,7 @@ import net.highskiesmc.hscore.configuration.sources.XmlConfigSource;
 import net.highskiesmc.hscore.exceptions.Exception;
 import net.highskiesmc.hscore.highskies.HSPlugin;
 import net.highskiesmc.hsprogression.api.HSProgressionApi;
+import net.highskiesmc.hsprogression.commands.superior.IslandSlayerCommand;
 import net.highskiesmc.hsprogression.commands.superior.IslandUpgradeCommand;
 import net.highskiesmc.hsprogression.events.handlers.CommandPreProcessHandler;
 import net.highskiesmc.hsprogression.events.handlers.IslandEventsHandler;
@@ -52,6 +53,7 @@ public class HSProgression extends HSPlugin {
         //<editor-fold desc="Island Levels">
         // Register SuperiorCommands
         SuperiorSkyblockAPI.registerCommand(new IslandUpgradeCommand(this));
+        SuperiorSkyblockAPI.registerCommand(new IslandSlayerCommand(this));
 
         // Register Event Handlers
         register(new CommandPreProcessHandler());

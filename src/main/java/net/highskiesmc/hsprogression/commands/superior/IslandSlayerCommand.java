@@ -9,11 +9,10 @@ import net.highskiesmc.hscore.configuration.Config;
 import net.highskiesmc.hscore.highskies.HSPlugin;
 import net.highskiesmc.hscore.utils.TextUtils;
 import net.highskiesmc.hsprogression.HSProgression;
-import net.highskiesmc.hsprogression.inventories.IslandUpgradeGUI;
+import net.highskiesmc.hsprogression.inventories.IslandSlayerGUI;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -69,7 +68,6 @@ public class IslandSlayerCommand implements SuperiorCommand {
 
     @Override
     public void execute(SuperiorSkyblock superiorSkyblock, CommandSender commandSender, String[] strings) {
-        // TODO: Open SLAYER Menu
         Player player = (Player) commandSender;
         SuperiorPlayer sPlayer = SuperiorSkyblockAPI.getPlayer(player);
 
@@ -81,7 +79,7 @@ public class IslandSlayerCommand implements SuperiorCommand {
         }
 
         Island island = sPlayer.getIsland();
-        (player).openInventory(new IslandUpgradeGUI((HSProgression) main, island, player).getInventory());
+        (player).openInventory(new IslandSlayerGUI((HSProgression) main, player, island).getInventory());
     }
 
     @Override

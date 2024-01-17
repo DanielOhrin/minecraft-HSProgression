@@ -36,7 +36,8 @@ public class HSProgressionApi {
         this.islandBlocks = db.getIslandBlocks();
         this.islands = db.getIslands();
 
-        long cachePushInterval = main.getConfigs().get("cache.upload.interval.seconds", Long.class, 300L);
+        long cachePushInterval = Long.parseLong(main.getConfigs().get("cache.upload.interval.seconds", String.class,
+                "300"));
         this.taskId = Bukkit.getScheduler().runTaskTimerAsynchronously(
                 this.main,
                 this::uploadCacheToDatabaseAsync,

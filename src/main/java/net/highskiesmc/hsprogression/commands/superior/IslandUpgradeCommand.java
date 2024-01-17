@@ -9,7 +9,7 @@ import net.highskiesmc.hscore.configuration.Config;
 import net.highskiesmc.hscore.highskies.HSPlugin;
 import net.highskiesmc.hscore.utils.TextUtils;
 import net.highskiesmc.hsprogression.HSProgression;
-import net.highskiesmc.hsprogression.inventories.IslandUpgradeGUI;
+import net.highskiesmc.hsprogression.inventories.IslandLevelsGUI;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -80,7 +80,7 @@ public class IslandUpgradeCommand implements SuperiorCommand {
         }
 
         Island island = sPlayer.getIsland();
-        (player).openInventory(new IslandUpgradeGUI((HSProgression) main, island, player).getInventory());
+        (player).openInventory(new IslandLevelsGUI((HSProgression) main, island, player).getInventory());
     }
 
     @Override

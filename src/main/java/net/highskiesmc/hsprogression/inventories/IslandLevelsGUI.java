@@ -22,7 +22,7 @@ import org.bukkit.inventory.Inventory;
 import javax.annotation.Nonnull;
 import java.util.List;
 
-public class IslandUpgradeGUI implements GUI {
+public class IslandLevelsGUI implements GUI {
     private final HSProgression main;
     private final List<IslandLevel> levels;
     private final HSProgressionApi api;
@@ -30,7 +30,7 @@ public class IslandUpgradeGUI implements GUI {
     private int level;
     private final Player player;
 
-    public IslandUpgradeGUI(HSProgression main, Island island, Player player) {
+    public IslandLevelsGUI(HSProgression main, Island island, Player player) {
         this.main = main;
         this.api = HSProgression.getApi();
         this.island = island;
@@ -39,8 +39,8 @@ public class IslandUpgradeGUI implements GUI {
         this.player = player;
     }
 
-    public IslandUpgradeGUI(HSProgression main, com.bgsoftware.superiorskyblock.api.island.Island island,
-                            Player player) {
+    public IslandLevelsGUI(HSProgression main, com.bgsoftware.superiorskyblock.api.island.Island island,
+                           Player player) {
         this.main = main;
         this.api = HSProgression.getApi();
         this.island = api.getIsland(island);
@@ -145,10 +145,10 @@ public class IslandUpgradeGUI implements GUI {
                 18,
                 TextUtils.translateColor(
                         main.getConfigs().get("island-levels-menu-title", String.class, "&x&0&8&4&c&f&bI&x&1&5&5&9&f" +
-                                "&bs&x&2&1&6&6&f&bl&x&2&e&7&3&f&ba&x&3&b&7&f&f&cn&x&4&7&8&c&f&cd&x&5&4&9&9&f&cU&x&6&1" +
-                                "&a&6&f&cp&x&6&e&b&3&f&cg&x&7&a&c&0&f&cr&x&8&7&c&c&f&da&x&9&4&d&9&f&dd&x&a&0&e&6&f&de" +
-                                "&x&a&d&f&3&f&ds")
-                )
+                                "&bs&x&2&1&6&6&f&bl&x&2&e&7&3&f&ba&x&3&b&7&f&f&cn&x&4&7&8&c&f&cd " +
+                                "&x&5&4&9&9&f&cU&x&6&1&a&6&f&cp&x&6&e&b&3&f&cg&x&7&a&c&0&f&cr&x&8&7&c&c&f&da&x&9&4&d" +
+                                "&9&f&dd&x&a&0&e&6&f&de&x&a&d&f&3&f&ds"
+                ))
         );
 
         addContent(inv);
