@@ -79,7 +79,7 @@ public class IslandSlayerCommand implements SuperiorCommand {
         }
 
         Island island = sPlayer.getIsland();
-        (player).openInventory(new IslandSlayerGUI((HSProgression) main, player, island).getInventory());
+        player.openInventory(new IslandSlayerGUI((HSProgression) main, player, island).getInventory());
     }
 
     @Override

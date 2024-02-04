@@ -27,15 +27,6 @@ island-slayer-menu-title: "&x&0&5&a&f&c&6&lI&x&0&c&b&6&c&b&ls&x&1&4&b&d&d&0&ll&x
 
 # If a field says Nullable and you don't want to include it, just delete the value
 events: # Dispatches sound + message + title to all members of the island
-  island-progressed: # A new upgrade becomes purchasable
-    sound: ENTITY_PLAYER_LEVELUP
-    message: "&e[&6&l!&e] &7Island can now buy {current} &7upgrade!" # {data-type} {current} {current-no-color}
-    title:
-      title: "&6&l/is {data-type} &7Progressed!" # Nullable {data-type} {current} {current-no-color}
-      subtitle: "{current} &7upgrade is now purchasable!" # Nullable {data-type} {current} {current-no-color}
-      fade-in: 40 # Whole number of ticks
-      persist: 100 # Whole number of ticks
-      fade-out: 40 # Whole number of ticks
   island-upgraded: # An upgrade was purchased
     sound: UI_TOAST_CHALLENGE_COMPLETE
     message: "&e[&6&l!&e] &6&l/is {data-type}&7 upgraded! {current} &7unlocked!" # {data-type} {current} {current-no-color}
@@ -47,22 +38,19 @@ events: # Dispatches sound + message + title to all members of the island
       fade-out: 40 # Whole number of ticks
 
 # Everything below is GUI-related
-all:
+gui:
   filler:
     material: BLACK_STAINED_GLASS_PANE
-  conditions-met:
-    material: LIME_STAINED_GLASS_PANE # Item that will show when an upgrade is ready to be purchased
-    display-name: "&7{current-no-color}" # {current} {current-no-color}
-    lore:
-      - "&7Spend &a${price} &7to unlock {current}" # {price} {current} {current-no-color}
   locked:
-    display-name: "&7&l???" # Displays when it is locked and the previous is not unlocked
-    display-name-unlockable: "&c&k{current-no-color}" # {current} {current-no-color} - Displays when it is locked and the previous IS unlocked.
-    lore: # Displays when previous is not unlocked
-      - "&7&l???"
-      - ""
-      - "&c&lLOCKED"
-    material: RED_STAINED_GLASS_PANE # Item that will show in place of fully locked items
-    material-unlockable: ORANGE_STAINED_GLASS_PANE # Item that will show on locked items that are able to have their unlock progress seen
-    message: "&4&l[!]&c Island has not unlocked that!" # Message the player receives when placing a locked item
+    display-name: "&7{name}"
+    material: RED_STAINED_GLASS_PANE # Item that will show in place of locked items
     sound: BLOCK_ANVIL_PLACE # Sound that will play when trying to place a locked item
+  unlocked:
+    display-name: "&e&l{name}" #name
+  slayer:
+    locked:
+      - '&7{amount}/{required} {previous} &7slain'
+      - ''
+      - '&c&lLOCKED'
+    unlocked:
+      - '&7{amount} {current-no-color} slain'

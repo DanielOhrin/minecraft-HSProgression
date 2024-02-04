@@ -18,6 +18,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class HSProgression extends HSPlugin {
     private static HSProgressionApi api;
     private static Economy econ = null;

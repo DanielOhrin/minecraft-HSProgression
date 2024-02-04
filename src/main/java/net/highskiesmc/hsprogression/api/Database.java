@@ -83,6 +83,7 @@ class Database extends MySQLDatabase {
                     "Id INT AUTO_INCREMENT, " +
                     "Entity VARCHAR(50) UNIQUE, " +
                     "Previous_Required INT NOT NULL, " +
+                    "Head_Id INT NOT NULL, " +
                     "PRIMARY KEY(Id)" +
                     ") ENGINE = INNODB;"
             );
@@ -230,14 +231,20 @@ class Database extends MySQLDatabase {
         try (Connection conn = getHikari().getConnection()) {
             Statement statement = conn.createStatement();
 
-            ResultSet levels = statement.executeQuery("SELECT Id, Entity, Previous_Required FROM island_slayer;");
+            ResultSet levels = statement.executeQuery("SELECT Id, Entity, Previous_Required, Head_Id FROM " +
+                    "island_slayer;");
 
+            EntityType previous = null;
             while (levels.next()) {
                 result.add(new SlayerLevel(
                         levels.getInt("Id"),
                         EntityType.valueOf(levels.getString("Entity")),
-                        levels.getLong("Previous_Required")
+                        previous,
+                        levels.getLong("Previous_Required"),
+                        levels.getInt("Head_Id")
                 ));
+
+                previous = EntityType.valueOf(levels.getString("Entity"));
             }
         }
 

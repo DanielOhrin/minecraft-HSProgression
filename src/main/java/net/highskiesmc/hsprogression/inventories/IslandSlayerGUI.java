@@ -6,10 +6,8 @@ import net.highskiesmc.hscore.utils.TextUtils;
 import net.highskiesmc.hsprogression.HSProgression;
 import net.highskiesmc.hsprogression.api.HSProgressionApi;
 import net.highskiesmc.hsprogression.api.Island;
-import net.highskiesmc.hsprogression.api.SlayerLevel;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -20,6 +18,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,6 +30,7 @@ public class IslandSlayerGUI implements GUI {
     private final Config config;
     private List<Integer> slots;
     private int guiSize;
+
     public IslandSlayerGUI(HSProgression main, Player player, Island island) {
         this.main = main;
         this.api = HSProgression.getApi();
@@ -65,28 +65,35 @@ public class IslandSlayerGUI implements GUI {
 
     @Override
     public void addContent(Inventory inv) {
-        ItemStack spawner = new ItemStack(Material.SPAWNER);
-        ItemMeta meta = spawner.getItemMeta();
+        List<ItemStack> items = api.getSlayerLevels().stream().map(s -> s.toDisplayItem(island, config)).toList();
 
-        List<EntityType> entities = api.getSlayerLevels().stream().map(SlayerLevel::getEntity).toList();
-        for (int i = 0; i < entities.size(); i++) {
-            EntityType entity = entities.get(i);
+        for (int i = 0; i < items.size(); i++) {
+            ItemStack item = items.get(i);
             int slot = slots.get(i);
 
-            meta.setDisplayName(entity.toString());
-            spawner.setItemMeta(meta);
-
-            inv.setItem(slot, spawner);
+            inv.setItem(slot, item);
         }
 
-        System.out.println("Not implemented addContent for slayer gui. Size: " + guiSize + ". Slots: " + slots.stream().map(String::valueOf).collect(Collectors.joining("-")));
+        ItemStack filler = new ItemStack(Material.valueOf(config.get("gui.filler.material", String.class,
+                "BLACK_STAINED_GLASS_PANE")));
+        ItemMeta meta = filler.getItemMeta();
+        meta.setDisplayName("");
+        filler.setItemMeta(meta);
+
+        for (int i = 0; i < inv.getSize(); i++) {
+            ItemStack item = inv.getItem(i);
+            if (item == null || item.getType() == Material.AIR) {
+                inv.setItem(i, filler);
+            }
+        }
     }
 
     @Override
     @NonNull
     public Inventory getInventory() {
         slots = Arrays.stream(config.get("slayer.gui.slots", String.class, "6-9").split("-")).map(Integer::valueOf).collect(Collectors.toList());
-        guiSize = Math.min(54, 9 + Math.max(9, ((int) Math.ceil((double) slots.get(slots.size() - 1) / 9)) * 9));
+        guiSize = Math.min(54, 9 + Math.max(9,
+                ((int) Math.ceil((double) Collections.max(slots) / 9)) * 9));
 
         Inventory inv = Bukkit.createInventory(this, guiSize,
                 TextUtils.translateColor(config.get("island-slayer-menu-title",
