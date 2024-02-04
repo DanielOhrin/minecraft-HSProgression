@@ -16,7 +16,7 @@ public class IslandLevelUpEvent extends IslandEvent implements Cancellable {
         this.player = player;
         this.level = level;
     }
-
+    // TODO: Make placeholders for island level, etc.
     @Override
     public boolean isCancelled() {
         return isCancelled;

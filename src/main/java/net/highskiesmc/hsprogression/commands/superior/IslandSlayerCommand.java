@@ -9,19 +9,18 @@ import net.highskiesmc.hscore.configuration.Config;
 import net.highskiesmc.hscore.highskies.HSPlugin;
 import net.highskiesmc.hscore.utils.TextUtils;
 import net.highskiesmc.hsprogression.HSProgression;
-import net.highskiesmc.hsprogression.inventories.IslandLevelsGUI;
+import net.highskiesmc.hsprogression.inventories.IslandSlayerGUI;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-public class IslandUpgradeCommand implements SuperiorCommand {
+public class IslandSlayerCommand implements SuperiorCommand {
     private final HSPlugin main;
     private final Config config;
 
-    public IslandUpgradeCommand(HSPlugin main) {
+    public IslandSlayerCommand(HSPlugin main) {
         super();
         this.main = main;
         this.config = main.getConfigs();
@@ -29,22 +28,22 @@ public class IslandUpgradeCommand implements SuperiorCommand {
 
     @Override
     public List<String> getAliases() {
-        return Arrays.asList("upgrade", "level", "levels", "upgrades");
+        return List.of("slayer");
     }
 
     @Override
     public String getPermission() {
-        return "hsprogression.cmd.upgrade";
+        return "hsprogression.cmd.slayer";
     }
 
     @Override
     public String getUsage(Locale locale) {
-        return "upgrade";
+        return "slayer";
     }
 
     @Override
     public String getDescription(Locale locale) {
-        return "Opens the upgrade menu for your island";
+        return "Opens the slayer menu for your island";
     }
 
     @Override
@@ -80,7 +79,7 @@ public class IslandUpgradeCommand implements SuperiorCommand {
         }
 
         Island island = sPlayer.getIsland();
-        (player).openInventory(new IslandLevelsGUI((HSProgression) main, island, player).getInventory());
+        player.openInventory(new IslandSlayerGUI((HSProgression) main, player, island).getInventory());
     }
 
     @Override

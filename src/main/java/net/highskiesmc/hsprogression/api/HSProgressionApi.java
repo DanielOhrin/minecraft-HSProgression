@@ -7,17 +7,8 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.common.value.qual.IntRange;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -26,6 +17,7 @@ public class HSProgressionApi {
     //<editor-fold desc="Fields">
     private final HSProgression main;
     private List<IslandLevel> islandLevels;
+    private List<SlayerLevel> slayerLevels;
     private Map<Integer, List<IslandBlock>> islandBlocks;
     private Map<UUID, Island> islands;
     private Database db;
@@ -40,39 +32,12 @@ public class HSProgressionApi {
 
         // Populate with data
         this.islandLevels = db.getIslandLevels();
+        this.slayerLevels = db.getSlayerLevels();
         this.islandBlocks = db.getIslandBlocks();
         this.islands = db.getIslands();
 
-        // TODO: Create XmlUtils in HSCore to abstract this...
-        long cachePushInterval;
-        try (InputStream stream = HSProgression.class.getResourceAsStream("/config.xml")) {
-            DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-            Document doc = builder.parse(stream);
-            doc.getDocumentElement().normalize();
-
-            NodeList values = doc.getElementsByTagName("value");
-
-            boolean matchFound = false;
-            Node node = null;
-            for (int i = 0; i < values.getLength(); i++) {
-                node = values.item(i);
-
-                if (node.getAttributes().getNamedItem("key").getNodeValue().equalsIgnoreCase("cache.upload.interval" +
-                        ".seconds")) {
-                    matchFound = true;
-                    break;
-                }
-            }
-
-            if (!matchFound) {
-                throw new IOException("cache.upload.interval.seconds not found in config.xml");
-            }
-
-            cachePushInterval = Long.parseLong(node.getTextContent()) * 20L;
-        } catch (SAXException | ParserConfigurationException ex) {
-            throw new IOException(ex);
-        }
-
+        long cachePushInterval = Long.parseLong(main.getConfigs().get("cache.upload.interval.seconds", String.class,
+                "300"));
         this.taskId = Bukkit.getScheduler().runTaskTimerAsynchronously(
                 this.main,
                 this::uploadCacheToDatabaseAsync,
@@ -92,6 +57,7 @@ public class HSProgressionApi {
         this.db.disconnect();
         this.islands = null;
         this.islandLevels = null;
+        this.slayerLevels = null;
         this.islandBlocks = null;
         this.db = null;
     }
@@ -124,6 +90,16 @@ public class HSProgressionApi {
     }
 
     @NonNull
+    public List<SlayerLevel> getSlayerLevels() {
+        return Collections.unmodifiableList(this.slayerLevels);
+    }
+
+    @NonNull
+    public SlayerLevel getSlayerLevel(int level) throws IndexOutOfBoundsException {
+        return this.slayerLevels.get(level - 1);
+    }
+
+    @NonNull
     public List<IslandBlock> getIslandBlocks(int level) {
         return Collections.unmodifiableList(this.islandBlocks.getOrDefault(level, new ArrayList<>()));
     }
@@ -133,8 +109,9 @@ public class HSProgressionApi {
 
     //<editor-fold desc="Island">
     //<editor-fold desc="Create">
-    private void createIsland(@NonNull UUID islandUuid, @NonNull UUID leaderUuid, int level, boolean isDeleted) {
-        this.islands.put(islandUuid, new Island(leaderUuid, islandUuid, level, isDeleted));
+    private void createIsland(@NonNull UUID islandUuid, @NonNull UUID leaderUuid, int level,
+                              int slayerLevel, boolean isDeleted) {
+        this.islands.put(islandUuid, new Island(leaderUuid, islandUuid, level, slayerLevel, isDeleted));
     }
 
     /**
@@ -143,19 +120,20 @@ public class HSProgressionApi {
      * @param island Source island
      */
     public void createIsland(com.bgsoftware.superiorskyblock.api.island.Island island) {
-        createIsland(island.getUniqueId(), island.getOwner().getUniqueId(), 1, false);
+        createIsland(island.getUniqueId(), island.getOwner().getUniqueId(), 1, 1, false);
     }
 
     public void createIsland(com.bgsoftware.superiorskyblock.api.island.Island island, boolean isDeleted) {
-        createIsland(island.getUniqueId(), island.getOwner().getUniqueId(), 1, isDeleted);
+        createIsland(island.getUniqueId(), island.getOwner().getUniqueId(), 1, 1, isDeleted);
     }
 
-    public void createIsland(com.bgsoftware.superiorskyblock.api.island.Island island, int level) {
-        createIsland(island.getUniqueId(), island.getOwner().getUniqueId(), level, false);
+    public void createIsland(com.bgsoftware.superiorskyblock.api.island.Island island, int level, int slayerLevel) {
+        createIsland(island.getUniqueId(), island.getOwner().getUniqueId(), level, slayerLevel, false);
     }
 
-    public void createIsland(com.bgsoftware.superiorskyblock.api.island.Island island, int level, boolean isDeleted) {
-        createIsland(island.getUniqueId(), island.getOwner().getUniqueId(), level, isDeleted);
+    public void createIsland(com.bgsoftware.superiorskyblock.api.island.Island island, int level,
+                             int slayerLevel, boolean isDeleted) {
+        createIsland(island.getUniqueId(), island.getOwner().getUniqueId(), level, slayerLevel, isDeleted);
     }
 
     //</editor-fold>
@@ -171,11 +149,11 @@ public class HSProgressionApi {
     //</editor-fold>
     //<editor-fold desc="Update">
     public void setIslandLevel(Island island, int level) throws NullPointerException {
-        islands.get(island.getIslandUuid()).setLevel(level);
+        islands.get(island.getIslandUuid()).setLevel(IslandProgressionType.ISLAND, level);
     }
 
     public void setIslandLevel(UUID islandUuid, int level) throws NullPointerException {
-        islands.get(islandUuid).setLevel(level);
+        islands.get(islandUuid).setLevel(IslandProgressionType.ISLAND, level);
     }
 
     public void setIslandLevel(com.bgsoftware.superiorskyblock.api.island.Island island, int level) throws NullPointerException {
@@ -229,7 +207,7 @@ public class HSProgressionApi {
      * @return Whether the item can be placed, or default to TRUE if not restricted in the first place
      */
     public boolean canPlace(Island island, ItemStack item) {
-        int level = island.getLevel();
+        int level = island.getLevel(IslandProgressionType.ISLAND);
 
         for (int i = 0; i < islandBlocks.size(); i++) {
             List<IslandBlock> blocks = getIslandBlocks(i + 1);

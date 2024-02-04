@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <config>
     <value key="cache.upload.interval.seconds">300</value>
+    <value key="slayer.gui.slots">9-18-27-28-29-20-11-12-13-22-31-32-33-24-15-16-17</value> <!-- Example: 1st slayer mob is in first number slot listed -->
     <tables>
         <table name="island_level">
             <row> <!-- 1 -->
@@ -690,6 +691,93 @@
                     EWphdmEubGFuZy5JbnRlZ2VyEuKgpPeBhzgCAAFJAAV2YWx1ZXhyABBqYXZhLmxhbmcuTnVtYmVy
                     hqyVHQuU4IsCAAB4cAAADQl0AA1TVElDS1lfUElTVE9O
                 </Encoding>
+            </row>
+        </table>
+        <table name="island_slayer">
+        <row> <!-- 1 -->
+            <Entity>RABBIT</Entity>
+            <Previous_Required>0</Previous_Required>
+            <Head_Id>57519</Head_Id>
+        </row>
+            <row> <!-- 2 -->
+                <Entity>CHICKEN</Entity>
+                <Previous_Required>2500</Previous_Required>
+                <Head_Id>53916</Head_Id>
+            </row>
+            <row> <!-- 3 -->
+                <Entity>SHEEP</Entity>
+                <Previous_Required>5500</Previous_Required>
+                <Head_Id>57345</Head_Id>
+            </row>
+            <row> <!-- 4 -->
+                <Entity>PIG</Entity>
+                <Previous_Required>12000</Previous_Required>
+                <Head_Id>55184</Head_Id>
+            </row>
+            <row> <!-- 5 -->
+                <Entity>COW</Entity>
+                <Previous_Required>24000</Previous_Required>
+                <Head_Id>49706</Head_Id>
+            </row>
+            <row> <!-- 6 -->
+                <Entity>ZOMBIE</Entity>
+                <Previous_Required>45000</Previous_Required>
+                <Head_Id>4187</Head_Id>
+            </row>
+            <row> <!-- 7 -->
+                <Entity>SPIDER</Entity>
+                <Previous_Required>80000</Previous_Required>
+                <Head_Id>26010</Head_Id>
+            </row>
+            <row> <!-- 8 -->
+                <Entity>CREEPER</Entity>
+                <Previous_Required>135000</Previous_Required>
+                <Head_Id>4169</Head_Id>
+            </row>
+            <row> <!-- 9 -->
+                <Entity>SKELETON</Entity>
+                <Previous_Required>217000</Previous_Required>
+                <Head_Id>4005</Head_Id>
+            </row>
+            <row> <!-- 10 -->
+                <Entity>SLIME</Entity>
+                <Previous_Required>335000</Previous_Required>
+                <Head_Id>22210</Head_Id>
+            </row>
+            <row> <!-- 11 -->
+                <Entity>GUARDIAN</Entity>
+                <Previous_Required>500000</Previous_Required>
+                <Head_Id>25292</Head_Id>
+            </row>
+            <row> <!-- 12 -->
+                <Entity>ENDERMAN</Entity>
+                <Previous_Required>725000</Previous_Required>
+                <Head_Id>38106</Head_Id>
+            </row>
+            <row> <!-- 13 -->
+                <Entity>MAGMA_CUBE</Entity>
+                <Previous_Required>1025000</Previous_Required>
+                <Head_Id>323</Head_Id>
+            </row>
+            <row> <!-- 14 -->
+                <Entity>BLAZE</Entity>
+                <Previous_Required>1420000</Previous_Required>
+                <Head_Id>47778</Head_Id>
+            </row>
+            <row> <!-- 15 -->
+                <Entity>GHAST</Entity>
+                <Previous_Required>1935000</Previous_Required>
+                <Head_Id>40638</Head_Id>
+            </row>
+            <row> <!-- 16 -->
+                <Entity>WITHER_SKELETON</Entity>
+                <Previous_Required>2610000</Previous_Required>
+                <Head_Id>22400</Head_Id>
+            </row>
+            <row> <!-- 17 -->
+                <Entity>IRON_GOLEM</Entity>
+                <Previous_Required>3504000</Previous_Required>
+                <Head_Id>341</Head_Id>
             </row>
         </table>
     </tables>

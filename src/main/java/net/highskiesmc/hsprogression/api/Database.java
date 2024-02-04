@@ -6,8 +6,10 @@ import net.highskiesmc.hscore.utils.TextUtils;
 import net.highskiesmc.hscore.utils.item.ItemUtils;
 import net.highskiesmc.hsprogression.HSProgression;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.EntityType;
 import org.bukkit.plugin.Plugin;
 import org.checkerframework.checker.nullness.qual.NonNull;
+
 import java.io.*;
 import java.sql.*;
 import java.util.*;
@@ -42,15 +44,18 @@ class Database extends MySQLDatabase {
             // Note: While dropping a table is DDL, it is good to have it separate from the batch that recreates them.
             drops.addBatch("DROP TABLE IF EXISTS island_level_block;");
             drops.addBatch("DROP TABLE IF EXISTS island_level;");
+            drops.addBatch("DROP TABLE IF EXISTS island_slayer;");
 
             ddl.addBatch("CREATE TABLE IF NOT EXISTS island (" +
                     "Id INT AUTO_INCREMENT, " +
                     "Leader_UUID VARCHAR(36) NOT NULL, " +
                     "Island_UUID VARCHAR(36) NOT NULL UNIQUE, " +
                     "Level INT NOT NULL DEFAULT 1, " +
+                    "Slayer_Level INT NOT NULL DEFAULT 1, " +
                     "Is_Deleted BIT(1) NOT NULL DEFAULT 0, " +
                     "PRIMARY KEY(Id)" +
-                    ") ENGINE = INNODB;");
+                    ") ENGINE = INNODB;"
+            );
 
             ddl.addBatch("CREATE TABLE island_level (" +
                     "Id INT AUTO_INCREMENT, " +
@@ -60,8 +65,10 @@ class Database extends MySQLDatabase {
                     "Cost BIGINT UNSIGNED, " +
                     "Is_Announced BIT(1) NOT NULL DEFAULT 0, " +
                     "PRIMARY KEY(Id)" +
-                    ") ENGINE = INNODB;");
-
+                    ") ENGINE = INNODB;"
+            );
+            // TODO: TRACK ENTITY SLAIN BY ENTITY NAME, NOT SLAYER LEVEL!
+            // TODO: ONLY COUNT IF ITS BEING TRACKED AND IS UNLOCKED?
             ddl.addBatch("CREATE TABLE island_level_block (" +
                     "Id INT AUTO_INCREMENT, " +
                     "Label VARCHAR(50), " +
@@ -69,13 +76,43 @@ class Database extends MySQLDatabase {
                     "Encoding VARCHAR(16000) UNIQUE, " +
                     "PRIMARY KEY(Id), " +
                     "FOREIGN KEY(Island_Level) REFERENCES island_level(Id)" +
-                    ") ENGINE = INNODB;");
+                    ") ENGINE = INNODB;"
+            );
 
+            ddl.addBatch("CREATE TABLE island_slayer (" +
+                    "Id INT AUTO_INCREMENT, " +
+                    "Entity VARCHAR(50) UNIQUE, " +
+                    "Previous_Required INT NOT NULL, " +
+                    "Head_Id INT NOT NULL, " +
+                    "PRIMARY KEY(Id)" +
+                    ") ENGINE = INNODB;"
+            );
+
+            ddl.addBatch("CREATE TABLE IF NOT EXISTS island_contributor (" +
+                    "Id INT AUTO_INCREMENT, " +
+                    "Player_UUID VARCHAR(36) NOT NULL, " +
+                    "Island_Id INT, " +
+                    "PRIMARY KEY(Id), " +
+                    "FOREIGN KEY(Island_Id) REFERENCES island(Id)" +
+                    ") ENGINE = INNODB;"
+            );
+
+            ddl.addBatch("CREATE TABLE IF NOT EXISTS slayer_contribution (" +
+                    "Id INT AUTO_INCREMENT, " +
+                    "Contributor_Id INT UNIQUE, " +
+                    "Entity VARCHAR(50), " +
+                    "Amount INT, " +
+                    "PRIMARY KEY(Id), " +
+                    "FOREIGN KEY(Contributor_Id) REFERENCES island_contributor(Id)" +
+                    ") ENGINE = INNODB;"
+            );
             // Try Running this line if plugin startup time becomes high
             // You will want to add a guard clause of some sort.
             // ddl.addBatch("CREATE INDEX idx_islands_active ON island(Is_Deleted);");
             // END
-
+            // TODO: Store only the current batch, then delete it and just have it as a number on the Island?
+            // TODO: Then track the next 5 mins, etc.
+            // TODO: Leaderboards can be locked behind
             drops.executeBatch();
             ddl.executeBatch();
         }
@@ -100,7 +137,8 @@ class Database extends MySQLDatabase {
         try (Connection conn = getHikari().getConnection()) {
             Statement statement = conn.createStatement();
 
-            ResultSet island = statement.executeQuery("SELECT Id, Leader_UUID, Island_UUID, Level, Is_Deleted FROM " +
+            ResultSet island = statement.executeQuery("SELECT Id, Leader_UUID, Island_UUID, Level, Slayer_Level, " +
+                    "Is_Deleted FROM " +
                     "island WHERE Is_Deleted = 0;");
 
             while (island.next()) {
@@ -110,6 +148,7 @@ class Database extends MySQLDatabase {
                                 UUID.fromString(island.getString("Leader_UUID")),
                                 islandUuid,
                                 island.getInt("Level"),
+                                island.getInt("Slayer_Level"),
                                 island.getBoolean("Is_Deleted")
                         )
                 );
@@ -128,33 +167,33 @@ class Database extends MySQLDatabase {
             plugin.getLogger().info("No island to update. Skipped batch upsert...");
         }
 
-            plugin.getLogger().info("Updating islands...");
-            // Upsert, Then Delete!
-            try (Connection conn = getHikari().getConnection()) {
-                PreparedStatement upsert = conn.prepareStatement(
-                        "INSERT INTO island (Leader_UUID, Island_UUID, Level, Is_Deleted) VALUES (?, ?, ?, ?)" +
-                                "ON DUPLICATE KEY UPDATE Leader_UUID = ?, Level = ?, Is_Deleted = ?"
-                );
+        plugin.getLogger().info("Updating islands...");
+        // Upsert, Then Delete!
+        try (Connection conn = getHikari().getConnection()) {
+            PreparedStatement upsert = conn.prepareStatement(
+                    "INSERT INTO island (Leader_UUID, Island_UUID, Level, Is_Deleted) VALUES (?, ?, ?, ?)" +
+                            "ON DUPLICATE KEY UPDATE Leader_UUID = ?, Level = ?, Is_Deleted = ?"
+            );
 
-                for (Island island : islands) {
-                    upsert.setString(1, island.getLeaderUuid().toString());
-                    upsert.setString(2, island.getIslandUuid().toString());
-                    upsert.setInt(3, island.getLevel());
-                    upsert.setBoolean(4, island.isDeleted());
+            for (Island island : islands) {
+                upsert.setString(1, island.getLeaderUuid().toString());
+                upsert.setString(2, island.getIslandUuid().toString());
+                upsert.setInt(3, island.getLevel(IslandProgressionType.ISLAND));
+                upsert.setBoolean(4, island.isDeleted());
 
-                    upsert.setString(5, island.getLeaderUuid().toString());
-                    upsert.setInt(6, island.getLevel());
-                    upsert.setBoolean(7, island.isDeleted());
+                upsert.setString(5, island.getLeaderUuid().toString());
+                upsert.setInt(6, island.getLevel(IslandProgressionType.ISLAND));
+                upsert.setBoolean(7, island.isDeleted());
 
-                    upsert.addBatch();
-                }
-
-                int[] islandsUpdated = upsert.executeBatch();
-
-                plugin.getLogger().info("Done! Islands updated: " + Arrays.stream(islandsUpdated).sum());
-            } catch (SQLException ex) {
-                Exception.useStackTrace(plugin.getLogger()::severe, ex);
+                upsert.addBatch();
             }
+
+            int[] islandsUpdated = upsert.executeBatch();
+
+            plugin.getLogger().info("Done! Islands updated: " + Arrays.stream(islandsUpdated).sum());
+        } catch (SQLException ex) {
+            Exception.useStackTrace(plugin.getLogger()::severe, ex);
+        }
     }
     //</editor-fold>
     //<editor-fold desc="Island Levels">
@@ -180,6 +219,32 @@ class Database extends MySQLDatabase {
                         levels.getLong("Cost"),
                         levels.getBoolean("Is_Announced")
                 ));
+            }
+        }
+
+        return result;
+    }
+
+    public List<SlayerLevel> getSlayerLevels() throws SQLException {
+        List<SlayerLevel> result = new ArrayList<>();
+
+        try (Connection conn = getHikari().getConnection()) {
+            Statement statement = conn.createStatement();
+
+            ResultSet levels = statement.executeQuery("SELECT Id, Entity, Previous_Required, Head_Id FROM " +
+                    "island_slayer;");
+
+            EntityType previous = null;
+            while (levels.next()) {
+                result.add(new SlayerLevel(
+                        levels.getInt("Id"),
+                        EntityType.valueOf(levels.getString("Entity")),
+                        previous,
+                        levels.getLong("Previous_Required"),
+                        levels.getInt("Head_Id")
+                ));
+
+                previous = EntityType.valueOf(levels.getString("Entity"));
             }
         }
 
