@@ -66,8 +66,8 @@ public class SlayerLevel {
 
             meta.setDisplayName(current);
 
-            List<String> lore = config.get("gui.slayer.unlocked", ArrayList.class, new ArrayList<>());
-            long amount = 0;
+            List<String> lore = new ArrayList<>(config.get("gui.slayer.unlocked", ArrayList.class, new ArrayList<>()));
+            int amount = island.getSlayerAmount(entity);
             lore.replaceAll(s -> TextUtils.translateColor(s
                             .replace("{amount}", "" + amount)
                             .replace("{current}", current)
@@ -85,7 +85,7 @@ public class SlayerLevel {
             meta.setDisplayName(current);
 
             List<String> lore = new ArrayList<>(config.get("gui.slayer.locked", ArrayList.class, new ArrayList<>()));
-            long amount = 0; // Amount slain
+            int amount = island.getSlayerAmount(previousEntity); // Amount slain
             String previous = TextUtils.toTitleCase(this.previousEntity.toString().replace('_', ' '));
 
             lore.replaceAll(s -> TextUtils.translateColor(s

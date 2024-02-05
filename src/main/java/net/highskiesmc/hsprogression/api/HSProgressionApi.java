@@ -4,6 +4,7 @@ import com.bgsoftware.superiorskyblock.api.wrappers.SuperiorPlayer;
 import net.highskiesmc.hsprogression.HSProgression;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -22,6 +23,8 @@ public class HSProgressionApi {
     private Map<UUID, Island> islands;
     private Database db;
     private final int taskId;
+    private boolean useFirstCache = true;
+    private final Map<Boolean, Map<UUID, IslandContributor>> islandContributors;
 
     //</editor-fold>
     //<editor-fold desc="Constructor">
@@ -29,6 +32,10 @@ public class HSProgressionApi {
             IOException {
         this.main = main;
         db = new Database(main, dbConfig);
+        this.islandContributors = new HashMap<>() {{
+            put(true, new HashMap<>());
+            put(false, new HashMap<>());
+        }};
 
         // Populate with data
         this.islandLevels = db.getIslandLevels();
@@ -73,7 +80,11 @@ public class HSProgressionApi {
      * Uploads cache to DB (Sync)
      */
     private void uploadCacheToDatabase() {
+        Map<UUID, IslandContributor> cache = new HashMap<>(getCache(true));
+        islandContributors.get(!useFirstCache).clear();
+
         db.upsertIslands(this.main, islands.values().stream().toList());
+        db.upsertContributions(this.main, cache);
     }
 
     //</editor-fold>
@@ -195,6 +206,29 @@ public class HSProgressionApi {
         this.islands.get(island.getIslandUuid()).delete();
     }
     //</editor-fold>
+    //</editor-fold>
+
+    //<editor-fold desc="Skills">
+    public void contributeSlayer(UUID playerUuid, UUID islandUuid, EntityType entity, int amount) {
+        Map<UUID, IslandContributor> contributors = islandContributors.get(useFirstCache);
+
+        if (!contributors.containsKey(playerUuid)) {
+            contributors.put(playerUuid, new IslandContributor(playerUuid));
+        }
+
+        IslandContributor contributor = contributors.get(playerUuid);
+
+        contributor.addSlayerContribution(islandUuid, entity, amount);
+        this.islands.get(islandUuid).contributeSlayer(entity, amount);
+    }
+
+    public Map<UUID, IslandContributor> getCache(boolean swapCache) {
+        if (swapCache) {
+            this.useFirstCache = !this.useFirstCache;
+        }
+
+        return islandContributors.get(!this.useFirstCache);
+    }
     //</editor-fold>
     //</editor-fold>
     //<editor-fold desc="Util">

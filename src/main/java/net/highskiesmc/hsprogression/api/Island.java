@@ -1,5 +1,6 @@
 package net.highskiesmc.hsprogression.api;
 
+import org.bukkit.entity.EntityType;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -11,7 +12,8 @@ public class Island {
     private final Integer id;
     private UUID leaderUuid;
     private final UUID islandUuid;
-    private Map<IslandProgressionType, Integer> levels;
+    private final Map<IslandProgressionType, Integer> levels;
+    private final Map<EntityType, Integer> slayer;
     private boolean isDeleted;
 
     Island(int id, @NonNull UUID leaderUuid, @NonNull UUID islandUuid, int level, int slayerLevel, boolean isDeleted) {
@@ -22,6 +24,8 @@ public class Island {
             put(IslandProgressionType.ISLAND, level);
             put(IslandProgressionType.SLAYER, slayerLevel);
         }};
+
+        this.slayer = new HashMap<>();
         this.isDeleted = isDeleted;
     }
 
@@ -33,6 +37,8 @@ public class Island {
             put(IslandProgressionType.ISLAND, level);
             put(IslandProgressionType.SLAYER, slayerLevel);
         }};
+
+        this.slayer = new HashMap<>();
         this.isDeleted = isDeleted;
     }
 
@@ -67,5 +73,16 @@ public class Island {
 
     public void setLevel(IslandProgressionType type, int newLevel) {
         this.levels.put(type, newLevel);
+    }
+
+    public int getSlayerAmount(EntityType type) {
+        return slayer.getOrDefault(type, 0);
+    }
+    public void contributeSlayer(EntityType type, int amount) {
+        if (!this.slayer.containsKey(type)) {
+            this.slayer.put(type, 0);
+        }
+        this.slayer.put(type, this.slayer.get(type) + amount);
+        // TODO: Check if slayer leveled up
     }
 }

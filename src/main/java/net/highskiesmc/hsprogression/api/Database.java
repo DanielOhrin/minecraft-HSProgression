@@ -12,6 +12,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.io.*;
 import java.sql.*;
+import java.time.ZonedDateTime;
 import java.util.*;
 
 class Database extends MySQLDatabase {
@@ -45,6 +46,7 @@ class Database extends MySQLDatabase {
             drops.addBatch("DROP TABLE IF EXISTS island_level_block;");
             drops.addBatch("DROP TABLE IF EXISTS island_level;");
             drops.addBatch("DROP TABLE IF EXISTS island_slayer;");
+            drops.addBatch("DROP PROCEDURE IF EXISTS upsert_contribution;");
 
             ddl.addBatch("CREATE TABLE IF NOT EXISTS island (" +
                     "Id INT AUTO_INCREMENT, " +
@@ -102,10 +104,42 @@ class Database extends MySQLDatabase {
                     "Contributor_Id INT UNIQUE, " +
                     "Entity VARCHAR(50), " +
                     "Amount INT, " +
+                    "Date_Time DATETIME, " +
                     "PRIMARY KEY(Id), " +
                     "FOREIGN KEY(Contributor_Id) REFERENCES island_contributor(Id)" +
                     ") ENGINE = INNODB;"
             );
+
+            ddl.addBatch(
+                            " CREATE PROCEDURE IF NOT EXISTS upsert_contribution( " +
+                            "    player_uuid VARCHAR(36), " +
+                            "    island_uuid VARCHAR(36), " +
+                            "    entity VARCHAR(50), " +
+                            "    amount INT, " +
+                            "    date_time DATETIME " +
+                            ") " +
+                            " BEGIN " +
+                            "    DECLARE contributor_id INT; " +
+                            "    DECLARE island_id INT; " +
+                            "    " +
+                            "    SET island_id = (SELECT Id FROM island WHERE Island_UUID = island_uuid LIMIT 1); " +
+                            "    " +
+                            "    IF (SELECT NOT EXISTS(SELECT Id FROM island_contributor WHERE Player_UUID = " +
+                            "player_uuid)) THEN " +
+                            "    INSERT INTO island_contributor (Player_UUID, Island_Id) VALUES (player_uuid, " +
+                            "island_id); " +
+                            "    END IF; " +
+                            "    " +
+                            "    SET contributor_id = (SELECT Id FROM island_contributor WHERE Player_UUID = " +
+                                    "player_uuid LIMIT 1); " +
+                            "    " +
+                            "    INSERT INTO slayer_contribution(Contributor_Id, Entity, Amount, Date_Time) " +
+                            "    VALUES (contributor_id, entity, amount, date_time); " +
+                            " END;"
+            );
+            // TODO: Pull amount of mobs slain on each island on startup
+            // TODO: Handle updating island slayer level in the plugin itself when the island has reached enough mobs
+            //  slain
             // Try Running this line if plugin startup time becomes high
             // You will want to add a guard clause of some sort.
             // ddl.addBatch("CREATE INDEX idx_islands_active ON island(Is_Deleted);");
@@ -165,6 +199,7 @@ class Database extends MySQLDatabase {
     public void upsertIslands(@NonNull Plugin plugin, @NonNull List<Island> islands) {
         if (islands.isEmpty()) {
             plugin.getLogger().info("No island to update. Skipped batch upsert...");
+            return;
         }
 
         plugin.getLogger().info("Updating islands...");
@@ -172,7 +207,7 @@ class Database extends MySQLDatabase {
         try (Connection conn = getHikari().getConnection()) {
             PreparedStatement upsert = conn.prepareStatement(
                     "INSERT INTO island (Leader_UUID, Island_UUID, Level, Is_Deleted) VALUES (?, ?, ?, ?)" +
-                            "ON DUPLICATE KEY UPDATE Leader_UUID = ?, Level = ?, Is_Deleted = ?"
+                            "ON DUPLICATE KEY UPDATE Leader_UUID = ?, Level = ?, Is_Deleted = ?;"
             );
 
             for (Island island : islands) {
@@ -195,94 +230,135 @@ class Database extends MySQLDatabase {
             Exception.useStackTrace(plugin.getLogger()::severe, ex);
         }
     }
-    //</editor-fold>
-    //<editor-fold desc="Island Levels">
 
-    /**
-     * Grabs Island Levels from the database
-     */
-    public List<IslandLevel> getIslandLevels() throws SQLException {
-        List<IslandLevel> result = new ArrayList<>();
-
-        try (Connection conn = getHikari().getConnection()) {
-            Statement statement = conn.createStatement();
-
-            ResultSet levels = statement.executeQuery("SELECT Id, Spawner_Limit, Member_Limit, Island_Radius, Cost, " +
-                    "Is_Announced FROM island_level;");
-
-            while (levels.next()) {
-                result.add(new IslandLevel(
-                        levels.getInt("Id"),
-                        levels.getInt("Spawner_Limit"),
-                        levels.getInt("Member_Limit"),
-                        levels.getInt("Island_Radius"),
-                        levels.getLong("Cost"),
-                        levels.getBoolean("Is_Announced")
-                ));
-            }
+    public void upsertContributions(@NonNull Plugin plugin, @NonNull Map<UUID, IslandContributor> contributions) {
+        if (contributions.isEmpty()) {
+            plugin.getLogger().info("No contributions to update. Skipped batch upsert...");
+            return;
         }
 
-        return result;
-    }
+        plugin.getLogger().info("Updating contributions...");
 
-    public List<SlayerLevel> getSlayerLevels() throws SQLException {
-        List<SlayerLevel> result = new ArrayList<>();
-
+        ZonedDateTime dateTime = ZonedDateTime.now();
+        // Upsert, Then Delete!
         try (Connection conn = getHikari().getConnection()) {
-            Statement statement = conn.createStatement();
+            PreparedStatement upsert = conn.prepareStatement("CALL upsert_contribution(?, ?, ?, ?, ?);");
 
-            ResultSet levels = statement.executeQuery("SELECT Id, Entity, Previous_Required, Head_Id FROM " +
-                    "island_slayer;");
+            for (IslandContributor contributor : contributions.values()) {
+                // SLAYER
+                for (SlayerContribution slayerContribution : contributor.getSlayerContributions().values()) {
+                    for (Map.Entry<EntityType, Integer> contribution : slayerContribution.getContributions().entrySet()) {
 
-            EntityType previous = null;
-            while (levels.next()) {
-                result.add(new SlayerLevel(
-                        levels.getInt("Id"),
-                        EntityType.valueOf(levels.getString("Entity")),
-                        previous,
-                        levels.getLong("Previous_Required"),
-                        levels.getInt("Head_Id")
-                ));
+                        upsert.setString(1, contributor.getPlayerUuid().toString());
+                        upsert.setString(2, slayerContribution.getIslandUuid().toString());
+                        upsert.setString(3, contribution.getKey().toString());
+                        upsert.setInt(4, contribution.getValue());
+                        System.out.printf("Player: %s\nIsland: %s\nEntity: %s\nAmount:%d%n",
+                                contributor.getPlayerUuid().toString(), slayerContribution.getIslandUuid().toString()
+                                , contribution.getKey().toString(), contribution.getValue());
+                        upsert.setTimestamp(5, Timestamp.valueOf(dateTime.toLocalDateTime()));
 
-                previous = EntityType.valueOf(levels.getString("Entity"));
-            }
-        }
-
-        return result;
-    }
-
-    /**
-     * Grabs config from the database
-     */
-    public Map<Integer, List<IslandBlock>> getIslandBlocks() throws SQLException, IOException {
-        Map<Integer, List<IslandBlock>> result = new HashMap<>();
-
-        try (Connection conn = getHikari().getConnection()) {
-            Statement statement = conn.createStatement();
-
-            ResultSet blocks = statement.executeQuery("SELECT Id, Label, Island_Level, Encoding FROM " +
-                    "island_level_block;");
-
-            while (blocks.next()) {
-                int islandLevel = blocks.getInt("Island_Level");
-                IslandBlock block = new IslandBlock(
-                        islandLevel,
-                        ItemUtils.fromBase64(blocks.getString("Encoding")),
-                        TextUtils.translateColor(blocks.getString("Label"))
-                );
-
-                if (result.containsKey(islandLevel)) {
-                    result.get(islandLevel).add(block);
-                } else {
-                    result.put(islandLevel, new ArrayList<>() {{
-                        add(block);
-                    }});
+                        upsert.addBatch();
+                    }
                 }
             }
+                int[] contributionsUpdated = upsert.executeBatch();
+
+                plugin.getLogger().info("Done! Contributions updated: " + Arrays.stream(contributionsUpdated).sum());
+            } catch (SQLException ex){
+                Exception.useStackTrace(plugin.getLogger()::severe, ex);
+            }
         }
 
-        return result;
+        //</editor-fold>
+        //<editor-fold desc="Island Levels">
+
+        /**
+         * Grabs Island Levels from the database
+         */
+        public List<IslandLevel> getIslandLevels () throws SQLException {
+            List<IslandLevel> result = new ArrayList<>();
+
+            try (Connection conn = getHikari().getConnection()) {
+                Statement statement = conn.createStatement();
+
+                ResultSet levels = statement.executeQuery("SELECT Id, Spawner_Limit, Member_Limit, Island_Radius, " +
+                        "Cost, " +
+                        "Is_Announced FROM island_level;");
+
+                while (levels.next()) {
+                    result.add(new IslandLevel(
+                            levels.getInt("Id"),
+                            levels.getInt("Spawner_Limit"),
+                            levels.getInt("Member_Limit"),
+                            levels.getInt("Island_Radius"),
+                            levels.getLong("Cost"),
+                            levels.getBoolean("Is_Announced")
+                    ));
+                }
+            }
+
+            return result;
+        }
+
+        public List<SlayerLevel> getSlayerLevels () throws SQLException {
+            List<SlayerLevel> result = new ArrayList<>();
+
+            try (Connection conn = getHikari().getConnection()) {
+                Statement statement = conn.createStatement();
+
+                ResultSet levels = statement.executeQuery("SELECT Id, Entity, Previous_Required, Head_Id FROM " +
+                        "island_slayer;");
+
+                EntityType previous = null;
+                while (levels.next()) {
+                    result.add(new SlayerLevel(
+                            levels.getInt("Id"),
+                            EntityType.valueOf(levels.getString("Entity")),
+                            previous,
+                            levels.getLong("Previous_Required"),
+                            levels.getInt("Head_Id")
+                    ));
+
+                    previous = EntityType.valueOf(levels.getString("Entity"));
+                }
+            }
+
+            return result;
+        }
+
+        /**
+         * Grabs config from the database
+         */
+        public Map<Integer, List<IslandBlock>> getIslandBlocks () throws SQLException, IOException {
+            Map<Integer, List<IslandBlock>> result = new HashMap<>();
+
+            try (Connection conn = getHikari().getConnection()) {
+                Statement statement = conn.createStatement();
+
+                ResultSet blocks = statement.executeQuery("SELECT Id, Label, Island_Level, Encoding FROM " +
+                        "island_level_block;");
+
+                while (blocks.next()) {
+                    int islandLevel = blocks.getInt("Island_Level");
+                    IslandBlock block = new IslandBlock(
+                            islandLevel,
+                            ItemUtils.fromBase64(blocks.getString("Encoding")),
+                            TextUtils.translateColor(blocks.getString("Label"))
+                    );
+
+                    if (result.containsKey(islandLevel)) {
+                        result.get(islandLevel).add(block);
+                    } else {
+                        result.put(islandLevel, new ArrayList<>() {{
+                            add(block);
+                        }});
+                    }
+                }
+            }
+
+            return result;
+        }
+        //</editor-fold>
+        //</editor-fold>
     }
-    //</editor-fold>
-    //</editor-fold>
-}
