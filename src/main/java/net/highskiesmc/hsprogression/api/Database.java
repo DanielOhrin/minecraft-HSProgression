@@ -221,7 +221,8 @@ class Database extends MySQLDatabase {
         try (Connection conn = getHikari().getConnection()) {
             PreparedStatement upsert = conn.prepareStatement(
                     "INSERT INTO island (Leader_UUID, Island_UUID, Level, Slayer_Level, Is_Deleted) VALUES (?, ?, ?, " +
-                            "?, ?) ON DUPLICATE KEY UPDATE Leader_UUID = ?, Level = ?, Is_Deleted = ?;"
+                            "?, ?) ON DUPLICATE KEY UPDATE Leader_UUID = ?, Level = ?, Slayer_Level = ?, Is_Deleted =" +
+                            " ?;"
             );
 
             for (Island island : islands) {
@@ -233,7 +234,8 @@ class Database extends MySQLDatabase {
 
                 upsert.setString(6, island.getLeaderUuid().toString());
                 upsert.setInt(7, island.getLevel(IslandProgressionType.ISLAND));
-                upsert.setBoolean(8, island.isDeleted());
+                upsert.setInt(8, island.getLevel(IslandProgressionType.SLAYER));
+                upsert.setBoolean(9, island.isDeleted());
 
                 upsert.addBatch();
             }
