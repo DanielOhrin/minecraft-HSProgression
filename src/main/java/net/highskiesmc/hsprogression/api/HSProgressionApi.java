@@ -219,7 +219,7 @@ public class HSProgressionApi {
         IslandContributor contributor = contributors.get(playerUuid);
 
         contributor.addSlayerContribution(islandUuid, entity, amount);
-        this.islands.get(islandUuid).contributeSlayer(entity, amount);
+        this.islands.get(islandUuid).contributeSlayer(entity, amount, main.getConfigs());
     }
 
     public Map<UUID, IslandContributor> getCache(boolean swapCache) {
