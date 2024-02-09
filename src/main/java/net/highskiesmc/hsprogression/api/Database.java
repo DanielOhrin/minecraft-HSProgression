@@ -109,36 +109,29 @@ class Database extends MySQLDatabase {
                     ") ENGINE = INNODB;"
             );
 
-            ddl.addBatch( // TODO: FUCKING FIX THIS PROCEDURE AND MAKE SURE ITS WORKING BEFORE MOVING ON
-                    "                             CREATE PROCEDURE IF NOT EXISTS upsert_contribution(  " +
-                            "                                player_uuid VARCHAR(36),  " +
-                            "                                island_uuid VARCHAR(36),  " +
-                            "                                entity VARCHAR(50),  " +
-                            "                                amount INT,  " +
-                            "                                date_time DATETIME  " +
-                            "                            )  " +
-                            "                             BEGIN  " +
-                            "                                DECLARE contributor_id INT;  " +
-                            "                                DECLARE island_id INT;  " +
-                            "                                DECLARE contributor_exists BIT(1);" +
-                            "                                " +
-                            "                                SET island_id = (SELECT Id FROM island WHERE Island_UUID = island_uuid LIMIT 1);  " +
-                            "                                 " +
-                            "                                SET contributor_exists = (SELECT 1 AS 'Exists' FROM island_contributor " +
-                            "                                                          WHERE Player_UUID = '3e14b024-d589-44b3-a8ca-7ee8b0638a05' AND Island_Id = 1" +
-                            "                                                          LIMIT 1" +
-                            "                                                         );" +
-                            "                                                         " +
-                            "                                IF contributor_exists = 1 THEN  " +
-                            "                                INSERT INTO island_contributor (Player_UUID, Island_Id) VALUES (player_uuid, island_id);  " +
-                            "                                END IF;  " +
-                            "                                 " +
-                            "                                SET contributor_id = (SELECT Id FROM island_contributor WHERE Player_UUID =  " +
-                            "                            player_uuid LIMIT 1);  " +
-                            "                                 " +
-                            "                                INSERT INTO slayer_contribution(Contributor_Id, Entity, Amount, Date_Time)  " +
-                            "                                VALUES (contributor_id, entity, amount, date_time);  " +
-                            "                             END;"
+            ddl.addBatch(
+                    " CREATE PROCEDURE IF NOT EXISTS upsert_contribution(   " +
+                            "                                                            player_uid VARCHAR(36),   " +
+                            "                                                            island_uid VARCHAR(36),   " +
+                            "                                                            entity VARCHAR(50),   " +
+                            "                                                            amount INT,   " +
+                            "                                                            date_time DATETIME   " +
+                            "                                                        )   " +
+                            "                                                         BEGIN   " +
+                            "                                                            DECLARE contributor_id INT;   " +
+                            "                                                            DECLARE is_id INT;   " +
+                            "                                                             " +
+                            "                                                            SELECT Id INTO is_id FROM island WHERE Island_UUID = island_uid LIMIT 1;   " +
+                            "                                                            SELECT Id INTO contributor_id FROM island_contributor WHERE Player_UUID = player_uid AND Island_Id = is_id LIMIT 1; " +
+                            "                                                                                      " +
+                            "                                                            IF contributor_id IS NULL THEN   " +
+                            "                                                            INSERT INTO island_contributor (Player_UUID, Island_Id) VALUES (player_uid, is_id);   " +
+                            "                                                            SET contributor_id = LAST_INSERT_ID();" +
+                            "                                                            END IF;   " +
+                            "                                                              " +
+                            "                                                            INSERT INTO slayer_contribution(Contributor_Id, Entity, Amount, Date_Time)   " +
+                            "                                                            VALUES (contributor_id, entity, amount, date_time);   " +
+                            "                                                         END;"
             );
             // TODO: Pull amount of mobs slain on each island on startup
             // TODO: Handle updating island slayer level in the plugin itself when the island has reached enough mobs
