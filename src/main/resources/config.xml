@@ -788,8 +788,8 @@
                 <Previous_Required>0</Previous_Required>
             </row>
             <row> <!-- 2 -->
-                <CROP>BEETROOTS</CROP>
-                <SEED>BEETROOT</SEED>
+                <CROP>BEETROOT</CROP>
+                <SEED>BEETROOTS</SEED>
                 <Previous_Required>10000</Previous_Required>
             </row>
             <row> <!-- 3 -->
