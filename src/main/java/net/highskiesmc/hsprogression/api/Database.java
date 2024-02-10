@@ -5,6 +5,7 @@ import net.highskiesmc.hscore.exceptions.Exception;
 import net.highskiesmc.hscore.utils.TextUtils;
 import net.highskiesmc.hscore.utils.item.ItemUtils;
 import net.highskiesmc.hsprogression.HSProgression;
+import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.EntityType;
 import org.bukkit.plugin.Plugin;
@@ -46,6 +47,7 @@ class Database extends MySQLDatabase {
             drops.addBatch("DROP TABLE IF EXISTS island_level_block;");
             drops.addBatch("DROP TABLE IF EXISTS island_level;");
             drops.addBatch("DROP TABLE IF EXISTS island_slayer;");
+            drops.addBatch("DROP TABLE IF EXISTS island_farming;");
             drops.addBatch("DROP PROCEDURE IF EXISTS upsert_contribution;");
 
             ddl.addBatch("CREATE TABLE IF NOT EXISTS island (" +
@@ -54,6 +56,7 @@ class Database extends MySQLDatabase {
                     "Island_UUID VARCHAR(36) NOT NULL UNIQUE, " +
                     "Level INT NOT NULL DEFAULT 1, " +
                     "Slayer_Level INT NOT NULL DEFAULT 1, " +
+                    "Farming_Level INT NOT NULL DEFAULT 1, " +
                     "Is_Deleted BIT(1) NOT NULL DEFAULT 0, " +
                     "PRIMARY KEY(Id)" +
                     ") ENGINE = INNODB;"
@@ -89,6 +92,15 @@ class Database extends MySQLDatabase {
                     ") ENGINE = INNODB;"
             );
 
+            ddl.addBatch("CREATE TABLE island_farming (" +
+                    "Id INT AUTO_INCREMENT, " +
+                    "Crop VARCHAR(50) NOT NULL UNIQUE, " +
+                    "Seed VARCHAR(50) NOT NULL UNIQUE, " +
+                    "Previous_Required INT NOT NULL, " +
+                    "PRIMARY KEY(Id)" +
+                    ") ENGINE = INNODB;"
+            );
+            // TODO: Fix Id increment bug
             ddl.addBatch("CREATE TABLE IF NOT EXISTS island_contributor (" +
                     "Id INT AUTO_INCREMENT, " +
                     "Player_UUID VARCHAR(36) NOT NULL, " +
@@ -98,12 +110,13 @@ class Database extends MySQLDatabase {
                     ") ENGINE = INNODB;"
             );
 
-            ddl.addBatch("CREATE TABLE IF NOT EXISTS slayer_contribution (" +
+            ddl.addBatch("CREATE TABLE IF NOT EXISTS island_contribution (" +
                     "Id INT AUTO_INCREMENT, " +
                     "Contributor_Id INT, " +
-                    "Entity VARCHAR(50), " +
-                    "Amount INT, " +
-                    "Date_Time DATETIME, " +
+                    "Label VARCHAR(50) NOT NULL, " +
+                    "Amount INT NOT NULL, " +
+                    "DataType VARCHAR(50) NOT NULL, " +
+                    "Date_Time DATETIME NOT NULL, " +
                     "PRIMARY KEY(Id), " +
                     "FOREIGN KEY(Contributor_Id) REFERENCES island_contributor(Id)" +
                     ") ENGINE = INNODB;"
@@ -113,24 +126,35 @@ class Database extends MySQLDatabase {
                     " CREATE PROCEDURE IF NOT EXISTS upsert_contribution(   " +
                             "                                                            player_uid VARCHAR(36),   " +
                             "                                                            island_uid VARCHAR(36),   " +
-                            "                                                            entity VARCHAR(50),   " +
+                            "                                                            label VARCHAR(50),   " +
                             "                                                            amount INT,   " +
+                            "                                                            datatype VARCHAR(50), " +
                             "                                                            date_time DATETIME   " +
                             "                                                        )   " +
                             "                                                         BEGIN   " +
-                            "                                                            DECLARE contributor_id INT;   " +
+                            "                                                            DECLARE contributor_id INT; " +
+                            "  " +
                             "                                                            DECLARE is_id INT;   " +
-                            "                                                             " +
-                            "                                                            SELECT Id INTO is_id FROM island WHERE Island_UUID = island_uid LIMIT 1;   " +
-                            "                                                            SELECT Id INTO contributor_id FROM island_contributor WHERE Player_UUID = player_uid AND Island_Id = is_id LIMIT 1; " +
+                            "                                                             " + // TODO: Check Datatype
+                            // TODO: for valid string
+                            "                                                            SELECT Id INTO is_id FROM " +
+                            "island WHERE Island_UUID = island_uid LIMIT 1;   " +
+                            "                                                            SELECT Id INTO " +
+                            "contributor_id FROM island_contributor WHERE Player_UUID = player_uid AND Island_Id = " +
+                            "is_id LIMIT 1; " +
                             "                                                                                      " +
-                            "                                                            IF contributor_id IS NULL THEN   " +
-                            "                                                            INSERT INTO island_contributor (Player_UUID, Island_Id) VALUES (player_uid, is_id);   " +
-                            "                                                            SET contributor_id = LAST_INSERT_ID();" +
+                            "                                                            IF contributor_id IS NULL " +
+                            "THEN   " +
+                            "                                                            INSERT INTO " +
+                            "island_contributor (Player_UUID, Island_Id) VALUES (player_uid, is_id);   " +
+                            "                                                            SET contributor_id = " +
+                            "LAST_INSERT_ID();" +
                             "                                                            END IF;   " +
                             "                                                              " +
-                            "                                                            INSERT INTO slayer_contribution(Contributor_Id, Entity, Amount, Date_Time)   " +
-                            "                                                            VALUES (contributor_id, entity, amount, date_time);   " +
+                            "                                                            INSERT INTO " +
+                            "island_contribution(Contributor_Id, Label, Amount, DataType, Date_Time)   " +
+                            "                                                            VALUES (contributor_id, " +
+                            "label, amount, datatype, date_time);   " +
                             "                                                         END;"
             );
             // TODO: Pull amount of mobs slain on each island on startup
@@ -168,8 +192,7 @@ class Database extends MySQLDatabase {
             Statement statement = conn.createStatement();
 
             ResultSet islands = statement.executeQuery("SELECT Id, Leader_UUID, Island_UUID, Level, Slayer_Level, " +
-                    "Is_Deleted FROM " +
-                    "island WHERE Is_Deleted = 0;");
+                    "Farming_Level, Is_Deleted FROM island WHERE Is_Deleted = 0;");
 
             while (islands.next()) {
                 UUID islandUuid = UUID.fromString(islands.getString("Island_UUID"));
@@ -179,17 +202,19 @@ class Database extends MySQLDatabase {
                                 islandUuid,
                                 islands.getInt("Level"),
                                 islands.getInt("Slayer_Level"),
+                                islands.getInt("Farming_Level"),
                                 islands.getBoolean("Is_Deleted")
                         )
                 );
             }
 
-            ResultSet slayerNums = statement.executeQuery("SELECT i.Island_UUID, sc.Entity, SUM(sc.Amount) AS Amount " +
-                    "FROM slayer_contribution sc " +
-                    "INNER JOIN island_contributor ic ON ic.Id = sc.Contributor_Id " +
-                    "INNER JOIN island i ON i.Id = ic.Island_Id " +
-                    "WHERE i.Is_Deleted = 0 " +
-                    "GROUP BY Island_UUID, Entity;"
+            ResultSet slayerNums = statement.executeQuery("SELECT i.Island_UUID, icn.Label, SUM(icn.Amount) AS Amount" +
+                    " " +
+                    "FROM island_contribution icn " +
+                    "INNER JOIN island_contributor icr ON icr.Id = icn.Contributor_Id " +
+                    "INNER JOIN island i ON i.Id = icr.Island_Id " +
+                    "WHERE i.Is_Deleted = 0 AND icn.DataType = 'SLAYER' " +
+                    "GROUP BY Island_UUID, Label;"
             );
 
             while (slayerNums.next()) {
@@ -199,7 +224,7 @@ class Database extends MySQLDatabase {
                     throw new SQLException("Island mismatch found: " + slayerNums.getString("Island_UUID"));
                 }
 
-                island.setSlayerNum(EntityType.valueOf(slayerNums.getString("Entity")), slayerNums.getInt("Amount"));
+                island.setSlayerNum(EntityType.valueOf(slayerNums.getString("Label")), slayerNums.getInt("Amount"));
             }
         }
 
@@ -220,9 +245,9 @@ class Database extends MySQLDatabase {
         // Upsert, Then Delete!
         try (Connection conn = getHikari().getConnection()) {
             PreparedStatement upsert = conn.prepareStatement(
-                    "INSERT INTO island (Leader_UUID, Island_UUID, Level, Slayer_Level, Is_Deleted) VALUES (?, ?, ?, " +
-                            "?, ?) ON DUPLICATE KEY UPDATE Leader_UUID = ?, Level = ?, Slayer_Level = ?, Is_Deleted =" +
-                            " ?;"
+                    "INSERT INTO island (Leader_UUID, Island_UUID, Level, Slayer_Level, Farming_Level, Is_Deleted) " +
+                            "VALUES (?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE Leader_UUID = ?, Level = ?, " +
+                            "Slayer_Level = ?, Farming_Level = ?, Is_Deleted = ?;"
             );
 
             for (Island island : islands) {
@@ -230,12 +255,14 @@ class Database extends MySQLDatabase {
                 upsert.setString(2, island.getIslandUuid().toString());
                 upsert.setInt(3, island.getLevel(IslandProgressionType.ISLAND));
                 upsert.setInt(4, island.getLevel(IslandProgressionType.SLAYER));
-                upsert.setBoolean(5, island.isDeleted());
+                upsert.setInt(5, island.getLevel(IslandProgressionType.FARMING));
+                upsert.setBoolean(6, island.isDeleted());
 
-                upsert.setString(6, island.getLeaderUuid().toString());
-                upsert.setInt(7, island.getLevel(IslandProgressionType.ISLAND));
-                upsert.setInt(8, island.getLevel(IslandProgressionType.SLAYER));
-                upsert.setBoolean(9, island.isDeleted());
+                upsert.setString(7, island.getLeaderUuid().toString());
+                upsert.setInt(8, island.getLevel(IslandProgressionType.ISLAND));
+                upsert.setInt(9, island.getLevel(IslandProgressionType.SLAYER));
+                upsert.setInt(10, island.getLevel(IslandProgressionType.FARMING));
+                upsert.setBoolean(11, island.isDeleted());
 
                 upsert.addBatch();
             }
@@ -259,7 +286,7 @@ class Database extends MySQLDatabase {
         ZonedDateTime dateTime = ZonedDateTime.now();
         // Upsert, Then Delete!
         try (Connection conn = getHikari().getConnection()) {
-            PreparedStatement upsert = conn.prepareStatement("CALL upsert_contribution(?, ?, ?, ?, ?);");
+            PreparedStatement upsert = conn.prepareStatement("CALL upsert_contribution(?, ?, ?, ?, ?, ?);");
 
             for (IslandContributor contributor : contributions.values()) {
                 // SLAYER
@@ -274,7 +301,8 @@ class Database extends MySQLDatabase {
                         System.out.printf("Player: %s\nIsland: %s\nEntity: %s\nAmount:%d%n",
                                 contributor.getPlayerUuid().toString(), slayerContribution.getIslandUuid().toString()
                                 , contribution.getKey().toString(), contribution.getValue());
-                        upsert.setTimestamp(5, Timestamp.valueOf(dateTime.toLocalDateTime()));
+                        upsert.setString(5, IslandProgressionType.SLAYER.name());
+                        upsert.setTimestamp(6, Timestamp.valueOf(dateTime.toLocalDateTime()));
 
                         upsert.addBatch();
                     }
@@ -339,6 +367,31 @@ class Database extends MySQLDatabase {
                 ));
 
                 previous = EntityType.valueOf(levels.getString("Entity"));
+            }
+        }
+
+        return result;
+    }
+
+    public List<FarmingLevel> getFarmingLevels() throws SQLException {
+        List<FarmingLevel> result = new ArrayList<>();
+
+        try (Connection conn = getHikari().getConnection()) {
+            Statement statement = conn.createStatement();
+
+            ResultSet levels = statement.executeQuery("SELECT Id, Crop, Seed, Previous_Required FROM island_farming;");
+
+            Material previous = null;
+            while (levels.next()) {
+                result.add(new FarmingLevel(
+                        levels.getInt("Id"),
+                        Material.valueOf(levels.getString("Crop")),
+                        Material.valueOf(levels.getString("Seed")),
+                        previous,
+                        levels.getLong("Previous_Required")
+                ));
+
+                previous = Material.valueOf(levels.getString("Crop"));
             }
         }
 

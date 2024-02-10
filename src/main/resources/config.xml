@@ -2,6 +2,7 @@
 <config>
     <value key="cache.upload.interval.seconds">300</value>
     <value key="slayer.gui.slots">9-18-27-28-29-20-11-12-13-22-31-32-33-24-15-16-17</value> <!-- Example: 1st slayer mob is in first number slot listed -->
+    <value key="farming.gui.slots">10-19-28-29-30-21-12-13-14-23-32-33-34-25</value> <!-- Example: 1st slayer mob is in first number slot listed -->
     <tables>
         <table name="island_level">
             <row> <!-- 1 -->
@@ -694,11 +695,11 @@
             </row>
         </table>
         <table name="island_slayer">
-        <row> <!-- 1 -->
-            <Entity>RABBIT</Entity>
-            <Previous_Required>0</Previous_Required>
-            <Head_Id>57519</Head_Id>
-        </row>
+            <row> <!-- 1 -->
+                <Entity>RABBIT</Entity>
+                <Previous_Required>0</Previous_Required>
+                <Head_Id>57519</Head_Id>
+            </row>
             <row> <!-- 2 -->
                 <Entity>CHICKEN</Entity>
                 <Previous_Required>25</Previous_Required> <!-- should be 2500 -->
@@ -778,6 +779,78 @@
                 <Entity>IRON_GOLEM</Entity>
                 <Previous_Required>3504000</Previous_Required>
                 <Head_Id>341</Head_Id>
+            </row>
+        </table>
+        <table name="island_farming">
+            <row> <!-- 1 -->
+                <CROP>WHEAT</CROP>
+                <SEED>WHEAT</SEED>
+                <Previous_Required>0</Previous_Required>
+            </row>
+            <row> <!-- 2 -->
+                <CROP>BEETROOTS</CROP>
+                <SEED>BEETROOT</SEED>
+                <Previous_Required>10000</Previous_Required>
+            </row>
+            <row> <!-- 3 -->
+                <CROP>CARROT</CROP>
+                <SEED>CARROTS</SEED>
+                <Previous_Required>25000</Previous_Required>
+            </row>
+            <row> <!-- 4 -->
+                <CROP>POTATO</CROP>
+                <SEED>POTATOES</SEED>
+                <Previous_Required>55000</Previous_Required>
+            </row>
+            <row> <!-- 5 -->
+                <CROP>SUGAR_CANE</CROP>
+                <SEED>SUGAR_CANE</SEED>
+                <Previous_Required>120000</Previous_Required>
+            </row>
+            <row> <!-- 6 -->
+                <CROP>KELP</CROP>
+                <SEED>KELP</SEED>
+                <Previous_Required>350000</Previous_Required>
+            </row>
+            <row> <!-- 7 -->
+                <CROP>NETHER_WART</CROP>
+                <SEED>NETHER_WART</SEED>
+                <Previous_Required>1000000</Previous_Required>
+            </row>
+            <row> <!-- 8 -->
+                <CROP>SWEET_BERRIES</CROP>
+                <SEED>SWEET_BERRY_BUSH</SEED>
+                <Previous_Required>5000000</Previous_Required>
+            </row>
+            <row> <!-- 9 -->
+                <CROP>BAMBOO</CROP>
+                <SEED>BAMBOO_SAPLING</SEED>
+                <Previous_Required>1400000</Previous_Required>
+            </row>
+            <row> <!-- 10 -->
+                <CROP>CHORUS_FLOWER</CROP>
+                <SEED>CHORUS_FLOWER</SEED>
+                <Previous_Required>10000000</Previous_Required>
+            </row>
+            <row> <!-- 11 -->
+                <CROP>CACTUS</CROP>
+                <SEED>CACTUS</SEED>
+                <Previous_Required>5000000</Previous_Required>
+            </row>
+            <row> <!-- 12 -->
+                <CROP>MELON_SLICE</CROP>
+                <SEED>MELON_STEM</SEED>
+                <Previous_Required>3750000</Previous_Required>
+            </row>
+            <row> <!-- 13 -->
+                <CROP>PUMPKIN</CROP>
+                <SEED>PUMPKIN_STEM</SEED>
+                <Previous_Required>3000000</Previous_Required>
+            </row>
+            <row> <!-- 14 -->
+                <CROP>COCOA</CROP>
+                <SEED>COCOA_BEANS</SEED>
+                <Previous_Required>3750000</Previous_Required>
             </row>
         </table>
     </tables>

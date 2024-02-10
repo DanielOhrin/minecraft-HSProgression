@@ -8,6 +8,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -19,6 +20,7 @@ public class HSProgressionApi {
     private final HSProgression main;
     private List<IslandLevel> islandLevels;
     private List<SlayerLevel> slayerLevels;
+    private List<FarmingLevel> farmingLevels;
     private Map<Integer, List<IslandBlock>> islandBlocks;
     private Map<UUID, Island> islands;
     private Database db;
@@ -40,6 +42,7 @@ public class HSProgressionApi {
         // Populate with data
         this.islandLevels = db.getIslandLevels();
         this.slayerLevels = db.getSlayerLevels();
+        this.farmingLevels = db.getFarmingLevels();
         this.islandBlocks = db.getIslandBlocks();
         this.islands = db.getIslands();
 
@@ -65,6 +68,7 @@ public class HSProgressionApi {
         this.islands = null;
         this.islandLevels = null;
         this.slayerLevels = null;
+        this.farmingLevels = null;
         this.islandBlocks = null;
         this.db = null;
     }
@@ -100,6 +104,19 @@ public class HSProgressionApi {
         return this.islandLevels.get(level - 1);
     }
 
+    @Nullable
+    public List<DisplayableItem> getLevelItems(IslandProgressionType type) {
+        List<DisplayableItem> result;
+
+        switch (type) {
+            case SLAYER -> result = new ArrayList<>(getSlayerLevels());
+            case FARMING -> result = new ArrayList<>(getFarmingLevels());
+            default -> result = null;
+        }
+
+        return result;
+    }
+
     @NonNull
     public List<SlayerLevel> getSlayerLevels() {
         return Collections.unmodifiableList(this.slayerLevels);
@@ -108,6 +125,16 @@ public class HSProgressionApi {
     @NonNull
     public SlayerLevel getSlayerLevel(int level) throws IndexOutOfBoundsException {
         return this.slayerLevels.get(level - 1);
+    }
+
+    @NonNull
+    public List<FarmingLevel> getFarmingLevels() {
+        return Collections.unmodifiableList(this.farmingLevels);
+    }
+
+    @NonNull
+    public FarmingLevel getFarmingLevel(int level) throws IndexOutOfBoundsException {
+        return this.farmingLevels.get(level - 1);
     }
 
     @NonNull
@@ -121,8 +148,8 @@ public class HSProgressionApi {
     //<editor-fold desc="Island">
     //<editor-fold desc="Create">
     private void createIsland(@NonNull UUID islandUuid, @NonNull UUID leaderUuid, int level,
-                              int slayerLevel, boolean isDeleted) {
-        this.islands.put(islandUuid, new Island(leaderUuid, islandUuid, level, slayerLevel, isDeleted));
+                              int slayerLevel, int farmingLevel, boolean isDeleted) {
+        this.islands.put(islandUuid, new Island(leaderUuid, islandUuid, level, slayerLevel, farmingLevel, isDeleted));
     }
 
     /**
@@ -131,20 +158,22 @@ public class HSProgressionApi {
      * @param island Source island
      */
     public void createIsland(com.bgsoftware.superiorskyblock.api.island.Island island) {
-        createIsland(island.getUniqueId(), island.getOwner().getUniqueId(), 1, 1, false);
+        createIsland(island.getUniqueId(), island.getOwner().getUniqueId(), 1, 1, 1, false);
     }
 
     public void createIsland(com.bgsoftware.superiorskyblock.api.island.Island island, boolean isDeleted) {
-        createIsland(island.getUniqueId(), island.getOwner().getUniqueId(), 1, 1, isDeleted);
+        createIsland(island.getUniqueId(), island.getOwner().getUniqueId(), 1, 1, 1, isDeleted);
     }
 
-    public void createIsland(com.bgsoftware.superiorskyblock.api.island.Island island, int level, int slayerLevel) {
-        createIsland(island.getUniqueId(), island.getOwner().getUniqueId(), level, slayerLevel, false);
+    public void createIsland(com.bgsoftware.superiorskyblock.api.island.Island island, int level, int slayerLevel,
+                             int farmingLevel) {
+        createIsland(island.getUniqueId(), island.getOwner().getUniqueId(), level, slayerLevel, farmingLevel, false);
     }
 
     public void createIsland(com.bgsoftware.superiorskyblock.api.island.Island island, int level,
-                             int slayerLevel, boolean isDeleted) {
-        createIsland(island.getUniqueId(), island.getOwner().getUniqueId(), level, slayerLevel, isDeleted);
+                             int slayerLevel, int farmingLevel, boolean isDeleted) {
+        createIsland(island.getUniqueId(), island.getOwner().getUniqueId(), level, slayerLevel, farmingLevel,
+                isDeleted);
     }
 
     //</editor-fold>

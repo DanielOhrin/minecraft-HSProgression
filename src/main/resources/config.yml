@@ -54,3 +54,15 @@ gui:
       - '&c&lLOCKED'
     unlocked:
       - '&7{amount} {current-no-color} slain'
+  farming:
+    locked:
+      - '&7{amount}/{required} {previous} &7Grown'
+      - ''
+      - '&7&lOR'
+      - ''
+      - '{progress-indicator} &7{amount-or-half-required}/{required-half} {previous}
+        &7Grown'
+      - '&7&lAND'
+      - '&f[&cx&f] {recipe}'
+    unlocked:
+      - '&7{amount} {current-no-color} Grown'
