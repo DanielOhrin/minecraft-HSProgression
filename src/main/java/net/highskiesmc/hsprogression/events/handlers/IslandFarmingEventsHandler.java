@@ -113,7 +113,7 @@ public class IslandFarmingEventsHandler extends HSListener {
                 if (ageData.getAge() == ageData.getMaximumAge()) {
                     // Now check if the block is being tracked, and increment it if so.
                     List<Material> crops =
-                            api.getFarmingLevels().stream().map(FarmingLevel::getCrop).toList();
+                            api.getFarmingLevels().stream().map(FarmingLevel::getSeed).toList();
 
                     if (crops.contains(crop)) {
                         api.contributeFarming(null, island.getIslandUuid(), crop, 1);
