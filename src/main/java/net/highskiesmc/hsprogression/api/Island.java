@@ -134,7 +134,7 @@ public class Island {
                 int fadeOut = config.get("events.island-upgraded.title.fade-out", int.class, 20);
 
                 HSProgressionApi api = HSProgression.getApi();
-                // TODO: Genericize so don't have to repeat for every fucking thing...
+
                 // Feedback to players
                 String current =
                         TextUtils.translateColor(TextUtils.toTitleCase(api.getSlayerLevel(getLevel(IslandProgressionType.SLAYER)).getEntity().name().replace("_", " ")));
@@ -203,7 +203,7 @@ public class Island {
                 int fadeOut = config.get("events.island-upgraded.title.fade-out", int.class, 20);
 
                 HSProgressionApi api = HSProgression.getApi();
-                // TODO: Genericize so don't have to repeat for every fucking thing...
+
                 // Feedback to players
                 String current =
                         TextUtils.translateColor(TextUtils.toTitleCase(api.getFarmingLevel(getLevel(IslandProgressionType.FARMING)).getCrop().name().replace("_", " ")));

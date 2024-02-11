@@ -157,16 +157,10 @@ class Database extends MySQLDatabase {
                             "label, amount, datatype, date_time);   " +
                             "                                                         END;"
             );
-            // TODO: Pull amount of mobs slain on each island on startup
-            // TODO: Handle updating island slayer level in the plugin itself when the island has reached enough mobs
-            //  slain
             // Try Running this line if plugin startup time becomes high
             // You will want to add a guard clause of some sort.
             // ddl.addBatch("CREATE INDEX idx_islands_active ON island(Is_Deleted);");
             // END
-            // TODO: Store only the current batch, then delete it and just have it as a number on the Island?
-            // TODO: Then track the next 5 mins, etc.
-            // TODO: Leaderboards can be locked behind
             drops.executeBatch();
             ddl.executeBatch();
         }
