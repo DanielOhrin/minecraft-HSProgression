@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FarmingLevel implements DisplayableItem {
+    private static final String PROGRESS_COMPLETE = TextUtils.translateColor("&f[&a✓&f]");
+    private static final String PROGRESS_INCOMPLETE = TextUtils.translateColor("&f[&cx&f]");
     private static final DecimalFormat FORMATTER = new DecimalFormat("#,###");
     private final int level;
     private final Material previousCrop;
@@ -36,6 +38,7 @@ public class FarmingLevel implements DisplayableItem {
     public Material getCrop() {
         return crop;
     }
+
     public Material getSeed() {
         return seed;
     }
@@ -45,13 +48,13 @@ public class FarmingLevel implements DisplayableItem {
     }
 
     public ItemStack toDisplayItem(@NonNull Island island, Config config) {
-        int slayerLevel = island.getLevel(IslandProgressionType.FARMING);
+        int farmingLevel = island.getLevel(IslandProgressionType.FARMING);
 
         ItemStack item = new ItemStack(crop);
         ItemMeta meta = item.getItemMeta();
 
 
-        if (slayerLevel >= level) {
+        if (farmingLevel >= level) {
             String current = (TextUtils.translateColor(config.get("gui.unlocked.display-name", String.class, "&e&l" +
                             "{name}")
                     .replace("{name}", TextUtils.toTitleCase(getCrop().toString().replace('_', ' ')))));
@@ -59,7 +62,7 @@ public class FarmingLevel implements DisplayableItem {
 
             meta.setDisplayName(current);
 
-            List<String> lore = new ArrayList<>(config.get("gui.slayer.unlocked", ArrayList.class, new ArrayList<>()));
+            List<String> lore = new ArrayList<>(config.get("gui.farming.unlocked", ArrayList.class, new ArrayList<>()));
             int amount = island.getFarmingAmount(crop);
             lore.replaceAll(s -> TextUtils.translateColor(s
                             .replace("{amount}", "" + amount)
@@ -77,9 +80,14 @@ public class FarmingLevel implements DisplayableItem {
 
             meta.setDisplayName(current);
 
-            List<String> lore = new ArrayList<>(config.get("gui.slayer.locked", ArrayList.class, new ArrayList<>()));
+            List<String> lore = new ArrayList<>(config.get("gui.farming.locked", ArrayList.class, new ArrayList<>()));
             int amount = island.getFarmingAmount(previousCrop); // Amount slain
             String previous = TextUtils.toTitleCase(this.previousCrop.toString().replace('_', ' '));
+
+            int previousAmount = island.getFarmingAmount(previousCrop);
+            String progressIndicator = PROGRESS_INCOMPLETE;
+            String piHalf = (int) previousRequired / 2 > previousAmount ? PROGRESS_INCOMPLETE : PROGRESS_COMPLETE;
+            String piRecipe = PROGRESS_INCOMPLETE; // TODO: recipe tracking update
 
             lore.replaceAll(s -> TextUtils.translateColor(s
                             .replace("{amount}", "" + amount)
@@ -87,6 +95,13 @@ public class FarmingLevel implements DisplayableItem {
                             .replace("{current}", current)
                             .replace("{current-no-color}", currentNoColor)
                             .replace("{previous}", previous)
+                            .replace("{progress-indicator}", progressIndicator)
+                            .replace("{progress-indicator-half}", piHalf)
+                            .replace("{progress-indicator-recipe}", piRecipe)
+                            .replace("{recipe}", FarmingRecipe.getRecipe(crop, config).getItemMeta().getDisplayName())
+                            .replace("{amount-or-half-required}", String.valueOf(Math.min(previousRequired / 2,
+                                    previousAmount)))
+                            .replace("{required-half}", String.valueOf(previousRequired / 2))
                     )
             );
 

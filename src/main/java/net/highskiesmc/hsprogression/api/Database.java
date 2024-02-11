@@ -226,7 +226,7 @@ class Database extends MySQLDatabase {
                     "FROM island_contribution icn " +
                     "INNER JOIN island_contributor icr ON icr.Id = icn.Contributor_Id " +
                     "INNER JOIN island i ON i.Id = icr.Island_Id " +
-                    "WHERE i.Is_Deleted = 0 AND icn.DataType = 'FARMING' " +
+                    "WHERE i.Is_Deleted = 0 AND icn.DataType = 'FARMING' AND icr.Player_UUID = 'Unknown'" +
                     "GROUP BY Island_UUID, Label;"
             );
 
@@ -240,7 +240,8 @@ class Database extends MySQLDatabase {
                 island.setFarmingNum(Material.valueOf(farmingNums.getString("Label")), slayerNums.getInt("Amount"));
             }
         }
-
+        // TODO: If contributor is NULL for FARMING contribution, it is just a crop grown
+        // TODO: Otherwise its a player breaking for xp/contribution tracking
         return result;
     }
 
@@ -307,7 +308,9 @@ class Database extends MySQLDatabase {
                     for (Map.Entry<EntityType, Integer> contribution :
                             slayerContribution.getContributions().entrySet()) {
 
-                        upsert.setString(1, contributor.getPlayerUuid().toString());
+                        String contributorUuid = contributor.getPlayerUuid() == null ? "Unknown" :
+                                contributor.getPlayerUuid().toString();
+                        upsert.setString(1, contributorUuid);
                         upsert.setString(2, slayerContribution.getIslandUuid().toString());
                         upsert.setString(3, contribution.getKey().toString());
                         upsert.setInt(4, contribution.getValue());
@@ -315,6 +318,27 @@ class Database extends MySQLDatabase {
                                 contributor.getPlayerUuid().toString(), slayerContribution.getIslandUuid().toString()
                                 , contribution.getKey().toString(), contribution.getValue());
                         upsert.setString(5, IslandProgressionType.SLAYER.name());
+                        upsert.setTimestamp(6, Timestamp.valueOf(dateTime.toLocalDateTime()));
+
+                        upsert.addBatch();
+                    }
+                }
+
+                // FARMING
+                for (FarmingContribution farmingContribution : contributor.getFarmingContributions().values()) {
+                    for (Map.Entry<Material, Integer> contribution :
+                            farmingContribution.getContributions().entrySet()) {
+
+                        String contributorUuid = contributor.getPlayerUuid() == null ? "Unknown" :
+                                contributor.getPlayerUuid().toString();
+                        upsert.setString(1, contributorUuid);
+                        upsert.setString(2, farmingContribution.getIslandUuid().toString());
+                        upsert.setString(3, contribution.getKey().toString());
+                        upsert.setInt(4, contribution.getValue());
+                        System.out.printf("Player: %s\nIsland: %s\nCrop: %s\nAmount:%d%n",
+                                contributorUuid, farmingContribution.getIslandUuid().toString()
+                                , contribution.getKey().toString(), contribution.getValue());
+                        upsert.setString(5, IslandProgressionType.FARMING.name());
                         upsert.setTimestamp(6, Timestamp.valueOf(dateTime.toLocalDateTime()));
 
                         upsert.addBatch();

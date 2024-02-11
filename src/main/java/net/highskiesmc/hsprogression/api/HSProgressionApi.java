@@ -3,6 +3,7 @@ package net.highskiesmc.hsprogression.api;
 import com.bgsoftware.superiorskyblock.api.wrappers.SuperiorPlayer;
 import net.highskiesmc.hsprogression.HSProgression;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -249,6 +250,18 @@ public class HSProgressionApi {
 
         contributor.addSlayerContribution(islandUuid, entity, amount);
         this.islands.get(islandUuid).contributeSlayer(entity, amount, main.getConfigs());
+    }
+    public void contributeFarming(UUID playerUuid, UUID islandUuid, Material crop, int amount) {
+        Map<UUID, IslandContributor> contributors = islandContributors.get(useFirstCache);
+
+        if (!contributors.containsKey(playerUuid)) {
+            contributors.put(playerUuid, new IslandContributor(playerUuid));
+        }
+
+        IslandContributor contributor = contributors.get(playerUuid);
+
+        contributor.addFarmingContribution(islandUuid, crop, amount);
+        this.islands.get(islandUuid).contributeFarming(crop, amount, main.getConfigs());
     }
 
     public Map<UUID, IslandContributor> getCache(boolean swapCache) {

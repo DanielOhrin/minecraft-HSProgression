@@ -12,10 +12,7 @@ import net.highskiesmc.hsprogression.commands.superior.IslandFarmingCommand;
 import net.highskiesmc.hsprogression.commands.superior.IslandSlayerCommand;
 import net.highskiesmc.hsprogression.commands.superior.IslandUpgradeCommand;
 import net.highskiesmc.hsprogression.commands.tabcompleters.HSProgressionTabCompleter;
-import net.highskiesmc.hsprogression.events.handlers.CommandPreProcessHandler;
-import net.highskiesmc.hsprogression.events.handlers.IslandEventsHandler;
-import net.highskiesmc.hsprogression.events.handlers.IslandLevelRestrictionsHandler;
-import net.highskiesmc.hsprogression.events.handlers.IslandSlayerEventsHandler;
+import net.highskiesmc.hsprogression.events.handlers.*;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
@@ -70,6 +67,7 @@ public class HSProgression extends HSPlugin {
         register(new IslandEventsHandler(this, api));
         register(new IslandLevelRestrictionsHandler(this, api));
         register(new IslandSlayerEventsHandler(this, api));
+        register(new IslandFarmingEventsHandler(this, api));
         //</editor-fold>
 
         return;

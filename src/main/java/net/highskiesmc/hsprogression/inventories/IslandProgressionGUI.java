@@ -111,9 +111,7 @@ public class IslandProgressionGUI implements GUI {
         Inventory inv = Bukkit.createInventory(this, guiSize,
                 TextUtils.translateColor(config.get("island-" + type.name().toLowerCase() + "-menu-title",
                                 String.class,
-                                "&x&0&5&a&f&c&6&lI&x&0&c&b&6&c&b&ls&x&1&4&b&d&d&0&ll&x&1&b&c&4&d&5&la&x&2&3&c&b&d&a" +
-                                        "&ln&x&2&a&d&2&d&f&ld &x&3&2&d&a&e&4&lS&x&3&9&e&1&e&9&ll&x&4&1&e&8&e&e&la&x&4" +
-                                        "&8&e&f&f&3&ly&x&5&0&f&6&f&8&le&x&5&7&f&d&f&d&lr"
+                                "&c&lTitle Not Found"
                         )
                 )
         );
