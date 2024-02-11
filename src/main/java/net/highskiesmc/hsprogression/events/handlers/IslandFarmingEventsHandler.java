@@ -27,6 +27,7 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -53,10 +54,10 @@ public class IslandFarmingEventsHandler extends HSListener {
 
         if (island != null) {
             Material material = e.getBlockPlaced().getType();
-            List<Material> seeds =
-                    api.getFarmingLevels().stream().map(FarmingLevel::getSeed).toList();
+            List<FarmingLevel> levels = api.getFarmingLevels();
+            List<Material> seeds = levels.stream().map(FarmingLevel::getSeed).toList();
             // Make sure the crop is not the default one, and that it is tracked.
-            if (material != seeds.get(0)) {
+            if (material != levels.get(0).getSeed()) {
                 if (seeds.contains(material)) {
                     if (island.getLevel(IslandProgressionType.FARMING) < (seeds.indexOf(material) + 1)) {
                         e.setCancelled(true);
@@ -70,7 +71,6 @@ public class IslandFarmingEventsHandler extends HSListener {
                         player.sendMessage(msg);
                         player.playSound(player.getLocation(), sound, 1, 1);
                     }
-
                 }
             }
         }
@@ -90,12 +90,14 @@ public class IslandFarmingEventsHandler extends HSListener {
             // Handle edge cases
             // Note: Although this hard-coding is not ideal, it is very easy to edit/remove still
             Material crop = e.getNewState().getType();
+            List<FarmingLevel> levels = api.getFarmingLevels();
+            List<Material> seeds = levels.stream().map(FarmingLevel::getSeed).toList();
             switch (crop) {
                 case SUGAR_CANE,
                         CACTUS,
                         MELON,
                         PUMPKIN -> {
-                    api.contributeFarming(null, island.getIslandUuid(), crop, 1);
+                    api.contributeFarming(null, island.getIslandUuid(), levels.get(seeds.indexOf(crop)).getCrop(), 1);
                     return;
                 }
                 case PUMPKIN_STEM,
@@ -112,11 +114,9 @@ public class IslandFarmingEventsHandler extends HSListener {
 
                 if (ageData.getAge() == ageData.getMaximumAge()) {
                     // Now check if the block is being tracked, and increment it if so.
-                    List<Material> crops =
-                            api.getFarmingLevels().stream().map(FarmingLevel::getSeed).toList();
 
-                    if (crops.contains(crop)) {
-                        api.contributeFarming(null, island.getIslandUuid(), crop, 1);
+                    if (seeds.contains(crop)) {
+                        api.contributeFarming(null, island.getIslandUuid(), levels.get(seeds.indexOf(crop)).getCrop(), 1);
                     }
                 }
             }
