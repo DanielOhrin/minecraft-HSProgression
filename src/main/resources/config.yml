@@ -63,7 +63,7 @@ gui:
       - ''
       - '{progress-indicator-half} &7{amount-or-half-required}/{required-half} {previous}
         &7Grown'
-      - '&7&lAND'
+      - '&7&lTHEN'
       - '&f{progress-indicator-recipe} {recipe}'
     unlocked:
       - '&7{amount} {current-no-color} Grown'

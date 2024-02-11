@@ -790,7 +790,7 @@
             <row> <!-- 2 -->
                 <CROP>BEETROOT</CROP>
                 <SEED>BEETROOTS</SEED>
-                <Previous_Required>10000</Previous_Required>
+                <Previous_Required>20</Previous_Required> <!-- Should be 10000 -->
             </row>
             <row> <!-- 3 -->
                 <CROP>CARROT</CROP>

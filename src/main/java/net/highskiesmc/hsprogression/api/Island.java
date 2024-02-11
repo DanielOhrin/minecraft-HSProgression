@@ -13,6 +13,7 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.material.Crops;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -246,5 +247,99 @@ public class Island {
 
     void setFarmingNum(Material crop, int amount) {
         this.farming.put(crop, amount);
+    }
+
+    public void claimRecipe(Player player, Material crop, Config config) {
+        if (canClaimRecipe(crop)) {
+            IslandFarmingLevelUpEvent event = new IslandFarmingLevelUpEvent(this,
+                    HSProgression.getApi().getFarmingLevel(getLevel(IslandProgressionType.FARMING) + 1));
+            Bukkit.getPluginManager().callEvent(event);
+
+            if (!event.isCancelled()) {
+                this.setLevel(IslandProgressionType.FARMING, getLevel(IslandProgressionType.FARMING) + 1);
+
+                Sound sound = Sound.valueOf(config.get("events.island-upgraded.sound", String.class,
+                        "UI_TOAST_CHALLENGE_COMPLETE"));
+                String msg = config.get("events.island-upgraded.message", String.class, "&e" +
+                        "[&6&l!&e] &6&l/is {data-type}&7 upgraded! {current} &7unlocked!");
+                String title = config.get("events.island-upgraded.title.title", String.class, "&6&l/is {data-type} " +
+                        "&7Upgraded!");
+                String subTitle = config.get("events.island-upgraded.title.subtitle", String.class);
+                int fadeIn = config.get("events.island-upgraded.title.fade-in", int.class, 20);
+                int persist = config.get("events.island-upgraded.title.persist", int.class, 40);
+                int fadeOut = config.get("events.island-upgraded.title.fade-out", int.class, 20);
+
+                HSProgressionApi api = HSProgression.getApi();
+
+                // Feedback to players
+                String current =
+                        TextUtils.translateColor(TextUtils.toTitleCase(api.getFarmingLevel(getLevel(IslandProgressionType.FARMING)).getCrop().name().replace("_", " ")));
+                title = TextUtils.translateColor(
+                        title.replace("{data-type}", "farming")
+                                .replace("{current}", current)
+                                .replace("{current-no-color}", ColorUtils.removeChatColors(current))
+                );
+
+                if (subTitle != null) {
+                    subTitle = TextUtils.translateColor(
+                            subTitle.replace("{data-type}", "farming")
+                                    .replace("{current}", current)
+                                    .replace("{current-no-color}", ColorUtils.removeChatColors(current))
+                    );
+                }
+
+                msg = TextUtils.translateColor(
+                        msg.replace("{data-type}", "farming")
+                                .replace("{current}", current)
+                                .replace("{current-no-color}", ColorUtils.removeChatColors(current))
+                );
+
+                String recipeClaimed = TextUtils.translateColor(
+                        config.get("island.recipe-claimed", String.class, "&f{player} &6claimed {recipe} &6on " +
+                                        "&f{leader}'s &fisland!")
+                                .replace("{player}", player.getName())
+                                .replace("{recipe}",
+                                        FarmingRecipe.getRecipe(crop, config).getItemMeta().getDisplayName())
+                                .replace("{leader}", Bukkit.getOfflinePlayer(leaderUuid).getName())
+                );
+                List<SuperiorPlayer> members =
+                        SuperiorSkyblockAPI.getIslandByUUID(getIslandUuid()).getIslandMembers(true);
+                for (SuperiorPlayer member : members) {
+                    Player playr = member.asPlayer();
+
+                    playr.sendMessage(recipeClaimed);
+                    playr.sendMessage();
+                    playr.playSound(playr.getLocation(), sound, 1, 1);
+                    playr.sendTitle(title, subTitle, fadeIn, persist, fadeOut);
+                    playr.sendMessage(msg);
+                }
+            }
+        }
+    }
+
+    public boolean canClaimRecipe(Material crop) {
+        List<FarmingLevel> levels = HSProgression.getApi().getFarmingLevels();
+        List<Material> crops =
+                new java.util.ArrayList<>(levels.stream().map(FarmingLevel::getCrop).toList());
+        Material firstCrop = crops.remove(0);
+
+        if (crops.contains(crop)) {
+            int i = crops.indexOf(crop);
+            int levelToUnlock = i + 2;
+
+            int amountPreviousFarmed = 0;
+            if (i == 0) {
+                amountPreviousFarmed = farming.getOrDefault(firstCrop, 0);
+            } else {
+                farming.getOrDefault(crops.get(i - 1), 0);
+            }
+
+            // Get the farmed requirement for unlocking the crop
+            int halfOfNormalRequirement = (int)levels.get(i + 1).getPreviousRequired() / 2;
+
+            return (levelToUnlock - getLevel(IslandProgressionType.FARMING) == 1) && amountPreviousFarmed >= halfOfNormalRequirement;
+        }
+
+        return false;
     }
 }

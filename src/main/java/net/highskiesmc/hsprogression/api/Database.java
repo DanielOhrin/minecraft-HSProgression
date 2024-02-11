@@ -231,13 +231,13 @@ class Database extends MySQLDatabase {
             );
 
             while (farmingNums.next()) {
-                Island island = result.getOrDefault(UUID.fromString(slayerNums.getString("Island_UUID")), null);
+                Island island = result.getOrDefault(UUID.fromString(farmingNums.getString("Island_UUID")), null);
 
                 if (island == null) {
-                    throw new SQLException("Island mismatch found: " + slayerNums.getString("Island_UUID"));
+                    throw new SQLException("Island mismatch found: " + farmingNums.getString("Island_UUID"));
                 }
 
-                island.setFarmingNum(Material.valueOf(farmingNums.getString("Label")), slayerNums.getInt("Amount"));
+                island.setFarmingNum(Material.valueOf(farmingNums.getString("Label")), farmingNums.getInt("Amount"));
             }
         }
         // TODO: If contributor is NULL for FARMING contribution, it is just a crop grown

@@ -9,6 +9,7 @@ island:
   upgraded: "&4&l[!]&c {owner}'s Island has been upgraded to level &f&l{level}!" # {owner} {level}
   spawner-limit: "&4&l[!]&c {owner}'s Island cannot hold that many spawners. &c{amount}/{max}" # {owner}, {amount}, {max}
   spawner-limit-reached: "&4&l[!]&c {owner}'s Island has reached its max spawners. &c{amount}/{max}" # {owner}, {amount}, {max}
+  recipe-claimed: "&f{player} &6claimed {recipe} &6on &f{leader}'s &fisland!"
 commands:
   no-permission: "&cInsufficient permission."
   no-player: "&cPlayer not found or is offline: {player}"

@@ -31,7 +31,7 @@ public class HSProgressionTabCompleter extends HSTabCompleter {
                     List<String> crops =
                             new ArrayList<>(HSProgression.getApi().getFarmingLevels().stream().map(x -> x.getCrop().name()).toList());
                     crops.remove(0);
-                    result.addAll(crops.stream().filter(x -> x.toLowerCase().startsWith(args[0].toLowerCase())).toList());
+                    result.addAll(crops.stream().filter(x -> x.toLowerCase().startsWith(args[1].toLowerCase())).toList());
                 }
             }
             case 3 -> {
