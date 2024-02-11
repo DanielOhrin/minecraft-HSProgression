@@ -848,8 +848,8 @@
                 <Previous_Required>3000000</Previous_Required>
             </row>
             <row> <!-- 14 -->
-                <CROP>COCOA</CROP>
-                <SEED>COCOA_BEANS</SEED>
+                <CROP>COCOA_BEANS</CROP>
+                <SEED>COCOA</SEED>
                 <Previous_Required>3750000</Previous_Required>
             </row>
         </table>
