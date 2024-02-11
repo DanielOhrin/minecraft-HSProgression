@@ -22,6 +22,7 @@ public class HSProgressionApi {
     private List<IslandLevel> islandLevels;
     private List<SlayerLevel> slayerLevels;
     private List<FarmingLevel> farmingLevels;
+    private List<MiningLevel> miningLevels;
     private Map<Integer, List<IslandBlock>> islandBlocks;
     private Map<UUID, Island> islands;
     private Database db;
@@ -44,6 +45,7 @@ public class HSProgressionApi {
         this.islandLevels = db.getIslandLevels();
         this.slayerLevels = db.getSlayerLevels();
         this.farmingLevels = db.getFarmingLevels();
+        this.miningLevels = db.getMiningLevels();
         this.islandBlocks = db.getIslandBlocks();
         this.islands = db.getIslands();
 

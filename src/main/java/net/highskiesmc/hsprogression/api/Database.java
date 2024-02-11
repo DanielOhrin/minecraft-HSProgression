@@ -48,6 +48,7 @@ class Database extends MySQLDatabase {
             drops.addBatch("DROP TABLE IF EXISTS island_level;");
             drops.addBatch("DROP TABLE IF EXISTS island_slayer;");
             drops.addBatch("DROP TABLE IF EXISTS island_farming;");
+            drops.addBatch("DROP TABLE IF EXISTS island_mining;");
             drops.addBatch("DROP PROCEDURE IF EXISTS upsert_contribution;");
 
             ddl.addBatch("CREATE TABLE IF NOT EXISTS island (" +
@@ -100,6 +101,15 @@ class Database extends MySQLDatabase {
                     "PRIMARY KEY(Id)" +
                     ") ENGINE = INNODB;"
             );
+
+            ddl.addBatch("CREATE TABLE island_mining (" +
+                    "Id INT AUTO_INCREMENT, " +
+                    "Node_Id VARCHAR(50) NOT NULL UNIQUE, " +
+                    "Material VARCHAR(50) NOT NULL UNIQUE, " +
+                    "Previous_Required INT NOT NULL, " +
+                    "PRIMARY KEY(Id)" +
+                    ") ENGINE = INNODB;");
+
             // TODO: Fix Id increment bug
             ddl.addBatch("CREATE TABLE IF NOT EXISTS island_contributor (" +
                     "Id INT AUTO_INCREMENT, " +
@@ -429,6 +439,31 @@ class Database extends MySQLDatabase {
                 ));
 
                 previous = Material.valueOf(levels.getString("Crop"));
+            }
+        }
+
+        return result;
+    }
+
+    public List<MiningLevel> getMiningLevels() throws SQLException {
+        List<MiningLevel> result = new ArrayList<>();
+
+        try (Connection conn = getHikari().getConnection()) {
+            Statement statement = conn.createStatement();
+
+            ResultSet levels = statement.executeQuery("SELECT Id, Node_Id, Material, Previous_Required FROM " +
+                    "island_mining;");
+
+            String previous = null;
+            while (levels.next()) {
+                result.add(new MiningLevel(
+                        levels.getInt("Id"),
+                        levels.getString("Node_Id"),
+                        previous,
+                        levels.getLong("Previous_Required")
+                ));
+
+                previous = levels.getString("Node_Id");
             }
         }
 

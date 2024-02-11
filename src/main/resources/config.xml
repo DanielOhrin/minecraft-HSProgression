@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <config>
     <value key="cache.upload.interval.seconds">300</value>
-    <value key="slayer.gui.slots">9-18-27-28-29-20-11-12-13-22-31-32-33-24-15-16-17</value> <!-- Example: 1st slayer mob is in first number slot listed -->
-    <value key="farming.gui.slots">10-19-28-29-30-21-12-13-14-23-32-33-34-25</value> <!-- Example: 1st slayer mob is in first number slot listed -->
+    <value key="slayer.gui.slots">9-18-27-28-29-20-11-12-13-22-31-32-33-24-15-16-17
+    </value> <!-- Example: 1st slayer mob is in first number slot listed -->
+    <value key="farming.gui.slots">10-19-28-29-30-21-12-13-14-23-32-33-34-25
+    </value> <!-- Example: 1st slayer mob is in first number slot listed -->
     <tables>
         <table name="island_level">
             <row> <!-- 1 -->
@@ -851,6 +853,68 @@
                 <CROP>COCOA_BEANS</CROP>
                 <SEED>COCOA</SEED>
                 <Previous_Required>3750000</Previous_Required>
+            </row>
+        </table>
+        <table name="island_mining">
+            <row> <!-- 1 -->
+                <Node_Id>wood</Node_Id>
+                <Material>OAK_LOG</Material>
+                <Previous_Required>0</Previous_Required>
+            </row>
+            <row> <!-- 2 -->
+                <Node_Id>cobblestone</Node_Id>
+                <Material>COBBLESTONE</Material>
+                <Previous_Required>10</Previous_Required> <!-- Should be 2500 -->
+            </row>
+            <row> <!-- 3 -->
+                <Node_Id>coal</Node_Id>
+                <Material>COAL_ORE</Material>
+                <Previous_Required>5000</Previous_Required>
+            </row>
+            <row> <!-- 4 -->
+                <Node_Id>copper</Node_Id>
+                <Material>COPPER_ORE</Material>
+                <Previous_Required>10000</Previous_Required>
+            </row>
+            <row> <!-- 5 -->
+                <Node_Id>nether-gold</Node_Id>
+                <Material>NETHER_GOLD_ORE</Material>
+                <Previous_Required>15000</Previous_Required>
+            </row>
+            <row> <!-- 6 -->
+                <Node_Id>nether-quartz</Node_Id>
+                <Material>NETHER_QUARTZ_ORE</Material>
+                <Previous_Required>22500</Previous_Required>
+            </row>
+            <row> <!-- 7 -->
+                <Node_Id>iron</Node_Id>
+                <Material>IRON_ORE</Material>
+                <Previous_Required>40000</Previous_Required>
+            </row>
+            <row> <!-- 8 -->
+                <Node_Id>ruby</Node_Id>
+                <Material>REDSTONE_ORE</Material>
+                <Previous_Required>60000</Previous_Required>
+            </row>
+            <row> <!-- 9 -->
+                <Node_Id>lapis</Node_Id>
+                <Material>LAPIS_ORE</Material>
+                <Previous_Required>70000</Previous_Required>
+            </row>
+            <row> <!-- 10 -->
+                <Node_Id>diamond</Node_Id>
+                <Material>DIAMOND_ORE</Material>
+                <Previous_Required>80000</Previous_Required>
+            </row>
+            <row> <!-- 11 -->
+                <Node_Id>emerald</Node_Id>
+                <Material>EMERALD_ORE</Material>
+                <Previous_Required>120000</Previous_Required>
+            </row>
+            <row> <!-- 12 -->
+                <Node_Id>ancient-debris</Node_Id>
+                <Material>ANCIENT_DEBRIS</Material>
+                <Previous_Required>150000</Previous_Required>
             </row>
         </table>
     </tables>
