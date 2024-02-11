@@ -1,6 +1,7 @@
 common:
   no-island: "&c&lError | &7You don't have an island."
   need-money: "&cInsufficient funds."
+  inventory-overflow: "&cInventory overflow. Dropped extra items."
 
 island:
   member-limit: "&4&l[!]&c Island has reached its member limit."
@@ -9,3 +10,12 @@ island:
   spawner-limit: "&4&l[!]&c {owner}'s Island cannot hold that many spawners. &c{amount}/{max}" # {owner}, {amount}, {max}
   spawner-limit-reached: "&4&l[!]&c {owner}'s Island has reached its max spawners. &c{amount}/{max}" # {owner}, {amount}, {max}
 commands:
+  no-permission: "&cInsufficient permission."
+  no-player: "&cPlayer not found or is offline: {player}"
+  number-exception: "&cNumber format exception occurred. Defaulted to value {value}"
+  usage: "&cUnknown command. Usage: {usage}"
+  reload:
+    success: "&aReloaded HSProgression!"
+  giverecipe:
+    invalid-crop: "&cInvalid crop type: {crop}"
+    success: "&aGave player {amount} {crop} recipe"

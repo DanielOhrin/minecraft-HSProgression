@@ -66,3 +66,9 @@ gui:
       - '&f[&cx&f] {recipe}'
     unlocked:
       - '&7{amount} {current-no-color} Grown'
+farming:
+  recipe: # Config values for farming recipes
+    display-name: '&eFarming Recipe &a(&e{current}&a)' # {current} is replaced with the non-colored name of the crop in title case (Beetroot, Sweet Berries, Cocoa Beans, etc.)
+    lore: # {current} Same functionality as above
+      - '&fRight click to claim'
+      - '&e&l{current}&f Recipe'

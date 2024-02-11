@@ -220,6 +220,25 @@ class Database extends MySQLDatabase {
 
                 island.setSlayerNum(EntityType.valueOf(slayerNums.getString("Label")), slayerNums.getInt("Amount"));
             }
+
+            ResultSet farmingNums = statement.executeQuery("SELECT i.Island_UUID, icn.Label, SUM(icn.Amount) AS " +
+                    "Amount " +
+                    "FROM island_contribution icn " +
+                    "INNER JOIN island_contributor icr ON icr.Id = icn.Contributor_Id " +
+                    "INNER JOIN island i ON i.Id = icr.Island_Id " +
+                    "WHERE i.Is_Deleted = 0 AND icn.DataType = 'FARMING' " +
+                    "GROUP BY Island_UUID, Label;"
+            );
+
+            while (farmingNums.next()) {
+                Island island = result.getOrDefault(UUID.fromString(slayerNums.getString("Island_UUID")), null);
+
+                if (island == null) {
+                    throw new SQLException("Island mismatch found: " + slayerNums.getString("Island_UUID"));
+                }
+
+                island.setFarmingNum(Material.valueOf(farmingNums.getString("Label")), slayerNums.getInt("Amount"));
+            }
         }
 
         return result;

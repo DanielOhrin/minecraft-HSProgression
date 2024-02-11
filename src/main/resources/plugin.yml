@@ -5,3 +5,6 @@ main: net.highskiesmc.hsprogression.HSProgression
 api-version: 1.13
 depend: [ SuperiorSkyblock2, RoseStacker, Vault, HeadDatabase ]
 commands:
+  hsprogression:
+    aliases:
+      - hsp
