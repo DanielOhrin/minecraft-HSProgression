@@ -9,6 +9,7 @@ import net.highskiesmc.hscore.highskies.HSPlugin;
 import net.highskiesmc.hsprogression.api.HSProgressionApi;
 import net.highskiesmc.hsprogression.commands.commands.HSProgressionCommand;
 import net.highskiesmc.hsprogression.commands.superior.IslandFarmingCommand;
+import net.highskiesmc.hsprogression.commands.superior.IslandMiningCommand;
 import net.highskiesmc.hsprogression.commands.superior.IslandSlayerCommand;
 import net.highskiesmc.hsprogression.commands.superior.IslandUpgradeCommand;
 import net.highskiesmc.hsprogression.commands.tabcompleters.HSProgressionTabCompleter;
@@ -57,6 +58,7 @@ public class HSProgression extends HSPlugin {
         SuperiorSkyblockAPI.registerCommand(new IslandUpgradeCommand(this));
         SuperiorSkyblockAPI.registerCommand(new IslandSlayerCommand(this));
         SuperiorSkyblockAPI.registerCommand(new IslandFarmingCommand(this));
+        SuperiorSkyblockAPI.registerCommand(new IslandMiningCommand(this));
 
         // Register Plugin Commands
         getCommand("hsprogression").setExecutor(new HSProgressionCommand(this));

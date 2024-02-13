@@ -1,13 +1,13 @@
 package net.highskiesmc.hsprogression.events.events;
 
-import net.highskiesmc.hsprogression.api.FarmingLevel;
 import net.highskiesmc.hsprogression.api.Island;
+import net.highskiesmc.hsprogression.api.MiningLevel;
 import org.bukkit.event.Cancellable;
 
-public class IslandFarmingLevelUpEvent extends IslandEvent implements Cancellable {
-    private final FarmingLevel level;
+public class IslandMiningLevelUpEvent extends IslandEvent implements Cancellable {
+    private final MiningLevel level;
     private boolean isCancelled = false;
-    public IslandFarmingLevelUpEvent(Island island, FarmingLevel level) {
+    public IslandMiningLevelUpEvent(Island island, MiningLevel level) {
         super(island);
 
         this.level = level;
@@ -15,9 +15,9 @@ public class IslandFarmingLevelUpEvent extends IslandEvent implements Cancellabl
 
     /**
      *
-     * @return New FarmingLevel
+     * @return New MiningLevel
      */
-    public FarmingLevel getLevel() {
+    public MiningLevel getLevel() {
         return level;
     }
 

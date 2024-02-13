@@ -141,6 +141,16 @@ public class HSProgressionApi {
     }
 
     @NonNull
+    public List<MiningLevel> getMiningLevels() {
+        return miningLevels;
+    }
+
+    @NonNull
+    public MiningLevel getMiningLevel(int level) throws IndexOutOfBoundsException {
+        return this.miningLevels.get(level - 1);
+    }
+
+    @NonNull
     public List<IslandBlock> getIslandBlocks(int level) {
         return Collections.unmodifiableList(this.islandBlocks.getOrDefault(level, new ArrayList<>()));
     }
@@ -151,8 +161,9 @@ public class HSProgressionApi {
     //<editor-fold desc="Island">
     //<editor-fold desc="Create">
     private void createIsland(@NonNull UUID islandUuid, @NonNull UUID leaderUuid, int level,
-                              int slayerLevel, int farmingLevel, boolean isDeleted) {
-        this.islands.put(islandUuid, new Island(leaderUuid, islandUuid, level, slayerLevel, farmingLevel, isDeleted));
+                              int slayerLevel, int farmingLevel, int miningLevel, boolean isDeleted) {
+        this.islands.put(islandUuid, new Island(leaderUuid, islandUuid, level, slayerLevel, farmingLevel,
+                miningLevel, isDeleted));
     }
 
     /**
@@ -161,22 +172,23 @@ public class HSProgressionApi {
      * @param island Source island
      */
     public void createIsland(com.bgsoftware.superiorskyblock.api.island.Island island) {
-        createIsland(island.getUniqueId(), island.getOwner().getUniqueId(), 1, 1, 1, false);
+        createIsland(island.getUniqueId(), island.getOwner().getUniqueId(), 1, 1, 1, 1, false);
     }
 
     public void createIsland(com.bgsoftware.superiorskyblock.api.island.Island island, boolean isDeleted) {
-        createIsland(island.getUniqueId(), island.getOwner().getUniqueId(), 1, 1, 1, isDeleted);
+        createIsland(island.getUniqueId(), island.getOwner().getUniqueId(), 1, 1, 1, 1, isDeleted);
     }
 
     public void createIsland(com.bgsoftware.superiorskyblock.api.island.Island island, int level, int slayerLevel,
-                             int farmingLevel) {
-        createIsland(island.getUniqueId(), island.getOwner().getUniqueId(), level, slayerLevel, farmingLevel, false);
+                             int farmingLevel, int miningLevel) {
+        createIsland(island.getUniqueId(), island.getOwner().getUniqueId(), level, slayerLevel, farmingLevel,
+                miningLevel, false);
     }
 
     public void createIsland(com.bgsoftware.superiorskyblock.api.island.Island island, int level,
-                             int slayerLevel, int farmingLevel, boolean isDeleted) {
+                             int slayerLevel, int farmingLevel, int miningLevel, boolean isDeleted) {
         createIsland(island.getUniqueId(), island.getOwner().getUniqueId(), level, slayerLevel, farmingLevel,
-                isDeleted);
+                miningLevel, isDeleted);
     }
 
     //</editor-fold>
@@ -264,6 +276,19 @@ public class HSProgressionApi {
 
         contributor.addFarmingContribution(islandUuid, crop, amount);
         this.islands.get(islandUuid).contributeFarming(crop, amount, main.getConfigs());
+    }
+
+    public void contributeMining(UUID playerUuid, UUID islandUuid, String nodeId, int amount) {
+        Map<UUID, IslandContributor> contributors = islandContributors.get(useFirstCache);
+
+        if (!contributors.containsKey(playerUuid)) {
+            contributors.put(playerUuid, new IslandContributor(playerUuid));
+        }
+
+        IslandContributor contributor = contributors.get(playerUuid);
+
+        contributor.addMiningContribution(islandUuid, nodeId, amount);
+        this.islands.get(islandUuid).contributeMining(nodeId, amount, main.getConfigs());
     }
 
     public Map<UUID, IslandContributor> getCache(boolean swapCache) {

@@ -58,6 +58,7 @@ class Database extends MySQLDatabase {
                     "Level INT NOT NULL DEFAULT 1, " +
                     "Slayer_Level INT NOT NULL DEFAULT 1, " +
                     "Farming_Level INT NOT NULL DEFAULT 1, " +
+                    "Mining_Level INT NOT NULL DEFAULT 1, " +
                     "Is_Deleted BIT(1) NOT NULL DEFAULT 0, " +
                     "PRIMARY KEY(Id)" +
                     ") ENGINE = INNODB;"
@@ -196,7 +197,7 @@ class Database extends MySQLDatabase {
             Statement statement = conn.createStatement();
 
             ResultSet islands = statement.executeQuery("SELECT Id, Leader_UUID, Island_UUID, Level, Slayer_Level, " +
-                    "Farming_Level, Is_Deleted FROM island WHERE Is_Deleted = 0;");
+                    "Farming_Level, Mining_Level Is_Deleted FROM island WHERE Is_Deleted = 0;");
 
             while (islands.next()) {
                 UUID islandUuid = UUID.fromString(islands.getString("Island_UUID"));
@@ -207,6 +208,7 @@ class Database extends MySQLDatabase {
                                 islands.getInt("Level"),
                                 islands.getInt("Slayer_Level"),
                                 islands.getInt("Farming_Level"),
+                                islands.getInt("Mining_Level"),
                                 islands.getBoolean("Is_Deleted")
                         )
                 );
@@ -249,6 +251,25 @@ class Database extends MySQLDatabase {
 
                 island.setFarmingNum(Material.valueOf(farmingNums.getString("Label")), farmingNums.getInt("Amount"));
             }
+
+            ResultSet miningNums = statement.executeQuery("SELECT i.Island_UUID, icn.Label, SUM(icn.Amount) AS " +
+                    "Amount " +
+                    "FROM island_contribution icn " +
+                    "INNER JOIN island_contributor icr ON icr.Id = icn.Contributor_Id " +
+                    "INNER JOIN island i ON i.Id = icr.Island_Id " +
+                    "WHERE i.Is_Deleted = 0 AND icn.DataType = 'MINING' " +
+                    "GROUP BY Island_UUID, Label;"
+            );
+
+            while (miningNums.next()) {
+                Island island = result.getOrDefault(UUID.fromString(miningNums.getString("Island_UUID")), null);
+
+                if (island == null) {
+                    throw new SQLException("Island mismatch found: " + miningNums.getString("Island_UUID"));
+                }
+
+                island.setMiningNum(miningNums.getString("Label"), miningNums.getInt("Amount"));
+            }
         }
         // TODO: If contributor is NULL for FARMING contribution, it is just a crop grown
         // TODO: Otherwise its a player breaking for xp/contribution tracking
@@ -269,9 +290,10 @@ class Database extends MySQLDatabase {
         // Upsert, Then Delete!
         try (Connection conn = getHikari().getConnection()) {
             PreparedStatement upsert = conn.prepareStatement(
-                    "INSERT INTO island (Leader_UUID, Island_UUID, Level, Slayer_Level, Farming_Level, Is_Deleted) " +
-                            "VALUES (?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE Leader_UUID = ?, Level = ?, " +
-                            "Slayer_Level = ?, Farming_Level = ?, Is_Deleted = ?;"
+                    "INSERT INTO island (Leader_UUID, Island_UUID, Level, Slayer_Level, Farming_Level, Mining_Level " +
+                            "Is_Deleted) " +
+                            "VALUES (?, ?, ?, ?, ?,, ? ?) ON DUPLICATE KEY UPDATE Leader_UUID = ?, Level = ?, " +
+                            "Slayer_Level = ?, Farming_Level = ?, Mining_Level = ?, Is_Deleted = ?;"
             );
 
             for (Island island : islands) {
@@ -280,13 +302,15 @@ class Database extends MySQLDatabase {
                 upsert.setInt(3, island.getLevel(IslandProgressionType.ISLAND));
                 upsert.setInt(4, island.getLevel(IslandProgressionType.SLAYER));
                 upsert.setInt(5, island.getLevel(IslandProgressionType.FARMING));
-                upsert.setBoolean(6, island.isDeleted());
+                upsert.setInt(6, island.getLevel(IslandProgressionType.MINING));
+                upsert.setBoolean(7, island.isDeleted());
 
-                upsert.setString(7, island.getLeaderUuid().toString());
-                upsert.setInt(8, island.getLevel(IslandProgressionType.ISLAND));
-                upsert.setInt(9, island.getLevel(IslandProgressionType.SLAYER));
-                upsert.setInt(10, island.getLevel(IslandProgressionType.FARMING));
-                upsert.setBoolean(11, island.isDeleted());
+                upsert.setString(8, island.getLeaderUuid().toString());
+                upsert.setInt(9, island.getLevel(IslandProgressionType.ISLAND));
+                upsert.setInt(10, island.getLevel(IslandProgressionType.SLAYER));
+                upsert.setInt(11, island.getLevel(IslandProgressionType.FARMING));
+                upsert.setInt(12, island.getLevel(IslandProgressionType.MINING));
+                upsert.setBoolean(13, island.isDeleted());
 
                 upsert.addBatch();
             }
@@ -324,9 +348,6 @@ class Database extends MySQLDatabase {
                         upsert.setString(2, slayerContribution.getIslandUuid().toString());
                         upsert.setString(3, contribution.getKey().toString());
                         upsert.setInt(4, contribution.getValue());
-                        System.out.printf("Player: %s\nIsland: %s\nEntity: %s\nAmount:%d%n",
-                                contributor.getPlayerUuid().toString(), slayerContribution.getIslandUuid().toString()
-                                , contribution.getKey().toString(), contribution.getValue());
                         upsert.setString(5, IslandProgressionType.SLAYER.name());
                         upsert.setTimestamp(6, Timestamp.valueOf(dateTime.toLocalDateTime()));
 
@@ -345,10 +366,25 @@ class Database extends MySQLDatabase {
                         upsert.setString(2, farmingContribution.getIslandUuid().toString());
                         upsert.setString(3, contribution.getKey().toString());
                         upsert.setInt(4, contribution.getValue());
-                        System.out.printf("Player: %s\nIsland: %s\nCrop: %s\nAmount:%d%n",
-                                contributorUuid, farmingContribution.getIslandUuid().toString()
-                                , contribution.getKey().toString(), contribution.getValue());
                         upsert.setString(5, IslandProgressionType.FARMING.name());
+                        upsert.setTimestamp(6, Timestamp.valueOf(dateTime.toLocalDateTime()));
+
+                        upsert.addBatch();
+                    }
+                }
+
+                // MINING
+                for (MiningContribution miningContribution : contributor.getMiningContributions().values()) {
+                    for (Map.Entry<String, Integer> contribution :
+                            miningContribution.getContributions().entrySet()) {
+
+                        String contributorUuid = contributor.getPlayerUuid() == null ? "Unknown" :
+                                contributor.getPlayerUuid().toString();
+                        upsert.setString(1, contributorUuid);
+                        upsert.setString(2, miningContribution.getIslandUuid().toString());
+                        upsert.setString(3, contribution.getKey().toString());
+                        upsert.setInt(4, contribution.getValue());
+                        upsert.setString(5, IslandProgressionType.MINING.name());
                         upsert.setTimestamp(6, Timestamp.valueOf(dateTime.toLocalDateTime()));
 
                         upsert.addBatch();
