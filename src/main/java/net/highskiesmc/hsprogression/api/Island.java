@@ -284,7 +284,7 @@ public class Island {
 
                 // Feedback to players
                 String current =
-                        TextUtils.translateColor(TextUtils.toTitleCase(api.getSlayerLevel(getLevel(IslandProgressionType.SLAYER)).getEntity().name().replace("_", " ")));
+                        TextUtils.translateColor(TextUtils.toTitleCase(api.getMiningLevel(getLevel(IslandProgressionType.MINING)).getNodeId().replace("-", " ")));
                 title = TextUtils.translateColor(
                         title.replace("{data-type}", "mining")
                                 .replace("{current}", current)

@@ -61,7 +61,7 @@ public class MiningLevel implements DisplayableItem {
         if (miningLevel >= level) {
             String current = (TextUtils.translateColor(config.get("gui.unlocked.display-name", String.class, "&e&l" +
                             "{name}")
-                    .replace("{name}", TextUtils.toTitleCase(getNodeId().toString().replace('_', ' ')))));
+                    .replace("{name}", TextUtils.toTitleCase(getNodeId().toString().replace('-', ' ')))));
             String currentNoColor = ColorUtils.removeChatColors(current);
 
             meta.setDisplayName(current);
@@ -79,14 +79,14 @@ public class MiningLevel implements DisplayableItem {
             item.setItemMeta(meta);
         } else {
             String current = (TextUtils.translateColor(config.get("gui.locked.display-name", String.class, "&7{name}")
-                    .replace("{name}", TextUtils.toTitleCase(getNodeId().toString().replace('_', ' ')))));
+                    .replace("{name}", TextUtils.toTitleCase(getNodeId().toString().replace('-', ' ')))));
             String currentNoColor = ColorUtils.removeChatColors(current);
 
             meta.setDisplayName(current);
 
             List<String> lore = new ArrayList<>(config.get("gui.mining.locked", ArrayList.class, new ArrayList<>()));
             int amount = island.getMiningAmount(previousNodeId); // Amount slain
-            String previous = TextUtils.toTitleCase(this.previousNodeId.toString().replace('_', ' '));
+            String previous = TextUtils.toTitleCase(this.previousNodeId.toString().replace('-', ' '));
 
             lore.replaceAll(s -> TextUtils.translateColor(s
                             .replace("{amount}", "" + amount)

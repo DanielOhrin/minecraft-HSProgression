@@ -59,6 +59,7 @@ class Database extends MySQLDatabase {
                     "Slayer_Level INT NOT NULL DEFAULT 1, " +
                     "Farming_Level INT NOT NULL DEFAULT 1, " +
                     "Mining_Level INT NOT NULL DEFAULT 1, " +
+                    "Fishing_Level INT NOT NULL DEFAULT 1, " +
                     "Is_Deleted BIT(1) NOT NULL DEFAULT 0, " +
                     "PRIMARY KEY(Id)" +
                     ") ENGINE = INNODB;"
@@ -197,7 +198,7 @@ class Database extends MySQLDatabase {
             Statement statement = conn.createStatement();
 
             ResultSet islands = statement.executeQuery("SELECT Id, Leader_UUID, Island_UUID, Level, Slayer_Level, " +
-                    "Farming_Level, Mining_Level Is_Deleted FROM island WHERE Is_Deleted = 0;");
+                    "Farming_Level, Mining_Level, Is_Deleted FROM island WHERE Is_Deleted = 0;");
 
             while (islands.next()) {
                 UUID islandUuid = UUID.fromString(islands.getString("Island_UUID"));
@@ -292,7 +293,7 @@ class Database extends MySQLDatabase {
             PreparedStatement upsert = conn.prepareStatement(
                     "INSERT INTO island (Leader_UUID, Island_UUID, Level, Slayer_Level, Farming_Level, Mining_Level, " +
                             "Is_Deleted) " +
-                            "VALUES (?, ?, ?, ?, ?,, ? ?) ON DUPLICATE KEY UPDATE Leader_UUID = ?, Level = ?, " +
+                            "VALUES (?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE Leader_UUID = ?, Level = ?, " +
                             "Slayer_Level = ?, Farming_Level = ?, Mining_Level = ?, Is_Deleted = ?;"
             );
 
