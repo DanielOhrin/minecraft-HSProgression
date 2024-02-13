@@ -114,6 +114,7 @@ public class HSProgressionApi {
         switch (type) {
             case SLAYER -> result = new ArrayList<>(getSlayerLevels());
             case FARMING -> result = new ArrayList<>(getFarmingLevels());
+            case MINING -> result = new ArrayList<>(getMiningLevels());
             default -> result = null;
         }
 

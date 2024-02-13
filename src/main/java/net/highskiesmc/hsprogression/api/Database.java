@@ -290,7 +290,7 @@ class Database extends MySQLDatabase {
         // Upsert, Then Delete!
         try (Connection conn = getHikari().getConnection()) {
             PreparedStatement upsert = conn.prepareStatement(
-                    "INSERT INTO island (Leader_UUID, Island_UUID, Level, Slayer_Level, Farming_Level, Mining_Level " +
+                    "INSERT INTO island (Leader_UUID, Island_UUID, Level, Slayer_Level, Farming_Level, Mining_Level, " +
                             "Is_Deleted) " +
                             "VALUES (?, ?, ?, ?, ?,, ? ?) ON DUPLICATE KEY UPDATE Leader_UUID = ?, Level = ?, " +
                             "Slayer_Level = ?, Farming_Level = ?, Mining_Level = ?, Is_Deleted = ?;"
@@ -494,6 +494,7 @@ class Database extends MySQLDatabase {
             while (levels.next()) {
                 result.add(new MiningLevel(
                         levels.getInt("Id"),
+                        Material.valueOf(levels.getString("Material")),
                         levels.getString("Node_Id"),
                         previous,
                         levels.getLong("Previous_Required")

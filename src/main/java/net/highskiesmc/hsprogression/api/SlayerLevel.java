@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SlayerLevel implements DisplayableItem {
+    private static final String PROGRESS_COMPLETE = TextUtils.translateColor("&f[&a✓&f]");
+    private static final String PROGRESS_INCOMPLETE = TextUtils.translateColor("&f[&cx&f]");
     private static final DecimalFormat FORMATTER = new DecimalFormat("#,###");
     private final int level;
     private final EntityType entity;

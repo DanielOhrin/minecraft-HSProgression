@@ -87,7 +87,7 @@ public class FarmingLevel implements DisplayableItem {
             int previousAmount = island.getFarmingAmount(previousCrop);
             String progressIndicator = PROGRESS_INCOMPLETE;
             String piHalf = (int) previousRequired / 2 > previousAmount ? PROGRESS_INCOMPLETE : PROGRESS_COMPLETE;
-            String piRecipe = PROGRESS_INCOMPLETE; // TODO: recipe tracking update
+            String piRecipe = PROGRESS_INCOMPLETE; // recipe tracking
 
             lore.replaceAll(s -> TextUtils.translateColor(s
                             .replace("{amount}", "" + amount)

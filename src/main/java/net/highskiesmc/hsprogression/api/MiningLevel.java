@@ -12,15 +12,19 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MiningLevel {
+public class MiningLevel implements DisplayableItem {
+    private static final String PROGRESS_COMPLETE = TextUtils.translateColor("&f[&a✓&f]");
+    private static final String PROGRESS_INCOMPLETE = TextUtils.translateColor("&f[&cx&f]");
     private static final DecimalFormat FORMATTER = new DecimalFormat("#,###");
     private final int level;
     private final String previousNodeId;
     private final String nodeId;
+    private final Material material;
     private final long previousRequired;
 
-    MiningLevel(int level, String nodeId, String previousNodeId, long previousRequired) {
+    MiningLevel(int level, Material material, String nodeId, String previousNodeId, long previousRequired) {
         this.level = level;
+        this.material = material;
         this.previousNodeId = previousNodeId;
         this.nodeId = nodeId;
         this.previousRequired = previousRequired;
@@ -29,6 +33,10 @@ public class MiningLevel {
     //<editor-fold desc="Getters">
     public int getLevel() {
         return level;
+    }
+
+    public Material getMaterial() {
+        return material;
     }
 
     public String getNodeId() {
@@ -43,24 +51,23 @@ public class MiningLevel {
         return previousRequired;
     }
 
-    // TODO: THIS
-  /*  public ItemStack toDisplayItem(@NonNull Island island, Config config) {
-        int farmingLevel = island.getLevel(IslandProgressionType.FARMING);
+   public ItemStack toDisplayItem(@NonNull Island island, Config config) {
+        int miningLevel = island.getLevel(IslandProgressionType.MINING);
 
-        ItemStack item = new ItemStack(crop);
+        ItemStack item = new ItemStack(material);
         ItemMeta meta = item.getItemMeta();
 
 
-        if (farmingLevel >= level) {
+        if (miningLevel >= level) {
             String current = (TextUtils.translateColor(config.get("gui.unlocked.display-name", String.class, "&e&l" +
                             "{name}")
-                    .replace("{name}", TextUtils.toTitleCase(getCrop().toString().replace('_', ' ')))));
+                    .replace("{name}", TextUtils.toTitleCase(getNodeId().toString().replace('_', ' ')))));
             String currentNoColor = ColorUtils.removeChatColors(current);
 
             meta.setDisplayName(current);
 
-            List<String> lore = new ArrayList<>(config.get("gui.farming.unlocked", ArrayList.class, new ArrayList<>()));
-            int amount = island.getFarmingAmount(crop);
+            List<String> lore = new ArrayList<>(config.get("gui.mining.unlocked", ArrayList.class, new ArrayList<>()));
+            int amount = island.getMiningAmount(nodeId);
             lore.replaceAll(s -> TextUtils.translateColor(s
                             .replace("{amount}", "" + amount)
                             .replace("{current}", current)
@@ -72,19 +79,14 @@ public class MiningLevel {
             item.setItemMeta(meta);
         } else {
             String current = (TextUtils.translateColor(config.get("gui.locked.display-name", String.class, "&7{name}")
-                    .replace("{name}", TextUtils.toTitleCase(getCrop().toString().replace('_', ' ')))));
+                    .replace("{name}", TextUtils.toTitleCase(getNodeId().toString().replace('_', ' ')))));
             String currentNoColor = ColorUtils.removeChatColors(current);
 
             meta.setDisplayName(current);
 
-            List<String> lore = new ArrayList<>(config.get("gui.farming.locked", ArrayList.class, new ArrayList<>()));
-            int amount = island.getFarmingAmount(previousCrop); // Amount slain
-            String previous = TextUtils.toTitleCase(this.previousCrop.toString().replace('_', ' '));
-
-            int previousAmount = island.getFarmingAmount(previousCrop);
-            String progressIndicator = PROGRESS_INCOMPLETE;
-            String piHalf = (int) previousRequired / 2 > previousAmount ? PROGRESS_INCOMPLETE : PROGRESS_COMPLETE;
-            String piRecipe = PROGRESS_INCOMPLETE; // TODO: recipe tracking update
+            List<String> lore = new ArrayList<>(config.get("gui.mining.locked", ArrayList.class, new ArrayList<>()));
+            int amount = island.getMiningAmount(previousNodeId); // Amount slain
+            String previous = TextUtils.toTitleCase(this.previousNodeId.toString().replace('_', ' '));
 
             lore.replaceAll(s -> TextUtils.translateColor(s
                             .replace("{amount}", "" + amount)
@@ -92,13 +94,7 @@ public class MiningLevel {
                             .replace("{current}", current)
                             .replace("{current-no-color}", currentNoColor)
                             .replace("{previous}", previous)
-                            .replace("{progress-indicator}", progressIndicator)
-                            .replace("{progress-indicator-half}", piHalf)
-                            .replace("{progress-indicator-recipe}", piRecipe)
-                            .replace("{recipe}", FarmingRecipe.getRecipe(crop, config).getItemMeta().getDisplayName())
-                            .replace("{amount-or-half-required}", String.valueOf(Math.min(previousRequired / 2,
-                                    previousAmount)))
-                            .replace("{required-half}", String.valueOf(previousRequired / 2))
+                            .replace("{progress-indicator}", PROGRESS_INCOMPLETE)
                     )
             );
 
@@ -108,6 +104,6 @@ public class MiningLevel {
 
         return item;
     }
-*/
+
     //</editor-fold>
 }
