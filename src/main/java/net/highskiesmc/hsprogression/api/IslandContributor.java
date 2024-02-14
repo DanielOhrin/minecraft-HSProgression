@@ -10,12 +10,14 @@ public class IslandContributor {
     private final Map<UUID, SlayerContribution> slayerContributions;
     private final Map<UUID, FarmingContribution> farmingContributions;
     private final Map<UUID, MiningContribution> miningContributions;
+    private final Map<UUID, FishingContribution> fishingContributions;
 
     public IslandContributor(UUID playerUuid) {
         this.playerUuid = playerUuid;
         this.slayerContributions = new HashMap<>();
         this.farmingContributions = new HashMap<>();
         this.miningContributions = new HashMap<>();
+        this.fishingContributions = new HashMap<>();
     }
 
     public UUID getPlayerUuid() {
@@ -32,6 +34,10 @@ public class IslandContributor {
 
     public Map<UUID, MiningContribution> getMiningContributions() {
         return miningContributions;
+    }
+
+    public Map<UUID, FishingContribution> getFishingContributions() {
+        return fishingContributions;
     }
 
     public void addSlayerContribution(UUID islandUuid, EntityType entity, int amount) {
@@ -54,6 +60,13 @@ public class IslandContributor {
             miningContributions.get(islandUuid).contribute(nodeId, amount);
         } else {
             miningContributions.put(islandUuid, new MiningContribution(islandUuid, nodeId, amount));
+        }
+    }
+    public void addFishingContribution(UUID islandUuid, String fishId, int amount) {
+        if (fishingContributions.containsKey(islandUuid)) {
+            fishingContributions.get(islandUuid).contribute(fishId, amount);
+        } else {
+            fishingContributions.put(islandUuid, new FishingContribution(islandUuid, fishId, amount));
         }
     }
 }

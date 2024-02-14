@@ -1,10 +1,10 @@
 package net.highskiesmc.hsprogression.api;
 
-import me.arcaniax.hdb.api.HeadDatabaseAPI;
+import dev.lone.itemsadder.api.CustomStack;
 import net.highskiesmc.hscore.configuration.Config;
 import net.highskiesmc.hscore.utils.ColorUtils;
 import net.highskiesmc.hscore.utils.TextUtils;
-import org.bukkit.entity.EntityType;
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -13,27 +13,24 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SlayerLevel implements DisplayableItem {
+public class FishingLevel implements DisplayableItem {
     private static final String PROGRESS_COMPLETE = TextUtils.translateColor("&f[&a✓&f]");
     private static final String PROGRESS_INCOMPLETE = TextUtils.translateColor("&f[&cx&f]");
     private static final DecimalFormat FORMATTER = new DecimalFormat("#,###");
     private final int level;
-    private final EntityType entity;
-    private final EntityType previousEntity;
+    private final String previousLabel;
+    private final String label;
+    private final String id;
     private final long previousRequired;
-    private final int headId;
-    private static final HeadDatabaseAPI headApi;
+    private final double xp;
 
-    static {
-        headApi = new HeadDatabaseAPI();
-    }
-
-    SlayerLevel(int level, EntityType entity, EntityType previousEntity, long previousRequired, int headId) {
+    FishingLevel(int level, String previousLabel, String label, String id, double xp,  long previousRequired) {
         this.level = level;
-        this.entity = entity;
-        this.previousEntity = previousEntity;
+        this.previousLabel = previousLabel;
+        this.label = label;
+        this.id = id;
+        this.xp = xp;
         this.previousRequired = previousRequired;
-        this.headId = headId;
     }
 
     //<editor-fold desc="Getters">
@@ -41,55 +38,69 @@ public class SlayerLevel implements DisplayableItem {
         return level;
     }
 
-    public EntityType getEntity() {
-        return entity;
+    public double getXp() {
+        return xp;
     }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public String getPreviousLabel() {
+        return previousLabel;
+    }
+
+    public ItemStack getItem() {
+        Material mat = Material.getMaterial(id);
+
+        return mat == null ? CustomStack.getInstance(id).getItemStack() : new ItemStack(mat);
+    }
+    // TODO: track player BREAKING/HARVESTING crops for leaderboards
 
     public long getPreviousRequired() {
         return previousRequired;
     }
 
-    public int getHeadId() {
-        return headId;
-    }
-
     public ItemStack toDisplayItem(@NonNull Island island, Config config) {
-        int slayerLevel = island.getLevel(IslandProgressionType.SLAYER);
+        int farmingLevel = island.getLevel(IslandProgressionType.FISHING);
 
-        ItemStack head = headApi.getItemHead(String.valueOf(headId));
-        ItemMeta meta = head.getItemMeta();
+        ItemStack item = getItem();
+        ItemMeta meta = item.getItemMeta();
 
 
-        if (slayerLevel >= level) {
+        if (farmingLevel >= level) {
             String current = (TextUtils.translateColor(config.get("gui.unlocked.display-name", String.class, "&e&l" +
                             "{name}")
-                    .replace("{name}", TextUtils.toTitleCase(getEntity().toString().replace('_', ' ')))));
+                    .replace("{name}", TextUtils.toTitleCase(getLabel()))));
             String currentNoColor = ColorUtils.removeChatColors(current);
 
             meta.setDisplayName(current);
 
-            List<String> lore = new ArrayList<>(config.get("gui.slayer.unlocked", ArrayList.class, new ArrayList<>()));
-            int amount = island.getSlayerAmount(entity);
+            List<String> lore = new ArrayList<>(config.get("gui.fishing.unlocked", ArrayList.class, new ArrayList<>()));
+            int amount = island.getFishingAmount(id);
             lore.replaceAll(s -> TextUtils.translateColor(s
                             .replace("{amount}", "" + amount)
                             .replace("{current}", current)
                             .replace("{current-no-color}", currentNoColor)
-                            .replace("{progress-indicator}", PROGRESS_INCOMPLETE)
                     )
             );
 
             meta.setLore(lore);
-            head.setItemMeta(meta);
+            item.setItemMeta(meta);
         } else {
             String current = (TextUtils.translateColor(config.get("gui.locked.display-name", String.class, "&7{name}")
-                    .replace("{name}", TextUtils.toTitleCase(getEntity().toString().replace('_', ' ')))));
+                    .replace("{name}", TextUtils.toTitleCase(getLabel()))));
             String currentNoColor = ColorUtils.removeChatColors(current);
 
             meta.setDisplayName(current);
 
-            List<String> lore = new ArrayList<>(config.get("gui.slayer.locked", ArrayList.class, new ArrayList<>()));
-            int amount = island.getSlayerAmount(previousEntity); // Amount slain
-            String previous = TextUtils.toTitleCase(this.previousEntity.toString().replace('_', ' '));
+            List<String> lore = new ArrayList<>(config.get("gui.fishing.locked", ArrayList.class, new ArrayList<>()));
+            int amount = island.getFishingAmount(previousLabel);
+            String previous = TextUtils.toTitleCase(this.getPreviousLabel());
 
             lore.replaceAll(s -> TextUtils.translateColor(s
                             .replace("{amount}", "" + amount)
@@ -102,10 +113,10 @@ public class SlayerLevel implements DisplayableItem {
             );
 
             meta.setLore(lore);
-            head.setItemMeta(meta);
+            item.setItemMeta(meta);
         }
 
-        return head;
+        return item;
     }
 
     //</editor-fold>

@@ -8,10 +8,7 @@ import net.highskiesmc.hscore.exceptions.Exception;
 import net.highskiesmc.hscore.highskies.HSPlugin;
 import net.highskiesmc.hsprogression.api.HSProgressionApi;
 import net.highskiesmc.hsprogression.commands.commands.HSProgressionCommand;
-import net.highskiesmc.hsprogression.commands.superior.IslandFarmingCommand;
-import net.highskiesmc.hsprogression.commands.superior.IslandMiningCommand;
-import net.highskiesmc.hsprogression.commands.superior.IslandSlayerCommand;
-import net.highskiesmc.hsprogression.commands.superior.IslandUpgradeCommand;
+import net.highskiesmc.hsprogression.commands.superior.*;
 import net.highskiesmc.hsprogression.commands.tabcompleters.HSProgressionTabCompleter;
 import net.highskiesmc.hsprogression.events.handlers.*;
 import net.milkbowl.vault.economy.Economy;
@@ -59,6 +56,7 @@ public class HSProgression extends HSPlugin {
         SuperiorSkyblockAPI.registerCommand(new IslandSlayerCommand(this));
         SuperiorSkyblockAPI.registerCommand(new IslandFarmingCommand(this));
         SuperiorSkyblockAPI.registerCommand(new IslandMiningCommand(this));
+        SuperiorSkyblockAPI.registerCommand(new IslandFishingCommand(this));
 
         // Register Plugin Commands
         getCommand("hsprogression").setExecutor(new HSProgressionCommand(this));
@@ -71,6 +69,7 @@ public class HSProgression extends HSPlugin {
         register(new IslandSlayerEventsHandler(this, api));
         register(new IslandFarmingEventsHandler(this, api));
         register(new IslandMiningEventsHandler(this, api));
+        register(new IslandFishingEventsHandler(this, api));
         //</editor-fold>
 
         return;

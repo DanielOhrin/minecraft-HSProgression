@@ -26,6 +26,7 @@ island-levels-menu-title: "&x&0&8&4&c&f&bI&x&1&5&5&9&f&bs&x&2&1&6&6&f&bl&x&2&e&7
 island-slayer-menu-title: "&x&0&5&a&f&c&6&lI&x&0&c&b&6&c&b&ls&x&1&4&b&d&d&0&ll&x&1&b&c&4&d&5&la&x&2&3&c&b&d&a&ln&x&2&a&d&2&d&f&ld &x&3&2&d&a&e&4&lS&x&3&9&e&1&e&9&ll&x&4&1&e&8&e&e&la&x&4&8&e&f&f&3&ly&x&5&0&f&6&f&8&le&x&5&7&f&d&f&d&lr"
 island-farming-menu-title: "&x&0&5&a&f&c&6&lI&x&0&c&b&6&c&b&ls&x&1&4&b&d&d&0&ll&x&1&b&c&4&d&5&la&x&2&3&c&b&d&a&ln&x&2&a&d&2&d&f&ld &x&3&2&d&a&e&4&lF&x&3&9&e&1&e&9&la&x&4&1&e&8&e&e&lr&x&4&8&e&f&f&3&lm&x&5&0&f&6&f&8&li&x&5&7&f&d&f&d&ln&x&a&d&f&3&f&dg"
 island-mining-menu-title: "&x&0&5&a&f&c&6&lI&x&0&c&b&6&c&b&ls&x&1&4&b&d&d&0&ll&x&1&b&c&4&d&5&la&x&2&3&c&b&d&a&ln&x&2&a&d&2&d&f&ld &x&3&2&d&a&e&4&lM&x&3&9&e&1&e&9&li&x&4&1&e&8&e&e&ln&x&4&8&e&f&f&3&li&x&5&0&f&6&f&8&ln&x&5&7&f&d&f&d&lg"
+island-fishing-menu-title: "&x&0&5&a&f&c&6&lI&x&0&c&b&6&c&b&ls&x&1&4&b&d&d&0&ll&x&1&b&c&4&d&5&la&x&2&3&c&b&d&a&ln&x&2&a&d&2&d&f&ld &x&3&2&d&a&e&4&lF&x&3&9&e&1&e&9&li&x&4&1&e&8&e&e&ls&x&4&8&e&f&f&3&lh&x&5&0&f&6&f&8&li&x&5&7&f&d&f&d&ln&x&a&d&f&3&f&dg"
 
 # If a field says Nullable and you don't want to include it, just delete the value
 events: # Dispatches sound + message + title to all members of the island
@@ -75,6 +76,13 @@ gui:
       - '&7{amount} {current-no-color} Nodes Mined'
     locked: # {amount} {required} {previous} {previous-no-color} {price}
       - '{progress-indicator} &7{amount}/{required} {previous} Nodes Mined'
+      - ''
+      - '&c&lLOCKED'
+  fishing:
+    unlocked: # {amount} {current} {current-no-color}
+      - '&7{amount} {current-no-color} Caught'
+    locked: # {amount} {required} {previous} {previous-no-color} {price}
+      - '{progress-indicator} &7{amount}/{required} {previous} Caught'
       - ''
       - '&c&lLOCKED'
 farming:

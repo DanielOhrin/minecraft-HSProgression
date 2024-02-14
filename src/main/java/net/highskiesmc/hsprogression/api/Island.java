@@ -6,10 +6,7 @@ import net.highskiesmc.hscore.configuration.Config;
 import net.highskiesmc.hscore.utils.ColorUtils;
 import net.highskiesmc.hscore.utils.TextUtils;
 import net.highskiesmc.hsprogression.HSProgression;
-import net.highskiesmc.hsprogression.events.events.IslandFarmingLevelUpEvent;
-import net.highskiesmc.hsprogression.events.events.IslandLevelUpEvent;
-import net.highskiesmc.hsprogression.events.events.IslandMiningLevelUpEvent;
-import net.highskiesmc.hsprogression.events.events.IslandSlayerLevelUpEvent;
+import net.highskiesmc.hsprogression.events.events.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -31,10 +28,11 @@ public class Island {
     private final Map<EntityType, Integer> slayer;
     private final Map<Material, Integer> farming;
     private final Map<String, Integer> mining;
+    private final Map<String, Integer> fishing;
     private boolean isDeleted;
 
     Island(int id, @NonNull UUID leaderUuid, @NonNull UUID islandUuid, int level, int slayerLevel,
-           int farmingLevel, int miningLevel, boolean isDeleted) {
+           int farmingLevel, int miningLevel, int fishingLevel, boolean isDeleted) {
         this.id = id;
         this.leaderUuid = leaderUuid;
         this.islandUuid = islandUuid;
@@ -43,16 +41,18 @@ public class Island {
             put(IslandProgressionType.SLAYER, slayerLevel);
             put(IslandProgressionType.FARMING, farmingLevel);
             put(IslandProgressionType.MINING, miningLevel);
+            put(IslandProgressionType.FISHING, fishingLevel);
         }};
 
         this.farming = new HashMap<>();
         this.slayer = new HashMap<>();
         this.mining = new HashMap<>();
+        this.fishing = new HashMap<>();
         this.isDeleted = isDeleted;
     }
 
     Island(@NonNull UUID leaderUuid, @NonNull UUID islandUuid, int level, int slayerLevel,
-           int farmingLevel, int miningLevel, boolean isDeleted) {
+           int farmingLevel, int miningLevel, int fishingLevel, boolean isDeleted) {
         this.id = null;
         this.leaderUuid = leaderUuid;
         this.islandUuid = islandUuid;
@@ -61,11 +61,13 @@ public class Island {
             put(IslandProgressionType.SLAYER, slayerLevel);
             put(IslandProgressionType.FARMING, farmingLevel);
             put(IslandProgressionType.MINING, miningLevel);
+            put(IslandProgressionType.FISHING, fishingLevel);
         }};
 
         this.farming = new HashMap<>();
         this.slayer = new HashMap<>();
         this.mining = new HashMap<>();
+        this.fishing = new HashMap<>();
         this.isDeleted = isDeleted;
     }
 
@@ -111,6 +113,9 @@ public class Island {
     }
     public int getMiningAmount(String nodeId) {
         return mining.getOrDefault(nodeId, 0);
+    }
+    public int getFishingAmount(String fishId) {
+        return fishing.getOrDefault(fishId, 0);
     }
 
     public void contributeSlayer(EntityType type, int amount, Config config) {
@@ -317,6 +322,74 @@ public class Island {
             }
         }
     }
+    public void contributeFishing(String fishId, int amount, Config config) {
+        if (!this.fishing.containsKey(fishId)) {
+            this.fishing.put(fishId, 0);
+        }
+
+        int oldAmount = this.fishing.get(fishId);
+        this.fishing.put(fishId, oldAmount + amount);
+
+        // Check if slayer leveled up
+        FishingLevel nextFishingLevel =
+                HSProgression.getApi().getFishingLevel(getLevel(IslandProgressionType.FISHING) + 1);
+        int levelUpRequirement = (int) nextFishingLevel.getPreviousRequired();
+
+        if (oldAmount + amount >= levelUpRequirement && getLevel(IslandProgressionType.FISHING) + 1 == nextFishingLevel.getLevel()) {
+            IslandFishingLevelUpEvent event = new IslandFishingLevelUpEvent(this, nextFishingLevel);
+            Bukkit.getPluginManager().callEvent(event);
+
+            if (!event.isCancelled()) {
+                setLevel(IslandProgressionType.FISHING, nextFishingLevel.getLevel());
+
+                Sound sound = Sound.valueOf(config.get("events.island-upgraded.sound", String.class,
+                        "UI_TOAST_CHALLENGE_COMPLETE"));
+                String msg = config.get("events.island-upgraded.message", String.class, "&e" +
+                        "[&6&l!&e] &6&l/is {data-type}&7 upgraded! {current} &7unlocked!");
+                String title = config.get("events.island-upgraded.title.title", String.class, "&6&l/is {data-type} " +
+                        "&7Upgraded!");
+                String subTitle = config.get("events.island-upgraded.title.subtitle", String.class);
+                int fadeIn = config.get("events.island-upgraded.title.fade-in", int.class, 20);
+                int persist = config.get("events.island-upgraded.title.persist", int.class, 40);
+                int fadeOut = config.get("events.island-upgraded.title.fade-out", int.class, 20);
+
+                HSProgressionApi api = HSProgression.getApi();
+
+                // Feedback to players
+                String current =
+                        TextUtils.translateColor(TextUtils.toTitleCase(api.getFishingLevel(getLevel(IslandProgressionType.FISHING)).getLabel()));
+                title = TextUtils.translateColor(
+                        title.replace("{data-type}", "fishing")
+                                .replace("{current}", current)
+                                .replace("{current-no-color}", ColorUtils.removeChatColors(current))
+                );
+
+                if (subTitle != null) {
+                    subTitle = TextUtils.translateColor(
+                            subTitle.replace("{data-type}", "fishing")
+                                    .replace("{current}", current)
+                                    .replace("{current-no-color}", ColorUtils.removeChatColors(current))
+                    );
+                }
+
+                msg = TextUtils.translateColor(
+                        msg.replace("{data-type}", "fishing")
+                                .replace("{current}", current)
+                                .replace("{current-no-color}", ColorUtils.removeChatColors(current))
+                );
+
+                List<SuperiorPlayer> members =
+                        SuperiorSkyblockAPI.getIslandByUUID(getIslandUuid()).getIslandMembers(true);
+                for (SuperiorPlayer member : members) {
+                    Player player = member.asPlayer();
+
+                    player.playSound(player.getLocation(), sound, 1, 1);
+                    player.sendTitle(title, subTitle, fadeIn, persist, fadeOut);
+                    player.sendMessage(msg);
+                }
+            }
+        }
+    }
 
     void setSlayerNum(EntityType entity, int amount) {
         this.slayer.put(entity, amount);
@@ -327,6 +400,9 @@ public class Island {
     }
     void setMiningNum(String nodeId, int amount) {
         this.mining.put(nodeId, amount);
+    }
+    void setFishingNum(String fishId, int amount) {
+        this.fishing.put(fishId, amount);
     }
 
     public void claimRecipe(Player player, Material crop, Config config) {

@@ -4,6 +4,7 @@
     <value key="slayer.gui.slots">9-18-27-28-29-20-11-12-13-22-31-32-33-24-15-16-17</value>
     <value key="farming.gui.slots">10-19-28-29-30-21-12-13-14-23-32-33-34-25</value>
     <value key="mining.gui.slots">10-19-20-21-12-13-14-23-24-25-16-17</value>
+    <value key="fishing.gui.slots">9-10-11-12-13-14-15-16-17</value>
     <tables>
         <table name="island_level">
             <row> <!-- 1 -->
@@ -914,6 +915,62 @@
                 <Node_Id>ancient-debris</Node_Id>
                 <Material>ANCIENT_DEBRIS</Material>
                 <Previous_Required>150000</Previous_Required>
+            </row>
+        </table>
+        <table name="island_fishing">
+            <row> <!-- 1 -->
+                <Label>Cod</Label>
+                <Item_Id>COD</Item_Id>
+                <Experience>10</Experience>
+                <Previous_Required>0</Previous_Required>
+            </row>
+            <row> <!-- 2 -->
+                <Label>Salmon</Label>
+                <Item_Id>SALMON</Item_Id>
+                <Experience>50</Experience>
+                <Previous_Required>200</Previous_Required>
+            </row>
+            <row> <!-- 3 -->
+                <Label>Tropical Fish</Label>
+                <Item_Id>TROPICAL_FISH</Item_Id>
+                <Experience>150</Experience>
+                <Previous_Required>800</Previous_Required>
+            </row>
+            <row> <!-- 4 -->
+                <Label>Pufferfish</Label>
+                <Item_Id>PUFFERFISH</Item_Id>
+                <Experience>250</Experience>
+                <Previous_Required>2500</Previous_Required>
+            </row>
+            <row> <!-- 5 -->
+                <Label>Black Moor Goldfish</Label>
+                <Item_Id>highskiesmc:black_moor_goldfish</Item_Id>
+                <Experience>500</Experience>
+                <Previous_Required>10000</Previous_Required>
+            </row>
+            <row> <!-- 6 -->
+                <Label>Blue Parrotfish</Label>
+                <Item_Id>highskiesmc:blue_parrotfish</Item_Id>
+                <Experience>1000</Experience>
+                <Previous_Required>35000</Previous_Required>
+            </row>
+            <row> <!-- 7 -->
+                <Label>Goldfish</Label>
+                <Item_Id>highskiesmc:goldfish</Item_Id>
+                <Experience>2500</Experience>
+                <Previous_Required>100000</Previous_Required>
+            </row>
+            <row> <!-- 8 -->
+                <Label>Green Sunfish</Label>
+                <Item_Id>highskiesmc:green_sunfish</Item_Id>
+                <Experience>5000</Experience>
+                <Previous_Required>200000</Previous_Required>
+            </row>
+            <row> <!-- 9 -->
+                <Label>Tuna</Label>
+                <Item_Id>highskiesmc:tuna</Item_Id>
+                <Experience>10000</Experience>
+                <Previous_Required>300000</Previous_Required>
             </row>
         </table>
     </tables>
