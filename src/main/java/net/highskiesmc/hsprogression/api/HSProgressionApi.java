@@ -3,10 +3,13 @@ package net.highskiesmc.hsprogression.api;
 import com.bgsoftware.superiorskyblock.api.wrappers.SuperiorPlayer;
 import net.highskiesmc.hsprogression.HSProgression;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -18,10 +21,15 @@ public class HSProgressionApi {
     private final HSProgression main;
     private List<IslandLevel> islandLevels;
     private List<SlayerLevel> slayerLevels;
+    private List<FarmingLevel> farmingLevels;
+    private List<MiningLevel> miningLevels;
+    private List<FishingLevel> fishingLevels;
     private Map<Integer, List<IslandBlock>> islandBlocks;
     private Map<UUID, Island> islands;
     private Database db;
     private final int taskId;
+    private boolean useFirstCache = true;
+    private final Map<Boolean, Map<UUID, IslandContributor>> islandContributors;
 
     //</editor-fold>
     //<editor-fold desc="Constructor">
@@ -29,10 +37,17 @@ public class HSProgressionApi {
             IOException {
         this.main = main;
         db = new Database(main, dbConfig);
+        this.islandContributors = new HashMap<>() {{
+            put(true, new HashMap<>());
+            put(false, new HashMap<>());
+        }};
 
         // Populate with data
         this.islandLevels = db.getIslandLevels();
         this.slayerLevels = db.getSlayerLevels();
+        this.farmingLevels = db.getFarmingLevels();
+        this.miningLevels = db.getMiningLevels();
+        this.fishingLevels = db.getFishingLevels();
         this.islandBlocks = db.getIslandBlocks();
         this.islands = db.getIslands();
 
@@ -58,6 +73,7 @@ public class HSProgressionApi {
         this.islands = null;
         this.islandLevels = null;
         this.slayerLevels = null;
+        this.farmingLevels = null;
         this.islandBlocks = null;
         this.db = null;
     }
@@ -73,7 +89,11 @@ public class HSProgressionApi {
      * Uploads cache to DB (Sync)
      */
     private void uploadCacheToDatabase() {
+        Map<UUID, IslandContributor> cache = new HashMap<>(getCache(true));
+        islandContributors.get(!useFirstCache).clear();
+
         db.upsertIslands(this.main, islands.values().stream().toList());
+        db.upsertContributions(this.main, cache);
     }
 
     //</editor-fold>
@@ -89,6 +109,21 @@ public class HSProgressionApi {
         return this.islandLevels.get(level - 1);
     }
 
+    @Nullable
+    public List<DisplayableItem> getLevelItems(IslandProgressionType type) {
+        List<DisplayableItem> result;
+
+        switch (type) {
+            case SLAYER -> result = new ArrayList<>(getSlayerLevels());
+            case FARMING -> result = new ArrayList<>(getFarmingLevels());
+            case MINING -> result = new ArrayList<>(getMiningLevels());
+            case FISHING -> result = new ArrayList<>(getFishingLevels());
+            default -> result = null;
+        }
+
+        return result;
+    }
+
     @NonNull
     public List<SlayerLevel> getSlayerLevels() {
         return Collections.unmodifiableList(this.slayerLevels);
@@ -97,6 +132,36 @@ public class HSProgressionApi {
     @NonNull
     public SlayerLevel getSlayerLevel(int level) throws IndexOutOfBoundsException {
         return this.slayerLevels.get(level - 1);
+    }
+
+    @NonNull
+    public List<FarmingLevel> getFarmingLevels() {
+        return Collections.unmodifiableList(this.farmingLevels);
+    }
+
+    @NonNull
+    public FarmingLevel getFarmingLevel(int level) throws IndexOutOfBoundsException {
+        return this.farmingLevels.get(level - 1);
+    }
+
+    @NonNull
+    public List<MiningLevel> getMiningLevels() {
+        return miningLevels;
+    }
+
+    @NonNull
+    public MiningLevel getMiningLevel(int level) throws IndexOutOfBoundsException {
+        return this.miningLevels.get(level - 1);
+    }
+
+    @NonNull
+    public List<FishingLevel> getFishingLevels() {
+        return Collections.unmodifiableList(fishingLevels);
+    }
+
+    @NonNull
+    public FishingLevel getFishingLevel(int level) throws IndexOutOfBoundsException {
+        return this.fishingLevels.get(level - 1);
     }
 
     @NonNull
@@ -110,8 +175,9 @@ public class HSProgressionApi {
     //<editor-fold desc="Island">
     //<editor-fold desc="Create">
     private void createIsland(@NonNull UUID islandUuid, @NonNull UUID leaderUuid, int level,
-                              int slayerLevel, boolean isDeleted) {
-        this.islands.put(islandUuid, new Island(leaderUuid, islandUuid, level, slayerLevel, isDeleted));
+                              int slayerLevel, int farmingLevel, int miningLevel, int fishingLevel, boolean isDeleted) {
+        this.islands.put(islandUuid, new Island(leaderUuid, islandUuid, level, slayerLevel, farmingLevel,
+                miningLevel, fishingLevel, isDeleted));
     }
 
     /**
@@ -120,20 +186,23 @@ public class HSProgressionApi {
      * @param island Source island
      */
     public void createIsland(com.bgsoftware.superiorskyblock.api.island.Island island) {
-        createIsland(island.getUniqueId(), island.getOwner().getUniqueId(), 1, 1, false);
+        createIsland(island.getUniqueId(), island.getOwner().getUniqueId(), 1, 1, 1, 1, 1, false);
     }
 
     public void createIsland(com.bgsoftware.superiorskyblock.api.island.Island island, boolean isDeleted) {
-        createIsland(island.getUniqueId(), island.getOwner().getUniqueId(), 1, 1, isDeleted);
+        createIsland(island.getUniqueId(), island.getOwner().getUniqueId(), 1, 1, 1, 1, 1, isDeleted);
     }
 
-    public void createIsland(com.bgsoftware.superiorskyblock.api.island.Island island, int level, int slayerLevel) {
-        createIsland(island.getUniqueId(), island.getOwner().getUniqueId(), level, slayerLevel, false);
+    public void createIsland(com.bgsoftware.superiorskyblock.api.island.Island island, int level, int slayerLevel,
+                             int farmingLevel, int miningLevel, int fishingLevel) {
+        createIsland(island.getUniqueId(), island.getOwner().getUniqueId(), level, slayerLevel, farmingLevel,
+                miningLevel, fishingLevel, false);
     }
 
     public void createIsland(com.bgsoftware.superiorskyblock.api.island.Island island, int level,
-                             int slayerLevel, boolean isDeleted) {
-        createIsland(island.getUniqueId(), island.getOwner().getUniqueId(), level, slayerLevel, isDeleted);
+                             int slayerLevel, int farmingLevel, int miningLevel, int fishingLevel, boolean isDeleted) {
+        createIsland(island.getUniqueId(), island.getOwner().getUniqueId(), level, slayerLevel, farmingLevel,
+                miningLevel, fishingLevel, isDeleted);
     }
 
     //</editor-fold>
@@ -195,6 +264,68 @@ public class HSProgressionApi {
         this.islands.get(island.getIslandUuid()).delete();
     }
     //</editor-fold>
+    //</editor-fold>
+
+    //<editor-fold desc="Skills">
+    public void contributeSlayer(UUID playerUuid, UUID islandUuid, EntityType entity, int amount) {
+        Map<UUID, IslandContributor> contributors = islandContributors.get(useFirstCache);
+
+        if (!contributors.containsKey(playerUuid)) {
+            contributors.put(playerUuid, new IslandContributor(playerUuid));
+        }
+
+        IslandContributor contributor = contributors.get(playerUuid);
+
+        contributor.addSlayerContribution(islandUuid, entity, amount);
+        this.islands.get(islandUuid).contributeSlayer(entity, amount, main.getConfigs());
+    }
+
+    public void contributeFarming(UUID playerUuid, UUID islandUuid, Material crop, int amount) {
+        Map<UUID, IslandContributor> contributors = islandContributors.get(useFirstCache);
+
+        if (!contributors.containsKey(playerUuid)) {
+            contributors.put(playerUuid, new IslandContributor(playerUuid));
+        }
+
+        IslandContributor contributor = contributors.get(playerUuid);
+
+        contributor.addFarmingContribution(islandUuid, crop, amount);
+        this.islands.get(islandUuid).contributeFarming(crop, amount, main.getConfigs());
+    }
+
+    public void contributeMining(UUID playerUuid, UUID islandUuid, String nodeId, int amount) {
+        Map<UUID, IslandContributor> contributors = islandContributors.get(useFirstCache);
+
+        if (!contributors.containsKey(playerUuid)) {
+            contributors.put(playerUuid, new IslandContributor(playerUuid));
+        }
+
+        IslandContributor contributor = contributors.get(playerUuid);
+
+        contributor.addMiningContribution(islandUuid, nodeId, amount);
+        this.islands.get(islandUuid).contributeMining(nodeId, amount, main.getConfigs());
+    }
+
+    public void contributeFishing(UUID playerUuid, UUID islandUuid, String fishId, int amount) {
+        Map<UUID, IslandContributor> contributors = islandContributors.get(useFirstCache);
+
+        if (!contributors.containsKey(playerUuid)) {
+            contributors.put(playerUuid, new IslandContributor(playerUuid));
+        }
+
+        IslandContributor contributor = contributors.get(playerUuid);
+
+        contributor.addFishingContribution(islandUuid, fishId, amount);
+        this.islands.get(islandUuid).contributeFishing(fishId, amount, main.getConfigs());
+    }
+
+    public Map<UUID, IslandContributor> getCache(boolean swapCache) {
+        if (swapCache) {
+            this.useFirstCache = !this.useFirstCache;
+        }
+
+        return islandContributors.get(!this.useFirstCache);
+    }
     //</editor-fold>
     //</editor-fold>
     //<editor-fold desc="Util">

@@ -1,7 +1,6 @@
 package net.highskiesmc.hsprogression.api;
 
 import net.highskiesmc.hsprogression.HSProgression;
-import net.milkbowl.vault.economy.Economy;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;

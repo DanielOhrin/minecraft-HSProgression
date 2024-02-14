@@ -17,11 +17,11 @@ import org.bukkit.entity.Player;
 import java.util.List;
 import java.util.Locale;
 
-public class IslandSlayerCommand implements SuperiorCommand {
+public class IslandMiningCommand implements SuperiorCommand {
     private final HSPlugin main;
     private final Config config;
 
-    public IslandSlayerCommand(HSPlugin main) {
+    public IslandMiningCommand(HSPlugin main) {
         super();
         this.main = main;
         this.config = main.getConfigs();
@@ -29,22 +29,22 @@ public class IslandSlayerCommand implements SuperiorCommand {
 
     @Override
     public List<String> getAliases() {
-        return List.of("slayer");
+        return List.of("mining");
     }
 
     @Override
     public String getPermission() {
-        return "hsprogression.cmd.slayer";
+        return "hsprogression.cmd.mining";
     }
 
     @Override
     public String getUsage(Locale locale) {
-        return "slayer";
+        return "mining";
     }
 
     @Override
     public String getDescription(Locale locale) {
-        return "Opens the slayer menu for your island";
+        return "Opens the mining menu for your island";
     }
 
     @Override
@@ -80,7 +80,8 @@ public class IslandSlayerCommand implements SuperiorCommand {
         }
 
         Island island = sPlayer.getIsland();
-        player.openInventory(new IslandProgressionGUI((HSProgression) main, player, island, IslandProgressionType.SLAYER).getInventory());
+        player.openInventory(new IslandProgressionGUI((HSProgression) main, player, island,
+                IslandProgressionType.MINING).getInventory());
     }
 
     @Override

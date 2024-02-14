@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <config>
     <value key="cache.upload.interval.seconds">300</value>
-    <value key="slayer.gui.slots">9-18-27-28-29-20-11-12-13-22-31-32-33-24-15-16-17</value> <!-- Example: 1st slayer mob is in first number slot listed -->
+    <value key="slayer.gui.slots">9-18-27-28-29-20-11-12-13-22-31-32-33-24-15-16-17</value>
+    <value key="farming.gui.slots">10-19-28-29-30-21-12-13-14-23-32-33-34-25</value>
+    <value key="mining.gui.slots">10-19-20-21-12-13-14-23-24-25-16-17</value>
+    <value key="fishing.gui.slots">9-10-11-12-13-14-15-16-17</value>
     <tables>
         <table name="island_level">
             <row> <!-- 1 -->
@@ -694,14 +697,14 @@
             </row>
         </table>
         <table name="island_slayer">
-        <row> <!-- 1 -->
-            <Entity>RABBIT</Entity>
-            <Previous_Required>0</Previous_Required>
-            <Head_Id>57519</Head_Id>
-        </row>
+            <row> <!-- 1 -->
+                <Entity>RABBIT</Entity>
+                <Previous_Required>0</Previous_Required>
+                <Head_Id>57519</Head_Id>
+            </row>
             <row> <!-- 2 -->
                 <Entity>CHICKEN</Entity>
-                <Previous_Required>2500</Previous_Required>
+                <Previous_Required>25</Previous_Required> <!-- should be 2500 -->
                 <Head_Id>53916</Head_Id>
             </row>
             <row> <!-- 3 -->
@@ -778,6 +781,196 @@
                 <Entity>IRON_GOLEM</Entity>
                 <Previous_Required>3504000</Previous_Required>
                 <Head_Id>341</Head_Id>
+            </row>
+        </table>
+        <table name="island_farming">
+            <row> <!-- 1 -->
+                <CROP>WHEAT</CROP>
+                <SEED>WHEAT</SEED>
+                <Previous_Required>0</Previous_Required>
+            </row>
+            <row> <!-- 2 -->
+                <CROP>BEETROOT</CROP>
+                <SEED>BEETROOTS</SEED>
+                <Previous_Required>20</Previous_Required> <!-- Should be 10000 -->
+            </row>
+            <row> <!-- 3 -->
+                <CROP>CARROT</CROP>
+                <SEED>CARROTS</SEED>
+                <Previous_Required>25000</Previous_Required>
+            </row>
+            <row> <!-- 4 -->
+                <CROP>POTATO</CROP>
+                <SEED>POTATOES</SEED>
+                <Previous_Required>55000</Previous_Required>
+            </row>
+            <row> <!-- 5 -->
+                <CROP>SUGAR_CANE</CROP>
+                <SEED>SUGAR_CANE</SEED>
+                <Previous_Required>120000</Previous_Required>
+            </row>
+            <row> <!-- 6 -->
+                <CROP>KELP</CROP>
+                <SEED>KELP</SEED>
+                <Previous_Required>350000</Previous_Required>
+            </row>
+            <row> <!-- 7 -->
+                <CROP>NETHER_WART</CROP>
+                <SEED>NETHER_WART</SEED>
+                <Previous_Required>1000000</Previous_Required>
+            </row>
+            <row> <!-- 8 -->
+                <CROP>SWEET_BERRIES</CROP>
+                <SEED>SWEET_BERRY_BUSH</SEED>
+                <Previous_Required>5000000</Previous_Required>
+            </row>
+            <row> <!-- 9 -->
+                <CROP>BAMBOO</CROP>
+                <SEED>BAMBOO_SAPLING</SEED>
+                <Previous_Required>1400000</Previous_Required>
+            </row>
+            <row> <!-- 10 -->
+                <CROP>CHORUS_FLOWER</CROP>
+                <SEED>CHORUS_FLOWER</SEED>
+                <Previous_Required>10000000</Previous_Required>
+            </row>
+            <row> <!-- 11 -->
+                <CROP>CACTUS</CROP>
+                <SEED>CACTUS</SEED>
+                <Previous_Required>5000000</Previous_Required>
+            </row>
+            <row> <!-- 12 -->
+                <CROP>MELON_SLICE</CROP>
+                <SEED>MELON_STEM</SEED>
+                <Previous_Required>3750000</Previous_Required>
+            </row>
+            <row> <!-- 13 -->
+                <CROP>PUMPKIN</CROP>
+                <SEED>PUMPKIN_STEM</SEED>
+                <Previous_Required>3000000</Previous_Required>
+            </row>
+            <row> <!-- 14 -->
+                <CROP>COCOA_BEANS</CROP>
+                <SEED>COCOA</SEED>
+                <Previous_Required>3750000</Previous_Required>
+            </row>
+        </table>
+        <table name="island_mining">
+            <row> <!-- 1 -->
+                <Node_Id>wood</Node_Id>
+                <Material>OAK_LOG</Material>
+                <Previous_Required>0</Previous_Required>
+            </row>
+            <row> <!-- 2 -->
+                <Node_Id>cobblestone</Node_Id>
+                <Material>COBBLESTONE</Material>
+                <Previous_Required>10</Previous_Required> <!-- Should be 2500 -->
+            </row>
+            <row> <!-- 3 -->
+                <Node_Id>coal</Node_Id>
+                <Material>COAL_ORE</Material>
+                <Previous_Required>5000</Previous_Required>
+            </row>
+            <row> <!-- 4 -->
+                <Node_Id>copper</Node_Id>
+                <Material>COPPER_ORE</Material>
+                <Previous_Required>10000</Previous_Required>
+            </row>
+            <row> <!-- 5 -->
+                <Node_Id>nether-gold</Node_Id>
+                <Material>NETHER_GOLD_ORE</Material>
+                <Previous_Required>15000</Previous_Required>
+            </row>
+            <row> <!-- 6 -->
+                <Node_Id>nether-quartz</Node_Id>
+                <Material>NETHER_QUARTZ_ORE</Material>
+                <Previous_Required>22500</Previous_Required>
+            </row>
+            <row> <!-- 7 -->
+                <Node_Id>iron</Node_Id>
+                <Material>IRON_ORE</Material>
+                <Previous_Required>40000</Previous_Required>
+            </row>
+            <row> <!-- 8 -->
+                <Node_Id>ruby</Node_Id>
+                <Material>REDSTONE_ORE</Material>
+                <Previous_Required>60000</Previous_Required>
+            </row>
+            <row> <!-- 9 -->
+                <Node_Id>lapis</Node_Id>
+                <Material>LAPIS_ORE</Material>
+                <Previous_Required>70000</Previous_Required>
+            </row>
+            <row> <!-- 10 -->
+                <Node_Id>diamond</Node_Id>
+                <Material>DIAMOND_ORE</Material>
+                <Previous_Required>80000</Previous_Required>
+            </row>
+            <row> <!-- 11 -->
+                <Node_Id>emerald</Node_Id>
+                <Material>EMERALD_ORE</Material>
+                <Previous_Required>120000</Previous_Required>
+            </row>
+            <row> <!-- 12 -->
+                <Node_Id>ancient-debris</Node_Id>
+                <Material>ANCIENT_DEBRIS</Material>
+                <Previous_Required>150000</Previous_Required>
+            </row>
+        </table>
+        <table name="island_fishing">
+            <row> <!-- 1 -->
+                <Label>Cod</Label>
+                <Item_Id>COD</Item_Id>
+                <Experience>10</Experience>
+                <Previous_Required>0</Previous_Required>
+            </row>
+            <row> <!-- 2 -->
+                <Label>Salmon</Label>
+                <Item_Id>SALMON</Item_Id>
+                <Experience>50</Experience>
+                <Previous_Required>200</Previous_Required>
+            </row>
+            <row> <!-- 3 -->
+                <Label>Tropical Fish</Label>
+                <Item_Id>TROPICAL_FISH</Item_Id>
+                <Experience>150</Experience>
+                <Previous_Required>800</Previous_Required>
+            </row>
+            <row> <!-- 4 -->
+                <Label>Pufferfish</Label>
+                <Item_Id>PUFFERFISH</Item_Id>
+                <Experience>250</Experience>
+                <Previous_Required>2500</Previous_Required>
+            </row>
+            <row> <!-- 5 -->
+                <Label>Black Moor Goldfish</Label>
+                <Item_Id>highskiesmc:black_moor_goldfish</Item_Id>
+                <Experience>500</Experience>
+                <Previous_Required>10000</Previous_Required>
+            </row>
+            <row> <!-- 6 -->
+                <Label>Blue Parrotfish</Label>
+                <Item_Id>highskiesmc:blue_parrotfish</Item_Id>
+                <Experience>1000</Experience>
+                <Previous_Required>35000</Previous_Required>
+            </row>
+            <row> <!-- 7 -->
+                <Label>Goldfish</Label>
+                <Item_Id>highskiesmc:goldfish</Item_Id>
+                <Experience>2500</Experience>
+                <Previous_Required>100000</Previous_Required>
+            </row>
+            <row> <!-- 8 -->
+                <Label>Green Sunfish</Label>
+                <Item_Id>highskiesmc:green_sunfish</Item_Id>
+                <Experience>5000</Experience>
+                <Previous_Required>200000</Previous_Required>
+            </row>
+            <row> <!-- 9 -->
+                <Label>Tuna</Label>
+                <Item_Id>highskiesmc:tuna</Item_Id>
+                <Experience>10000</Experience>
+                <Previous_Required>300000</Previous_Required>
             </row>
         </table>
     </tables>

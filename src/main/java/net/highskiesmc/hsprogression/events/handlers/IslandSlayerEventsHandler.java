@@ -49,7 +49,7 @@ public class IslandSlayerEventsHandler extends HSListener {
         }
 
         if (!trackedEntityTypes.containsKey(spawner.getSpawner().getSpawnedType())) {
-            main.getLogger().warning(e.getPlayer().getName() + "attempted to place " + e.getIncreaseAmount() + spawner.getSpawner().getSpawnedType()
+            main.getLogger().warning(e.getPlayer().getName() + " attempted to place " + e.getIncreaseAmount() + spawner.getSpawner().getSpawnedType()
                     + " spawner at " + LocationUtils.serializeLocation(spawner.getLocation(), true));
             e.setCancelled(true);
             return;
@@ -68,9 +68,6 @@ public class IslandSlayerEventsHandler extends HSListener {
 
     @EventHandler(ignoreCancelled = true)
     public void onEntitySlainOnIsland(EntityDeathEvent e) {
-        // TODO: Check if its on an island
-        // TODO: Check if the island has it unlocked ONLY WHEN PUSHING TO DATABASE!
-
         EntityType type = e.getEntityType();
         Entity entity = e.getEntity();
         Player slayer = e.getEntity().getKiller();
@@ -88,9 +85,7 @@ public class IslandSlayerEventsHandler extends HSListener {
         }
 
         if (trackedEntityTypes.containsKey(type) && island.getLevel(IslandProgressionType.SLAYER) >= trackedEntityTypes.get(type)) {
-            System.out.println("Yep that's a tracked " + type + " kill!");
-            // TODO: TRACK THAT SHIT FOR REAL!
-            // TODO: Use the (Player) slayer variable...
+            api.contributeSlayer(slayer == null ? null : slayer.getUniqueId(), island.getIslandUuid(), type, 1);
         }
     }
 }

@@ -7,24 +7,21 @@ import net.highskiesmc.hscore.configuration.sources.XmlConfigSource;
 import net.highskiesmc.hscore.exceptions.Exception;
 import net.highskiesmc.hscore.highskies.HSPlugin;
 import net.highskiesmc.hsprogression.api.HSProgressionApi;
-import net.highskiesmc.hsprogression.commands.superior.IslandSlayerCommand;
-import net.highskiesmc.hsprogression.commands.superior.IslandUpgradeCommand;
-import net.highskiesmc.hsprogression.events.handlers.CommandPreProcessHandler;
-import net.highskiesmc.hsprogression.events.handlers.IslandEventsHandler;
-import net.highskiesmc.hsprogression.events.handlers.IslandLevelRestrictionsHandler;
-import net.highskiesmc.hsprogression.events.handlers.IslandSlayerEventsHandler;
+import net.highskiesmc.hsprogression.commands.commands.HSProgressionCommand;
+import net.highskiesmc.hsprogression.commands.superior.*;
+import net.highskiesmc.hsprogression.commands.tabcompleters.HSProgressionTabCompleter;
+import net.highskiesmc.hsprogression.events.handlers.*;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.RegisteredServiceProvider;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class HSProgression extends HSPlugin {
     private static HSProgressionApi api;
     private static Economy econ = null;
     private static RoseStackerAPI rsAPI = null;
+
     @Override
     public void enable() {
         if (!setupEconomy()) {
@@ -57,12 +54,22 @@ public class HSProgression extends HSPlugin {
         // Register SuperiorCommands
         SuperiorSkyblockAPI.registerCommand(new IslandUpgradeCommand(this));
         SuperiorSkyblockAPI.registerCommand(new IslandSlayerCommand(this));
+        SuperiorSkyblockAPI.registerCommand(new IslandFarmingCommand(this));
+        SuperiorSkyblockAPI.registerCommand(new IslandMiningCommand(this));
+        SuperiorSkyblockAPI.registerCommand(new IslandFishingCommand(this));
+
+        // Register Plugin Commands
+        getCommand("hsprogression").setExecutor(new HSProgressionCommand(this));
+        getCommand("hsprogression").setTabCompleter(new HSProgressionTabCompleter());
 
         // Register Event Handlers
         register(new CommandPreProcessHandler());
         register(new IslandEventsHandler(this, api));
         register(new IslandLevelRestrictionsHandler(this, api));
         register(new IslandSlayerEventsHandler(this, api));
+        register(new IslandFarmingEventsHandler(this, api));
+        register(new IslandMiningEventsHandler(this, api));
+        register(new IslandFishingEventsHandler(this, api));
         //</editor-fold>
 
         return;
