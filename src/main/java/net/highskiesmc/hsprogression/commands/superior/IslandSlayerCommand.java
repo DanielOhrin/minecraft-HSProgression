@@ -74,7 +74,7 @@ public class IslandSlayerCommand implements SuperiorCommand {
 
         if (!sPlayer.hasIsland()) {
             player.sendMessage(TextUtils.translateColor(
-                    config.get("common.no-island", String.class, "&c&lError | &7You don't have an island.")
+                    config.get("common.no-island", String.class, "&4&l[!] &cYou don't have an island.")
             ));
             return;
         }
