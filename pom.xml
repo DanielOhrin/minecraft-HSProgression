@@ -6,15 +6,15 @@
 
     <groupId>net.highskiesmc</groupId>
     <artifactId>hsprogression</artifactId>
-    <version>2.0.0</version>
+    <version>2.0.1</version>
     <packaging>jar</packaging>
 
     <name>HSProgression</name>
 
     <properties>
         <author>Daniel Ohrin</author>
+        <author>Matthew Wiggins</author>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <core.version>2.4.1</core.version>
     </properties>
 
     <build>

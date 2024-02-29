@@ -864,7 +864,7 @@
             <row> <!-- 2 -->
                 <Node_Id>cobblestone</Node_Id>
                 <Material>COBBLESTONE</Material>
-                <Previous_Required>10</Previous_Required> <!-- Should be 2500 -->
+                <Previous_Required>2500</Previous_Required> <!-- Should be 2500 -->
             </row>
             <row> <!-- 3 -->
                 <Node_Id>coal</Node_Id>
@@ -877,18 +877,18 @@
                 <Previous_Required>10000</Previous_Required>
             </row>
             <row> <!-- 5 -->
-                <Node_Id>nether-gold</Node_Id>
-                <Material>NETHER_GOLD_ORE</Material>
+                <Node_Id>iron</Node_Id>
+                <Material>IRON_ORE</Material>
                 <Previous_Required>15000</Previous_Required>
             </row>
             <row> <!-- 6 -->
-                <Node_Id>nether-quartz</Node_Id>
-                <Material>NETHER_QUARTZ_ORE</Material>
+                <Node_Id>nether-gold</Node_Id>
+                <Material>NETHER_GOLD_ORE</Material>
                 <Previous_Required>22500</Previous_Required>
             </row>
             <row> <!-- 7 -->
-                <Node_Id>iron</Node_Id>
-                <Material>IRON_ORE</Material>
+                <Node_Id>nether-quartz</Node_Id>
+                <Material>NETHER_QUARTZ_ORE</Material>
                 <Previous_Required>40000</Previous_Required>
             </row>
             <row> <!-- 8 -->
