@@ -2,9 +2,9 @@ package net.highskiesmc.hsprogression.events.handlers;
 
 import com.bgsoftware.superiorskyblock.api.SuperiorSkyblockAPI;
 import com.bgsoftware.superiorskyblock.api.island.Island;
-import net.highskiesmc.fishing.events.events.FishCaughtEvent;
-import net.highskiesmc.fishing.util.DropEntry;
-import net.highskiesmc.fishing.util.enums.Rarity;
+import net.highskiesmc.hsfishing.events.events.FishCaughtEvent;
+import net.highskiesmc.hsfishing.util.DropEntry;
+import net.highskiesmc.hsfishing.util.enums.Rarity;
 import net.highskiesmc.hscore.highskies.HSListener;
 import net.highskiesmc.hscore.highskies.HSPlugin;
 import net.highskiesmc.hsprogression.api.FishingLevel;
