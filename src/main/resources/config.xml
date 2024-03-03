@@ -914,7 +914,7 @@
             <row> <!-- 12 -->
                 <Node_Id>ancient-debris</Node_Id>
                 <Material>ANCIENT_DEBRIS</Material>
-                <Previous_Required>0</Previous_Required> <!-- Should be 150000 -->
+                <Previous_Required>0</Previous_Required> <!-- Should b e 150000 -->
             </row>
         </table>
         <table name="island_fishing">
