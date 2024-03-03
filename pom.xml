@@ -13,8 +13,8 @@
 
     <properties>
         <author>Daniel Ohrin</author>
+        <author>Matthew Wiggins</author>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <core.version>2.4.1</core.version>
     </properties>
 
     <build>
@@ -127,12 +127,12 @@
         <dependency>
             <groupId>net.highskiesmc</groupId>
             <artifactId>hscore</artifactId>
-            <version>1.2.1</version>
+            <version>1.2.3</version>
         </dependency>
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.20.1-R0.1-SNAPSHOT</version>
+            <version>1.20.4-R0.1-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -144,7 +144,7 @@
         <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
-            <version>5.0.1</version>
+            <version>5.1.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -156,7 +156,7 @@
         <dependency>
             <groupId>dev.rosewood</groupId>
             <artifactId>rosestacker</artifactId>
-            <version>1.5.7</version>
+            <version>1.5.17</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -168,19 +168,19 @@
         <dependency>
             <groupId>net.highskiesmc</groupId>
             <artifactId>HSNodes</artifactId>
-            <version>1.2.0</version>
+            <version>1.2.1</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.github.LoneDev6</groupId>
             <artifactId>api-itemsadder</artifactId>
-            <version>3.4.1e</version>
+            <version>3.6.1</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>net.highskiesmc</groupId>
-            <artifactId>HSFishing</artifactId>
-            <version>2.0.0</version>
+            <artifactId>hsfishing</artifactId>
+            <version>2.0.2</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

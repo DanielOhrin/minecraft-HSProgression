@@ -1,5 +1,5 @@
 common:
-  no-island: "&c&lError | &7You don't have an island."
+  no-island: "&4&l[!] &cYou don't have an island."
   need-money: "&cInsufficient funds."
   inventory-overflow: "&cInventory overflow. Dropped extra items."
 
