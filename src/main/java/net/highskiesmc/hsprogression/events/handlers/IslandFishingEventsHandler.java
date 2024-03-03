@@ -10,6 +10,8 @@ import net.highskiesmc.hscore.highskies.HSPlugin;
 import net.highskiesmc.hsprogression.api.FishingLevel;
 import net.highskiesmc.hsprogression.api.HSProgressionApi;
 import net.highskiesmc.hsprogression.api.IslandProgressionType;
+import net.highskiesmc.hsprogression.events.events.IslandContributionEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -61,8 +63,14 @@ public class IslandFishingEventsHandler extends HSListener {
             dropEntry.setRarity(Rarity.ISLAND);
             e.setDroppedItems(Collections.singletonList(dropEntry));
 
-            api.contributeFishing(e.getPlayer().getUniqueId(), island.getIslandUuid(), caughtFish.getLabel(),
-                    item.getAmount());
+            IslandContributionEvent event = new IslandContributionEvent(island, e.getPlayer(),
+                    IslandProgressionType.FISHING, item.getAmount());
+            Bukkit.getPluginManager().callEvent(event);
+
+            if (!event.isCancelled()) {
+                api.contributeFishing(e.getPlayer().getUniqueId(), island.getIslandUuid(), caughtFish.getLabel(),
+                        event.getAmount());
+            }
         }
     }
 }

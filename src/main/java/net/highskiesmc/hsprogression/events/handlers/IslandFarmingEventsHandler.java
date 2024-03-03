@@ -11,6 +11,7 @@ import net.highskiesmc.hsprogression.api.FarmingLevel;
 import net.highskiesmc.hsprogression.api.FarmingRecipe;
 import net.highskiesmc.hsprogression.api.HSProgressionApi;
 import net.highskiesmc.hsprogression.api.IslandProgressionType;
+import net.highskiesmc.hsprogression.events.events.IslandContributionEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;

@@ -11,6 +11,8 @@ import net.highskiesmc.hscore.utils.TextUtils;
 import net.highskiesmc.hsprogression.api.HSProgressionApi;
 import net.highskiesmc.hsprogression.api.IslandProgressionType;
 import net.highskiesmc.hsprogression.api.SlayerLevel;
+import net.highskiesmc.hsprogression.events.events.IslandContributionEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -80,12 +82,18 @@ public class IslandSlayerEventsHandler extends HSListener {
 
         net.highskiesmc.hsprogression.api.Island island = api.getIsland(sIsland);
 
-        if (island == null) {
+        if (island == null || slayer == null) {
             return;
         }
 
         if (trackedEntityTypes.containsKey(type) && island.getLevel(IslandProgressionType.SLAYER) >= trackedEntityTypes.get(type)) {
-            api.contributeSlayer(slayer == null ? null : slayer.getUniqueId(), island.getIslandUuid(), type, 1);
+            IslandContributionEvent event = new IslandContributionEvent(island, slayer, IslandProgressionType.SLAYER,
+                    1);
+            Bukkit.getPluginManager().callEvent(event);
+
+            if (!event.isCancelled()) {
+                api.contributeSlayer(slayer.getUniqueId(), island.getIslandUuid(), type, event.getAmount());
+            }
         }
     }
 }

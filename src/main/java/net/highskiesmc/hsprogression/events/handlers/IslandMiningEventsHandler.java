@@ -4,8 +4,10 @@ import net.highskiesmc.hscore.highskies.HSListener;
 import net.highskiesmc.hscore.highskies.HSPlugin;
 import net.highskiesmc.hscore.utils.TextUtils;
 import net.highskiesmc.hsprogression.api.*;
+import net.highskiesmc.hsprogression.events.events.IslandContributionEvent;
 import net.highskiesmc.nodes.events.events.IslandNodeMineEvent;
 import net.highskiesmc.nodes.events.events.IslandNodePlaceEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 
@@ -31,7 +33,14 @@ public class IslandMiningEventsHandler extends HSListener {
             return;
         }
 
-        api.contributeMining(e.getPlayer().getUniqueId(), island.getIslandUuid(), e.getNode().getType(), 1);
+        IslandContributionEvent event = new IslandContributionEvent(island, e.getPlayer(),
+                IslandProgressionType.MINING, 1);
+        Bukkit.getPluginManager().callEvent(event);
+
+        if (!event.isCancelled()) {
+            api.contributeMining(e.getPlayer().getUniqueId(), island.getIslandUuid(), e.getNode().getType(),
+                    event.getAmount());
+        }
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
