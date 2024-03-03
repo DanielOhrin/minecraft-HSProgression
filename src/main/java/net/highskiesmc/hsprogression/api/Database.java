@@ -565,19 +565,23 @@ class Database extends MySQLDatabase {
 
             ResultSet levels = statement.executeQuery("SELECT Id, Label, Item_Id, Experience, Previous_Required FROM " +
                     "island_fishing;");
-
-            String previous = null;
+            // IMPORTANT: Fishing requires you to pass the Item_Id AND the Label, because the Item_Id is so much
+            // different
+            String previousId = null;
+            String previousLabel = null;
             while (levels.next()) {
                 result.add(new FishingLevel(
                         levels.getInt("Id"),
-                        previous,
+                        previousId,
+                        previousLabel,
                         levels.getString("Label"),
                         levels.getString("Item_Id"),
                         levels.getDouble("Experience"),
                         levels.getLong("Previous_Required")
                 ));
 
-                previous = levels.getString("Label");
+                previousId = levels.getString("Item_Id");
+                previousLabel = levels.getString("Label");
             }
         }
 

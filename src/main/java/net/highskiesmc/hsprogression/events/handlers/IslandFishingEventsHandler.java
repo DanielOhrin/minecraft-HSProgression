@@ -68,7 +68,7 @@ public class IslandFishingEventsHandler extends HSListener {
             Bukkit.getPluginManager().callEvent(event);
 
             if (!event.isCancelled()) {
-                api.contributeFishing(e.getPlayer().getUniqueId(), island.getIslandUuid(), caughtFish.getLabel(),
+                api.contributeFishing(e.getPlayer().getUniqueId(), island.getIslandUuid(), caughtFish.getId(),
                         event.getAmount());
             }
         }

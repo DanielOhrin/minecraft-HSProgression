@@ -18,14 +18,17 @@ public class FishingLevel implements DisplayableItem {
     private static final String PROGRESS_INCOMPLETE = TextUtils.translateColor("&f[&cx&f]");
     private static final DecimalFormat FORMATTER = new DecimalFormat("#,###");
     private final int level;
+    private final String previousId;
     private final String previousLabel;
     private final String label;
     private final String id;
     private final long previousRequired;
     private final double xp;
 
-    FishingLevel(int level, String previousLabel, String label, String id, double xp,  long previousRequired) {
+    FishingLevel(int level, String previousId, String previousLabel, String label, String id, double xp,
+                 long previousRequired) {
         this.level = level;
+        this.previousId = previousId;
         this.previousLabel = previousLabel;
         this.label = label;
         this.id = id;
@@ -99,7 +102,7 @@ public class FishingLevel implements DisplayableItem {
             meta.setDisplayName(current);
 
             List<String> lore = new ArrayList<>(config.get("gui.fishing.locked", ArrayList.class, new ArrayList<>()));
-            int amount = island.getFishingAmount(previousLabel);
+            int amount = island.getFishingAmount(previousId);
             String previous = TextUtils.toTitleCase(this.getPreviousLabel());
 
             lore.replaceAll(s -> TextUtils.translateColor(s
