@@ -837,22 +837,22 @@
             <row> <!-- 11 -->
                 <CROP>CACTUS</CROP>
                 <SEED>CACTUS</SEED>
-                <Previous_Required>5000000</Previous_Required> <!-- should be 5000000 -->
+                <Previous_Required>0</Previous_Required> <!-- should be 5000000 -->
             </row>
             <row> <!-- 12 -->
                 <CROP>MELON_SLICE</CROP>
                 <SEED>MELON_STEM</SEED>
-                <Previous_Required>3750000</Previous_Required> <!-- should be 3750000 -->
+                <Previous_Required>0</Previous_Required> <!-- should be 3750000 -->
             </row>
             <row> <!-- 13 -->
                 <CROP>PUMPKIN</CROP>
                 <SEED>PUMPKIN_STEM</SEED>
-                <Previous_Required>3000000</Previous_Required> <!-- should be 3000000 -->
+                <Previous_Required>0</Previous_Required> <!-- should be 3000000 -->
             </row>
             <row> <!-- 14 -->
                 <CROP>COCOA_BEANS</CROP>
                 <SEED>COCOA</SEED>
-                <Previous_Required>3750000</Previous_Required> <!-- should be 3750000 -->
+                <Previous_Required>0</Previous_Required> <!-- should be 3750000 -->
             </row>
         </table>
         <table name="island_mining">
