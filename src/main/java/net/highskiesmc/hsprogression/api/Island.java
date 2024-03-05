@@ -15,10 +15,7 @@ import org.bukkit.entity.Player;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class Island {
     private final Integer id;
@@ -111,9 +108,11 @@ public class Island {
     public int getFarmingAmount(Material type) {
         return farming.getOrDefault(type, 0);
     }
+
     public int getMiningAmount(String nodeId) {
         return mining.getOrDefault(nodeId, 0);
     }
+
     public int getFishingAmount(String fishId) {
         return fishing.getOrDefault(fishId, 0);
     }
@@ -126,9 +125,14 @@ public class Island {
         int oldAmount = this.slayer.get(type);
         this.slayer.put(type, oldAmount + amount);
 
+        // Return if current level is not tracking the entity
+        if (type != HSProgression.getApi().getSlayerLevel(getLevel(IslandProgressionType.SLAYER)).getEntity()) {
+            return;
+        }
+
         // Return if already max level
         int newLevel = getLevel(IslandProgressionType.SLAYER) + 1;
-        if (HSProgression.getApi().getSlayerLevels().size() == newLevel) {
+        if (HSProgression.getApi().getSlayerLevels().size() + 1 == newLevel) {
             return;
         }
 
@@ -182,11 +186,13 @@ public class Island {
                 List<SuperiorPlayer> members =
                         SuperiorSkyblockAPI.getIslandByUUID(getIslandUuid()).getIslandMembers(true);
                 for (SuperiorPlayer member : members) {
-                    Player player = member.asPlayer();
+                    if (member.isOnline()) {
+                        Player player = member.asPlayer();
 
-                    player.playSound(player.getLocation(), sound, 1, 1);
-                    player.sendTitle(title, subTitle, fadeIn, persist, fadeOut);
-                    player.sendMessage(msg);
+                        player.playSound(player.getLocation(), sound, 1, 1);
+                        player.sendTitle(title, subTitle, fadeIn, persist, fadeOut);
+                        player.sendMessage(msg);
+                    }
                 }
             }
         }
@@ -200,9 +206,14 @@ public class Island {
         int oldAmount = this.farming.get(crop);
         this.farming.put(crop, oldAmount + amount);
 
+        // Return if current level is not tracking the entity
+        if (crop != HSProgression.getApi().getFarmingLevel(getLevel(IslandProgressionType.FARMING)).getCrop()) {
+            return;
+        }
+
         // Return if already max level
         int newLevel = getLevel(IslandProgressionType.FARMING) + 1;
-        if (HSProgression.getApi().getFarmingLevels().size() == newLevel) {
+        if (HSProgression.getApi().getFarmingLevels().size() + 1 == newLevel) {
             return;
         }
 
@@ -257,11 +268,13 @@ public class Island {
                 List<SuperiorPlayer> members =
                         SuperiorSkyblockAPI.getIslandByUUID(getIslandUuid()).getIslandMembers(true);
                 for (SuperiorPlayer member : members) {
-                    Player player = member.asPlayer();
+                    if (member.isOnline()) {
+                        Player player = member.asPlayer();
 
-                    player.playSound(player.getLocation(), sound, 1, 1);
-                    player.sendTitle(title, subTitle, fadeIn, persist, fadeOut);
-                    player.sendMessage(msg);
+                        player.playSound(player.getLocation(), sound, 1, 1);
+                        player.sendTitle(title, subTitle, fadeIn, persist, fadeOut);
+                        player.sendMessage(msg);
+                    }
                 }
             }
         }
@@ -275,9 +288,14 @@ public class Island {
         int oldAmount = this.mining.get(nodeId);
         this.mining.put(nodeId, oldAmount + amount);
 
+        // Return if current level is not tracking the entity
+        if (!Objects.equals(nodeId, HSProgression.getApi().getMiningLevel(getLevel(IslandProgressionType.MINING)).getNodeId())) {
+            return;
+        }
+
         // Return if already max level
         int newLevel = getLevel(IslandProgressionType.MINING) + 1;
-        if (HSProgression.getApi().getMiningLevels().size() == newLevel) {
+        if (HSProgression.getApi().getMiningLevels().size() + 1 == newLevel) {
             return;
         }
 
@@ -331,15 +349,18 @@ public class Island {
                 List<SuperiorPlayer> members =
                         SuperiorSkyblockAPI.getIslandByUUID(getIslandUuid()).getIslandMembers(true);
                 for (SuperiorPlayer member : members) {
-                    Player player = member.asPlayer();
+                    if (member.isOnline()) {
+                        Player player = member.asPlayer();
 
-                    player.playSound(player.getLocation(), sound, 1, 1);
-                    player.sendTitle(title, subTitle, fadeIn, persist, fadeOut);
-                    player.sendMessage(msg);
+                        player.playSound(player.getLocation(), sound, 1, 1);
+                        player.sendTitle(title, subTitle, fadeIn, persist, fadeOut);
+                        player.sendMessage(msg);
+                    }
                 }
             }
         }
     }
+
     public void contributeFishing(String fishId, int amount, Config config) {
         if (!this.fishing.containsKey(fishId)) {
             this.fishing.put(fishId, 0);
@@ -348,9 +369,14 @@ public class Island {
         int oldAmount = this.fishing.get(fishId);
         this.fishing.put(fishId, oldAmount + amount);
 
+        // Return if current level is not tracking the entity
+        if (!Objects.equals(fishId, HSProgression.getApi().getFishingLevel(getLevel(IslandProgressionType.FISHING)).getId())) {
+            return;
+        }
+
         // Return if already max level
         int newLevel = getLevel(IslandProgressionType.FISHING) + 1;
-        if (HSProgression.getApi().getFishingLevels().size() == newLevel) {
+        if (HSProgression.getApi().getFishingLevels().size() + 1 == newLevel) {
             return;
         }
 
@@ -405,11 +431,13 @@ public class Island {
                 List<SuperiorPlayer> members =
                         SuperiorSkyblockAPI.getIslandByUUID(getIslandUuid()).getIslandMembers(true);
                 for (SuperiorPlayer member : members) {
-                    Player player = member.asPlayer();
+                    if (member.isOnline()) {
+                        Player player = member.asPlayer();
 
-                    player.playSound(player.getLocation(), sound, 1, 1);
-                    player.sendTitle(title, subTitle, fadeIn, persist, fadeOut);
-                    player.sendMessage(msg);
+                        player.playSound(player.getLocation(), sound, 1, 1);
+                        player.sendTitle(title, subTitle, fadeIn, persist, fadeOut);
+                        player.sendMessage(msg);
+                    }
                 }
             }
         }
@@ -422,9 +450,11 @@ public class Island {
     void setFarmingNum(Material crop, int amount) {
         this.farming.put(crop, amount);
     }
+
     void setMiningNum(String nodeId, int amount) {
         this.mining.put(nodeId, amount);
     }
+
     void setFishingNum(String fishId, int amount) {
         this.fishing.put(fishId, amount);
     }
@@ -515,7 +545,7 @@ public class Island {
             }
 
             // Get the farmed requirement for unlocking the crop
-            int halfOfNormalRequirement = (int)levels.get(i + 1).getPreviousRequired() / 2;
+            int halfOfNormalRequirement = (int) levels.get(i + 1).getPreviousRequired() / 2;
 
             return (levelToUnlock - getLevel(IslandProgressionType.FARMING) == 1) && amountPreviousFarmed >= halfOfNormalRequirement;
         }
