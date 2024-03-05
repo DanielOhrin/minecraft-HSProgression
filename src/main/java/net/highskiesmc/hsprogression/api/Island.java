@@ -127,7 +127,8 @@ public class Island {
         this.slayer.put(type, oldAmount + amount);
 
         // Return if already max level
-        if (HSProgression.getApi().getSlayerLevels().size() == getLevel(IslandProgressionType.SLAYER)) {
+        int newLevel = getLevel(IslandProgressionType.SLAYER) + 1;
+        if (HSProgression.getApi().getSlayerLevels().size() == newLevel) {
             return;
         }
 
@@ -200,13 +201,14 @@ public class Island {
         this.farming.put(crop, oldAmount + amount);
 
         // Return if already max level
-        if (HSProgression.getApi().getFarmingLevels().size() == getLevel(IslandProgressionType.FARMING)) {
+        int newLevel = getLevel(IslandProgressionType.FARMING) + 1;
+        if (HSProgression.getApi().getFarmingLevels().size() == newLevel) {
             return;
         }
 
         // Check if farming leveled up
         FarmingLevel nextFarmingLevel =
-                HSProgression.getApi().getFarmingLevel(getLevel(IslandProgressionType.FARMING) + 1);
+                HSProgression.getApi().getFarmingLevel(newLevel);
         int levelUpRequirement = (int) nextFarmingLevel.getPreviousRequired();
 
         if (oldAmount + amount >= levelUpRequirement && getLevel(IslandProgressionType.FARMING) + 1 == nextFarmingLevel.getLevel()) {
@@ -274,12 +276,13 @@ public class Island {
         this.mining.put(nodeId, oldAmount + amount);
 
         // Return if already max level
-        if (HSProgression.getApi().getMiningLevels().size() == getLevel(IslandProgressionType.MINING)) {
+        int newLevel = getLevel(IslandProgressionType.MINING) + 1;
+        if (HSProgression.getApi().getMiningLevels().size() == newLevel) {
             return;
         }
 
         // Check if mining leveled up
-        MiningLevel nextMiningLevel = HSProgression.getApi().getMiningLevel(getLevel(IslandProgressionType.MINING) + 1);
+        MiningLevel nextMiningLevel = HSProgression.getApi().getMiningLevel(newLevel);
         int levelUpRequirement = (int) nextMiningLevel.getPreviousRequired();
 
         if (oldAmount + amount >= levelUpRequirement && getLevel(IslandProgressionType.MINING) + 1 == nextMiningLevel.getLevel()) {
@@ -346,13 +349,14 @@ public class Island {
         this.fishing.put(fishId, oldAmount + amount);
 
         // Return if already max level
-        if (HSProgression.getApi().getFishingLevels().size() == getLevel(IslandProgressionType.FISHING)) {
+        int newLevel = getLevel(IslandProgressionType.FISHING) + 1;
+        if (HSProgression.getApi().getFishingLevels().size() == newLevel) {
             return;
         }
 
         // Check if fishing leveled up
         FishingLevel nextFishingLevel =
-                HSProgression.getApi().getFishingLevel(getLevel(IslandProgressionType.FISHING) + 1);
+                HSProgression.getApi().getFishingLevel(newLevel);
         int levelUpRequirement = (int) nextFishingLevel.getPreviousRequired();
 
         if (oldAmount + amount >= levelUpRequirement && getLevel(IslandProgressionType.FISHING) + 1 == nextFishingLevel.getLevel()) {
