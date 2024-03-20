@@ -92,6 +92,11 @@ public class HSProgression extends HSPlugin {
         return true;
     }
 
+    @Override
+    protected boolean isAddingCustomRecipe() {
+        return false;
+    }
+
     public static HSProgressionApi getApi() {
         return api;
     }
