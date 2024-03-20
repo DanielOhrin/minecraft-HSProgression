@@ -63,13 +63,15 @@ public class IslandFishingEventsHandler extends HSListener {
             dropEntry.setRarity(Rarity.ISLAND);
             e.setDroppedItems(Collections.singletonList(dropEntry));
 
-            IslandContributionEvent event = new IslandContributionEvent(island, e.getPlayer(),
-                    IslandProgressionType.FISHING, item.getAmount());
-            Bukkit.getPluginManager().callEvent(event);
+            if (sIsland.getIslandMembers(true).contains(SuperiorSkyblockAPI.getPlayer(e.getPlayer()))) {
+                IslandContributionEvent event = new IslandContributionEvent(island, e.getPlayer(),
+                        IslandProgressionType.FISHING, item.getAmount());
+                Bukkit.getPluginManager().callEvent(event);
 
-            if (!event.isCancelled()) {
-                api.contributeFishing(e.getPlayer().getUniqueId(), island.getIslandUuid(), caughtFish.getId(),
-                        event.getAmount());
+                if (!event.isCancelled()) {
+                    api.contributeFishing(e.getPlayer().getUniqueId(), island.getIslandUuid(), caughtFish.getId(),
+                            event.getAmount());
+                }
             }
         }
     }

@@ -1,5 +1,6 @@
 package net.highskiesmc.hsprogression.events.handlers;
 
+import com.bgsoftware.superiorskyblock.api.SuperiorSkyblockAPI;
 import net.highskiesmc.hscore.highskies.HSListener;
 import net.highskiesmc.hscore.highskies.HSPlugin;
 import net.highskiesmc.hscore.utils.TextUtils;
@@ -33,13 +34,15 @@ public class IslandMiningEventsHandler extends HSListener {
             return;
         }
 
-        IslandContributionEvent event = new IslandContributionEvent(island, e.getPlayer(),
-                IslandProgressionType.MINING, 1);
-        Bukkit.getPluginManager().callEvent(event);
+        if (e.getIsland().getIslandMembers(true).contains(SuperiorSkyblockAPI.getPlayer(e.getPlayer()))) {
+            IslandContributionEvent event = new IslandContributionEvent(island, e.getPlayer(),
+                    IslandProgressionType.MINING, 1);
+            Bukkit.getPluginManager().callEvent(event);
 
-        if (!event.isCancelled()) {
-            api.contributeMining(e.getPlayer().getUniqueId(), island.getIslandUuid(), e.getNode().getType(),
-                    event.getAmount());
+            if (!event.isCancelled()) {
+                api.contributeMining(e.getPlayer().getUniqueId(), island.getIslandUuid(), e.getNode().getType(),
+                        event.getAmount());
+            }
         }
     }
 

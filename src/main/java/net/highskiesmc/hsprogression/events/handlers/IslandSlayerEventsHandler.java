@@ -86,13 +86,16 @@ public class IslandSlayerEventsHandler extends HSListener {
             return;
         }
 
-        if (trackedEntityTypes.containsKey(type) && island.getLevel(IslandProgressionType.SLAYER) >= trackedEntityTypes.get(type)) {
-            IslandContributionEvent event = new IslandContributionEvent(island, slayer, IslandProgressionType.SLAYER,
-                    1);
-            Bukkit.getPluginManager().callEvent(event);
+        if (sIsland.getIslandMembers(true).contains(SuperiorSkyblockAPI.getPlayer(slayer))) {
+            if (trackedEntityTypes.containsKey(type) && island.getLevel(IslandProgressionType.SLAYER) >= trackedEntityTypes.get(type)) {
+                IslandContributionEvent event = new IslandContributionEvent(island, slayer,
+                        IslandProgressionType.SLAYER,
+                        1);
+                Bukkit.getPluginManager().callEvent(event);
 
-            if (!event.isCancelled()) {
-                api.contributeSlayer(slayer.getUniqueId(), island.getIslandUuid(), type, event.getAmount());
+                if (!event.isCancelled()) {
+                    api.contributeSlayer(slayer.getUniqueId(), island.getIslandUuid(), type, event.getAmount());
+                }
             }
         }
     }
