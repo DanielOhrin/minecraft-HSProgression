@@ -20,3 +20,5 @@ commands:
   giverecipe:
     invalid-crop: "&cInvalid crop type: {crop}"
     success: "&aGave player {amount} {crop} recipe"
+  unlock:
+    success: "&aUnlocked {label} for {player}'s island!"

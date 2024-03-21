@@ -104,10 +104,12 @@ public class IslandLevel {
         if (level - islandLevel > 1) {
             lore.add(ChatColor.RED + "Requires Island Level " + ChatColor.UNDERLINE + (level - 1) + ChatColor.RED +
                     "!");
-        } else if (balance < this.cost) {
-            lore.add(ChatColor.RED + "You cannot afford this level up!");
         } else if (level - 1 == islandLevel) {
-            lore.add(ChatColor.GRAY + "Click to level up!");
+            if (balance < this.cost) {
+                lore.add(ChatColor.RED + "You cannot afford this level up!");
+            } else {
+                lore.add(ChatColor.GRAY + "Click to level up!");
+            }
         }
 
         meta.setLore(lore);
