@@ -704,7 +704,7 @@
             </row>
             <row> <!-- 2 -->
                 <Entity>CHICKEN</Entity>
-                <Previous_Required>3000</Previous_Required> <!-- should be 2500 -->
+                <Previous_Required>3000</Previous_Required> <!-- should be 3000 -->
                 <Head_Id>53916</Head_Id>
             </row>
             <row> <!-- 3 -->
