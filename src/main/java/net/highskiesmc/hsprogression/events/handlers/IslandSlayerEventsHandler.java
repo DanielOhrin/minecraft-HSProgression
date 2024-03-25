@@ -86,10 +86,10 @@ public class IslandSlayerEventsHandler extends HSListener {
             return;
         }
 
-        if (trackedEntityTypes.containsKey(type) && island.getLevel(IslandProgressionType.SLAYER) >= trackedEntityTypes.get(type)) {
-
-            if (SuperiorSkyblockAPI.getPlayer(slayer.getUniqueId()).hasIsland() && SuperiorSkyblockAPI.getPlayer(slayer.getUniqueId()).getIsland().getUniqueId().equals(island.getIslandUuid())) {
-                IslandContributionEvent event = new IslandContributionEvent(island, slayer, IslandProgressionType.SLAYER,
+        if (sIsland.getIslandMembers(true).contains(SuperiorSkyblockAPI.getPlayer(slayer))) {
+            if (trackedEntityTypes.containsKey(type) && island.getLevel(IslandProgressionType.SLAYER) >= trackedEntityTypes.get(type)) {
+                IslandContributionEvent event = new IslandContributionEvent(island, slayer,
+                        IslandProgressionType.SLAYER,
                         1);
                 Bukkit.getPluginManager().callEvent(event);
 

@@ -34,7 +34,7 @@ public class IslandMiningEventsHandler extends HSListener {
             return;
         }
 
-        if (SuperiorSkyblockAPI.getPlayer(e.getPlayer().getUniqueId()).hasIsland() && SuperiorSkyblockAPI.getPlayer(e.getPlayer().getUniqueId()).getIsland().getUniqueId().equals(island.getIslandUuid())) {
+        if (e.getIsland().getIslandMembers(true).contains(SuperiorSkyblockAPI.getPlayer(e.getPlayer()))) {
             IslandContributionEvent event = new IslandContributionEvent(island, e.getPlayer(),
                     IslandProgressionType.MINING, 1);
             Bukkit.getPluginManager().callEvent(event);

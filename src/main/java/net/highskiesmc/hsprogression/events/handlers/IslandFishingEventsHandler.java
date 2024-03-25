@@ -42,28 +42,28 @@ public class IslandFishingEventsHandler extends HSListener {
         } else {
             net.highskiesmc.hsprogression.api.Island island = api.getIsland(sIsland);
 
-            if (SuperiorSkyblockAPI.getPlayer(e.getPlayer().getUniqueId()).hasIsland() && SuperiorSkyblockAPI.getPlayer(e.getPlayer().getUniqueId()).getIsland().getUniqueId().equals(island.getIslandUuid())) {
-                int fishingLevel = island.getLevel(IslandProgressionType.FISHING);
-                List<FishingLevel> fishUnlocked = new ArrayList<>(fish);
+            int fishingLevel = island.getLevel(IslandProgressionType.FISHING);
+            List<FishingLevel> fishUnlocked = new ArrayList<>(fish);
 
-                fishUnlocked.removeIf(x -> fishUnlocked.indexOf(x) > fishingLevel - 1);
+            fishUnlocked.removeIf(x -> fishUnlocked.indexOf(x) > fishingLevel - 1);
 
-                List<FishingLevel> fishPool = new ArrayList<>(fishUnlocked);
-                Collections.shuffle(fishPool);
+            List<FishingLevel> fishPool = new ArrayList<>(fishUnlocked);
+            Collections.shuffle(fishPool);
 
-                // Amount generation allows for multiple when the player is multiple levels ahead of the fish they caught
-                FishingLevel caughtFish = fishPool.get(0);
-                int amount = new Random().nextInt(1,
-                        Math.max(2,
-                                (int) Math.ceil(fishPool.size() - (double) (fishUnlocked.indexOf(caughtFish) + 1) / 3) + 1));
+            // Amount generation allows for multiple when the player is multiple levels ahead of the fish they caught
+            FishingLevel caughtFish = fishPool.get(0);
+            int amount = new Random().nextInt(1,
+                    Math.max(2,
+                            (int) Math.ceil(fishPool.size() - (double) (fishUnlocked.indexOf(caughtFish) + 1) / 3) + 1));
 
-                ItemStack item = caughtFish.getItem();
-                item.setAmount(amount);
+            ItemStack item = caughtFish.getItem();
+            item.setAmount(amount);
 
-                DropEntry dropEntry = new DropEntry(item, 0, caughtFish.getXp());
-                dropEntry.setRarity(Rarity.ISLAND);
-                e.setDroppedItems(Collections.singletonList(dropEntry));
+            DropEntry dropEntry = new DropEntry(item, 0, caughtFish.getXp());
+            dropEntry.setRarity(Rarity.ISLAND);
+            e.setDroppedItems(Collections.singletonList(dropEntry));
 
+            if (sIsland.getIslandMembers(true).contains(SuperiorSkyblockAPI.getPlayer(e.getPlayer()))) {
                 IslandContributionEvent event = new IslandContributionEvent(island, e.getPlayer(),
                         IslandProgressionType.FISHING, item.getAmount());
                 Bukkit.getPluginManager().callEvent(event);

@@ -59,8 +59,8 @@ public class HSProgression extends HSPlugin {
         SuperiorSkyblockAPI.registerCommand(new IslandFishingCommand(this));
 
         // Register Plugin Commands
-        getCommand("hsprogression").setExecutor(new HSProgressionCommand(this));
-        getCommand("hsprogression").setTabCompleter(new HSProgressionTabCompleter());
+        getCommand("hsprogression").setExecutor(new HSProgressionCommand(this, api));
+        getCommand("hsprogression").setTabCompleter(new HSProgressionTabCompleter(api));
 
         // Register Event Handlers
         register(new CommandPreProcessHandler());
