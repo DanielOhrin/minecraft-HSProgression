@@ -6,7 +6,7 @@
 
     <groupId>net.highskiesmc</groupId>
     <artifactId>hsprogression</artifactId>
-    <version>2.0.3</version>
+    <version>2.0.4</version>
     <packaging>jar</packaging>
 
     <name>HSProgression</name>
