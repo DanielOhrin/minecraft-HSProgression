@@ -70,6 +70,7 @@ public class HSProgression extends HSPlugin {
         register(new IslandFarmingEventsHandler(this, api));
         register(new IslandMiningEventsHandler(this, api));
         register(new IslandFishingEventsHandler(this, api));
+        register(new LevelCapHandler(this));
         //</editor-fold>
 
         return;
