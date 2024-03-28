@@ -56,8 +56,8 @@ public class HSProgressionApi {
         this.taskId = Bukkit.getScheduler().runTaskTimerAsynchronously(
                 this.main,
                 this::uploadCacheToDatabaseAsync,
-                cachePushInterval,
-                cachePushInterval
+                cachePushInterval * 20,
+                cachePushInterval * 20
         ).getTaskId();
     }
     //</editor-fold>
